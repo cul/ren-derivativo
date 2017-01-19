@@ -1,10 +1,12 @@
 source 'https://rubygems.org'
 
-
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.7.1'
-# Use sqlite3 as the database for Active Record
+
+# Use sqlite3 or mysql2 as the databases for Active Record
 gem 'sqlite3'
+gem 'mysql2', '0.3.18'
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
@@ -37,7 +39,7 @@ gem 'blacklight', '>= 5.4.0'
 gem 'hydra-head', '~>7'
 
 # Columbia Hydra models
-gem 'cul_hydra', '~> 1.4.5'
+gem 'cul_hydra', '~> 1.4.8'
 #gem 'cul_hydra', :path => '../cul_hydra'
 gem 'active_fedora_relsint', :git => 'https://github.com/cul/active_fedora_relsint.git', :branch => 'master'
 

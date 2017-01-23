@@ -1,5 +1,4 @@
 class Iiif
-  include Derivativo::FedoraObjectValidation
   include Derivativo::Iiif::DbCache
   include Derivativo::Iiif::FedoraPropertyRetrieval
   include Derivativo::Iiif::CachableProperties

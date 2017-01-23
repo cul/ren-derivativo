@@ -4,9 +4,9 @@ module Derivativo::Iiif::Info
   def info(id_url, version)
     raise 'Only IIIF version 2 is supported at the moment' unless version.to_s == '2'
     
-    original_width, original_height = get_cachable_property(Derivativo::Iiif::CacheKeys::PROPERTY_CACHE_KEYS::ORIGINAL_IMAGE_DIMENSIONS_KEY)
-    scale_factors = get_cachable_property(Derivativo::Iiif::CacheKeys::PROPERTY_CACHE_KEYS::SCALE_FACTORS_KEY)
-    is_restricted_size_image = get_cachable_property(Derivativo::Iiif::CacheKeys::PROPERTY_CACHE_KEYS::IS_RESTRICTED_SIZE_IMAGE_KEY)
+    original_width, original_height = get_cachable_property(Derivativo::Iiif::CacheKeys::ORIGINAL_IMAGE_DIMENSIONS_KEY)
+    scale_factors = get_cachable_property(Derivativo::Iiif::CacheKeys::SCALE_FACTORS_KEY)
+    is_restricted_size_image = get_cachable_property(Derivativo::Iiif::CacheKeys::IS_RESTRICTED_SIZE_IMAGE_KEY)
     
     response = {
       "@context" => "http://iiif.io/api/image/2/context.json",
@@ -18,7 +18,7 @@ module Derivativo::Iiif::Info
       "tiles" => [
         {
           "width" => Iiif::TILE_SIZE,
-          "scaleFactors" => scale_factors
+          "scaleFactors" => [scale_factors]
         }
       ],
       "profile" => [
@@ -48,7 +48,7 @@ module Derivativo::Iiif::Info
         }
       else
         next {
-          width: (h.to_f * (original_width.to_f/original_height.to_f)).to_i,
+          width: (size.to_f * (original_width.to_f/original_height.to_f)).to_i,
           height: size
         }
       end

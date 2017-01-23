@@ -1,0 +1,13 @@
+<% id = params[:id].present? ? params[:id] : (DERIVATIVO['resource_id_for_iiif_sample_page'] || '') %>
+
+<h1>Zooming Viewer IIIF Example</h1>
+
+<%= form_tag(zooming_viewer_example_path, method: 'get') do %>
+  <%= text_field_tag(:id, id, placeholder: 'Enter a resource ID...') %>
+  <%= submit_tag("View") %>
+<% end %>
+<br />
+
+<% if id.present? %>
+<%= openseadragon_picture_tag "/iiif/2/#{id}/info.json", style: 'border:5px solid #aaa;padding:5px;' %>
+<% end %>

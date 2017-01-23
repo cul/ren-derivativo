@@ -12,6 +12,14 @@ Rails.application.routes.draw do
   get '/iiif/:version/:id', to: 'iiif#iiif_id', as: 'iiif_id', version: /2/
   get '/iiif/:version/:id/info.:format', to: 'iiif#info', as: 'iiif_info', version: /2/
   get '/iiif/:version/:id/:region/:size/:rotation/:quality', to: 'iiif#raster', as: 'iiif_raster', version: /2/
+  
+  resources :resources, only: [:index, :update, :destroy] do
+    collection do
+      get 'zzz'
+    end
+  end
+  
+  get '/examples/zooming_viewer', to: 'examples#zooming_viewer', as: 'zooming_viewer_example'
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

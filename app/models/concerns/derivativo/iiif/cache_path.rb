@@ -3,6 +3,7 @@ module Derivativo::Iiif::CachePath
   
   BASE_FILE_NAME = 'base.png'
   FEATURED_BASE_FILE_NAME = 'featured_base.png'
+  ZOOMING_TILES_COMPLETE_FILENAME = 'zooming_tiles_complete'
   
   def base_cache_path(make_dirs = false)
     path = File.join(Derivativo::CachePathBuilder.path_for_id(self.id), BASE_FILE_NAME)
@@ -18,7 +19,7 @@ module Derivativo::Iiif::CachePath
   
   def raster_cache_path(make_dirs = false)
     @raster_cache_path ||= File.join(
-      Derivativo::CachePathBuilder.path_for_type(self.id, Derivativo::CachePathBuilder::TYPE_IIIF),
+      iiif_cache_dir,
       self.region,
       self.size,
       self.rotation,
@@ -40,4 +41,23 @@ module Derivativo::Iiif::CachePath
     File.exists?(featured_base_cache_path)
   end
   
+  def iiif_cache_dir(make_dirs = false)
+		path = Derivativo::CachePathBuilder.path_for_type(self.id, Derivativo::CachePathBuilder::TYPE_IIIF)
+		FileUtils.mkdir_p(File.dirname(path)) if make_dirs
+    path
+	end
+  
+  # Checks to see if IIIF tiles exist for a zooming image viewer.
+  # Returns true only if ALL expected tiles exist
+  def zooming_image_tiles_exist?
+		File.exists?(zooming_tiles_complete_file_path)
+	end
+  
+  def touch_zooming_image_tiles_complete_file
+		FileUtils.touch zooming_tiles_complete_file_path
+	end
+  
+  def zooming_tiles_complete_file_path
+		File.join(iiif_cache_dir, ZOOMING_TILES_COMPLETE_FILENAME)
+  end
 end

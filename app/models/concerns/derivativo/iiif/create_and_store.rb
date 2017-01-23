@@ -24,7 +24,7 @@ module Derivativo::Iiif::CreateAndStore
     generic_resource = ActiveFedora::Base.find(id)
     
     # We only ever want to create base derivatives for GenericResources that are images (NOT PDFs)
-    unless is_generic_resource_image?(generic_resource)
+    unless Derivativo::FedoraObjectTypeCheck.is_generic_resource_image?(generic_resource)
       if generic_resource.is_a?(GenericResource)
         Rails.logger.info "Skipped create and store images for GenericResource #{self.id} because it is not an image."
       else

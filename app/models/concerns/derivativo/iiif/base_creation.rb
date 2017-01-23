@@ -9,7 +9,7 @@ module Derivativo::Iiif::BaseCreation
 	end
   
   def queue_base_derivatives_if_not_exist
-		Resque.enqueue_to(Cul::Repo::Cache::Queue::LOW, CreateBaseDerivativesJob, id, Time.now.to_s)
+		Resque.enqueue_to(Derivativo::Queue::LOW, CreateBaseDerivativesJob, id, Time.now.to_s)
 	end
   
   def create_base_derivatives_if_not_exist
@@ -40,7 +40,7 @@ module Derivativo::Iiif::BaseCreation
 			# We only ever want to create base derivatives for rasterable GenericResources (like images or PDFs).
 			# Serving up of representative images is handled elsewhere, by the IiifController, so we'll reject
 			# anything here that isn't a rasterable GenericResource.
-			unless is_rasterable_generic_resource?(generic_resource)
+			unless Derivativo::FedoraObjectTypeCheck.is_rasterable_generic_resource?(generic_resource)
 				if generic_resource.is_a?(GenericResource)
 					Rails.logger.info "Skipped creation of base image derivatives for GenericResource #{self.id} because it is not of a known rasterable type (image, PDF, etc)."
 				else
@@ -51,7 +51,7 @@ module Derivativo::Iiif::BaseCreation
 			
 			unless File.exists?(base_cache_path = base_cache_path(true))
 				generic_resource.with_ds_resource('content', (! DERIVATIVO['no_mount']) ) do |image_path|
-					if is_generic_resource_image?(generic_resource)
+					if Derivativo::FedoraObjectTypeCheck.is_generic_resource_image?(generic_resource)
 						Imogen.with_image(image_path) do |img|
 							# Create base image
 							Rails.logger.debug 'Creating base image...'
@@ -63,7 +63,7 @@ module Derivativo::Iiif::BaseCreation
 							})
 							Rails.logger.debug 'Created base image in ' + (Time.now-start_time).to_s + ' seconds'
 						end
-					elsif is_generic_resource_pdf?(generic_resource)
+					elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_pdf?(generic_resource)
 						Rails.logger.debug 'Creating base image from PDF...'
 						start_time = Time.now
 						
@@ -88,6 +88,24 @@ module Derivativo::Iiif::BaseCreation
 						rotation: generic_resource.required_rotation_for_upright_display.to_s
 					})
 					Rails.logger.debug 'Created featured base image in ' + (Time.now-start_time).to_s + ' seconds'
+				end
+			end
+			
+			# After base creation, also pre-cache IIIF slices for zooming images
+			# If we don't do this, it will take way too long (sometimes 15 seconds)
+			# for the IIIF zooming image viewer to load (while it creates these derivatives)
+			unless zooming_image_tiles_exist?
+				# Create IIIF zooming images slices
+				iiif_dir = iiif_cache_dir(true)
+				Imogen.with_image(base_cache_path) do |img|
+					Rails.logger.debug 'Creating zooming image tiles...'
+					start_time = Time.now
+					Imogen::Iiif::Tiles.for(img, iiif_dir, :jpeg, Iiif::TILE_SIZE) do |bitmap, tile_dest_path, format, iiif_opts|
+						FileUtils.mkdir_p(File.dirname(tile_dest_path))
+            Imogen::Iiif.convert(bitmap,tile_dest_path,format,iiif_opts)
+					end
+					touch_zooming_image_tiles_complete_file
+					Rails.logger.debug 'Created zooming image tiles in ' + (Time.now-start_time).to_s + ' seconds'
 				end
 			end
 			

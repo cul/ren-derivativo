@@ -61,6 +61,9 @@ gem 'retriable', '~> 2.1'
 # Use resque for background jobs
 gem 'resque', '~> 1.0'
 
+# OpenSeadragon js viewer. Helpers + assets
+gem 'openseadragon'
+
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'

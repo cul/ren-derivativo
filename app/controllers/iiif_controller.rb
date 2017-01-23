@@ -11,7 +11,7 @@ class IiifController < ApplicationController
     # CORS support: Any site should be able to do a cross-domain info request
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Content-Type'] = 'application/ld+json'
-    render json: Iiif.new(id).info(iiif_id_url(id: id, version: version), version)
+    render json: Iiif.new(params).info(iiif_id_url(id: params[:id], version: params[:version]), params[:version])
   end
   
   def raster

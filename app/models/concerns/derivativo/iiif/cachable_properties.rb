@@ -17,7 +17,8 @@ module Derivativo::Iiif::CachableProperties
       
     Derivativo::Iiif::CacheKeys::PROPERTY_CACHE_KEYS.each do |cache_key|
 			# Remove instance variable for this key
-			remove_instance_variable(('@' + cache_key.to_s).to_sym)
+			instance_variable_symbol = instance_variable_symbol_for_cache_key(cache_key)
+			remove_instance_variable(instance_variable_symbol) if instance_variable_defined?(instance_variable_symbol)
       # Clear Rails cache for this key
       Rails.cache.delete(rails_cache_identifier_for_key(cache_key))
     end
@@ -39,7 +40,7 @@ module Derivativo::Iiif::CachableProperties
     Rails.cache.delete(rails_cache_identifier_for_key(cache_key)) if refresh_cache
     
     # Cache in instance variable in case this variable is accessed multiple times for the same object
-    instance_variable_symbol = ('@' + cache_key.to_s).to_sym
+    instance_variable_symbol = instance_variable_symbol_for_cache_key(cache_key)
     return instance_variable_get(instance_variable_symbol) if instance_variable_defined?(instance_variable_symbol)
 		
     # Retrieve from Rails cache (or set in Rails cache if not already set)
@@ -95,7 +96,7 @@ module Derivativo::Iiif::CachableProperties
 		return 'file' if dc_type.nil?
     
      # If this resource is rasterable, return nil. We don't want to serve a placeholder for it.
-    return nil if is_rasterable_generic_resource?(fedora_get_representative_generic_resource)
+    return nil if Derivativo::FedoraObjectTypeCheck.is_rasterable_generic_resource?(fedora_get_representative_generic_resource)
     Derivativo::Iiif::CacheKeys::DC_TYPES_TO_PLACEHOLDER_TYPES[dc_type] || 'file'
   end
   
@@ -103,4 +104,7 @@ module Derivativo::Iiif::CachableProperties
 		fedora_get_representative_generic_resource_id
   end
   
+  def instance_variable_symbol_for_cache_key(cache_key)
+		('@' + cache_key.to_s).to_sym
+	end
 end

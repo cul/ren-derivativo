@@ -246,6 +246,8 @@ GEM
       activesupport
       nokogiri (>= 1.4.2)
       solrizer (~> 3.3)
+    openseadragon (0.3.0)
+      rails (> 3.2.0)
     rack (1.6.5)
     rack-protection (1.5.3)
       rack
@@ -446,6 +448,7 @@ DEPENDENCIES
   libv8 (>= 3.16.14.15)
   mysql2 (= 0.3.18)
   nokogiri (~> 1.7.0)
+  openseadragon
   rails (= 4.2.7.1)
   resque (~> 1.0)
   rest-client

@@ -3,6 +3,6 @@ class CreateRasterJob
 
   def self.perform(opts, queue_time_string=Time.now.to_s)
 		opts = HashWithIndifferentAccess.new(opts)
-		Iiif.new(opts).create_and_store
+		Iiif.new(opts).create_raster
   end
 end

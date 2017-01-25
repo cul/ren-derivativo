@@ -1,5 +1,7 @@
 class ResourcesController < ApplicationController
 
+  include Derivativo::RequestTokenAuthentication
+
   # GET /resource/publish
   # API Info
   def index
@@ -11,7 +13,7 @@ class ResourcesController < ApplicationController
   # PUT /resource/:id
   def update
     id = params[:id]
-    unless (status = authenticate_publisher) == :ok
+    unless (status = authenticate_request_token) == :ok
       render status: status, json: {"error" => "Invalid credentials"}
       return
     end
@@ -28,7 +30,7 @@ class ResourcesController < ApplicationController
   # DELETE /resource/:id
   def destroy
     id = params[:id]
-    unless (status = authenticate_publisher) == :ok
+    unless (status = authenticate_request_token) == :ok
       render status: status, json: {"error" => "Invalid credentials"}
       return
     end
@@ -40,16 +42,6 @@ class ResourcesController < ApplicationController
       return
     end
     render status: status, json: { "success" => true }
-  end
-  
-  private
-  
-  def authenticate_publisher
-    status = :unauthorized
-    authenticate_with_http_token do |token, other_options|
-      status = (DERIVATIVO['remote_request_api_key'] == token) ? :ok : :forbidden
-    end
-    status
   end
   
 end

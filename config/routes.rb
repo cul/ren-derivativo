@@ -20,6 +20,10 @@ Rails.application.routes.draw do
   end
   
   get '/examples/zooming_viewer', to: 'examples#zooming_viewer', as: 'zooming_viewer_example'
+  
+  namespace :v0 do
+    post 'thumbnails', to: 'thumbnails#create'
+  end
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

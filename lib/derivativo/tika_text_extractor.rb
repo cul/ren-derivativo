@@ -2,7 +2,7 @@ require 'addressable/uri'
 
 class Derivativo::TikaTextExtractor
 
-  def self.get_fulltext(path_to_file)
+  def self.extract_text_from_file(path_to_file)
 
     filename = File.basename(path_to_file)
 

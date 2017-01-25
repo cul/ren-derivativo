@@ -4,13 +4,7 @@ describe ResourcesController, :type => :controller do
   before do
     expect(controller).not_to be_nil
     request.env['HTTP_AUTHORIZATION'] = api_key
-    #allow(IndexFedoraObjectJob).to receive(:perform).
-    #  with(hash_including('pid' => 'baad:id')).
-    #  and_raise(ActiveFedora::ObjectNotFoundError)
   end
-  #let(:mock_object) do
-  #  double(ActiveFedora::Base)
-  #end
   describe '#index' do
     let(:api_key) { nil }
     it "does not require an api_key for the index action" do

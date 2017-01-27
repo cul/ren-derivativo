@@ -1,6 +1,6 @@
 lock '3.5.0'
 
-set :department, 'repocache'
+set :department, 'ren'
 set :instance, fetch(:department)
 set :application, 'derivativo'
 set :repo_name, "#{fetch(:department)}-#{fetch(:application)}"
@@ -13,7 +13,7 @@ set :rvm_ruby_version, fetch(:deploy_name)
 
 set :repo_url,  "git@github.com:cul/#{fetch(:repo_name)}.git"
 
-set :remote_user, "ldpdserv" # This is hard-coded because this app doesn't follow the usual convention of remote user == "#{fetch(:instance)}serv"
+set :remote_user, "#{fetch(:instance)}serv"
 # Default deploy_to directory is /var/www/:application
 # set :deploy_to, '/var/www/my_app_name'
 set :deploy_to,   "/opt/passenger/#{fetch(:instance)}/#{fetch(:deploy_name)}"

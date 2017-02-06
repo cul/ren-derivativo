@@ -23,6 +23,17 @@ module Derivativo
 end
 
 namespace :derivativo do
+  
+  namespace :path do
+    task :for_pid => :environment do
+      puts 'Please supply a pid (e.g. pid=abc:123)' and next unless ENV['pid'].present?
+      pid = ENV['pid']
+      
+      puts "\nCache directory for #{pid}:\n" + Derivativo::CachePathBuilder.path_for_id(pid) + "\n"
+    end
+  end
+  
+  
   namespace :queue do
 
     desc "Queue base derivatives for the given pids (base, featured base, iiif slices)"

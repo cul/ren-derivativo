@@ -11,7 +11,24 @@ class IiifController < ApplicationController
     # CORS support: Any site should be able to do a cross-domain info request
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Content-Type'] = 'application/ld+json'
-    render json: Iiif.new(params).info(iiif_id_url(id: params[:id], version: params[:version]), params[:version])
+    iiif = Iiif.new(params)
+    iiif_info = iiif.info(iiif_id_url(id: params[:id], version: params[:version]), params[:version])
+    
+    base_derivatives_complete = iiif.base_derivatives_complete?
+    unless base_derivatives_complete
+      if DERIVATIVO[:queue_long_jobs]
+        # Queue base derivatives, set 'sizes' to blank, and tell client not to cache this response
+        iiif.queue_base_derivatives_if_not_exist
+        iiif_info['sizes'] = []
+        expires_now
+      else
+        iiif.create_base_derivatives_if_not_exist
+        base_derivatives_complete = true
+      end
+    end
+    
+    expires_in(1.day, public: true) if base_derivatives_complete # TODO: Decide how long we want to cache things on the client side
+    render json: iiif_info
   end
   
   def raster
@@ -95,6 +112,7 @@ class IiifController < ApplicationController
     # so we'll check again to see if the raster exists.
     # If so, immediately serve from cache.
     if raster_file_exists
+      expires_in 1.day, public: true  # TODO: Decide how long we want to cache things on the client side
       send_file(iiif.raster_cache_path, :disposition => disposition, :filename => "image.#{params[:format]}", :content_type => Iiif::FORMATS[params[:format].to_s])
       return
     end

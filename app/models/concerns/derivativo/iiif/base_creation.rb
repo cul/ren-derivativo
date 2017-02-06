@@ -9,10 +9,12 @@ module Derivativo::Iiif::BaseCreation
 	end
   
   def queue_base_derivatives_if_not_exist
+		return if base_derivatives_complete?
 		Resque.enqueue_to(Derivativo::Queue::LOW, CreateBaseDerivativesJob, id, Time.now.to_s)
 	end
   
   def create_base_derivatives_if_not_exist
+		return if base_derivatives_complete?
 		# Avoid duplicate base creation requests while base creation is in progress
     return if db_cache_record.derivative_generation_in_progress
     

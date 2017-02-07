@@ -17,7 +17,7 @@ class IiifController < ApplicationController
     base_derivatives_complete = iiif.base_derivatives_complete?
     unless base_derivatives_complete
       if DERIVATIVO[:queue_long_jobs]
-        # Queue base derivatives, set 'sizes' to blank, and tell client not to cache this response
+        # Queue base derivatives, set info response 'sizes' to blank, and tell client not to cache this response
         iiif.queue_base_derivatives_if_not_exist
         iiif_info['sizes'] = []
         expires_now

@@ -91,23 +91,25 @@ module Derivativo::Iiif::BaseCreation
 				end
 			end
 			
-			# After base creation, also pre-cache IIIF slices for zooming images
-			# If we don't do this, it will take way too long (sometimes 15 seconds)
-			# for the IIIF zooming image viewer to load (while it creates these derivatives)
-			unless zooming_image_tiles_exist?
-				# Create IIIF zooming images slices
-				iiif_dir = iiif_cache_dir(true)
-				Imogen.with_image(base_cache_path) do |img|
-					Rails.logger.debug 'Creating zooming image tiles...'
-					start_time = Time.now
-					Imogen::Iiif::Tiles.for(img, iiif_dir, :jpeg, Iiif::TILE_SIZE) do |bitmap, tile_dest_path, format, iiif_opts|
-						FileUtils.mkdir_p(File.dirname(tile_dest_path))
-            Imogen::Iiif.convert(bitmap,tile_dest_path,format,iiif_opts)
-					end
-					touch_zooming_image_tiles_complete_file
-					Rails.logger.debug 'Created zooming image tiles in ' + (Time.now-start_time).to_s + ' seconds'
-				end
-			end
+			# For now, NOT caching IIIF slices because we don't have the disk space in our cache
+			
+###			# After base creation, also pre-cache IIIF slices for zooming images
+###			# If we don't do this, it will take way too long (sometimes 15 seconds)
+###			# for the IIIF zooming image viewer to load (while it creates these derivatives)
+###			unless zooming_image_tiles_exist?
+###				# Create IIIF zooming images slices
+###				iiif_dir = iiif_cache_dir(true)
+###				Imogen.with_image(base_cache_path) do |img|
+###					Rails.logger.debug 'Creating zooming image tiles...'
+###					start_time = Time.now
+###					Imogen::Iiif::Tiles.for(img, iiif_dir, :jpeg, Iiif::TILE_SIZE) do |bitmap, tile_dest_path, format, iiif_opts|
+###						FileUtils.mkdir_p(File.dirname(tile_dest_path))
+###            Imogen::Iiif.convert(bitmap,tile_dest_path,format,iiif_opts)
+###					end
+###					touch_zooming_image_tiles_complete_file
+###					Rails.logger.debug 'Created zooming image tiles in ' + (Time.now-start_time).to_s + ' seconds'
+###				end
+###			end
 			
 			# Kick off create and store jobs
 			if DERIVATIVO[:queue_long_jobs]

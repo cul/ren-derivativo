@@ -46,7 +46,7 @@ namespace :derivativo do
       end
 
       Derivativo::Pids.each(ENV['pids'], ENV['pidlist']) do |pid, counter, total|
-        Resque.enqueue_to(Derivativo::Cache::Queue::LOW, CreateBaseDerivativesJob, pid, Time.now.to_s)
+        Resque.enqueue_to(Derivativo::Queue::LOW, CreateBaseDerivativesJob, id, Time.now.to_s)
         puts "Queued #{counter} of #{total}: #{pid}"
       end
       

@@ -26,9 +26,12 @@ namespace :derivativo do
   
   namespace :path do
     task :for_pid => :environment do
-      puts 'Please supply a pid (e.g. pid=abc:123)' and next unless ENV['pid'].present?
-      pid = ENV['pid']
+      if ENV['pid'].blank?
+        puts 'Please supply a pid (e.g. pid=abc:123)'
+        next
+      end
       
+      pid = ENV['pid']
       puts "\nCache directory for #{pid}:\n" + Derivativo::CachePathBuilder.path_for_id(pid) + "\n"
     end
   end

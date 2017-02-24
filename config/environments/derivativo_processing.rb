@@ -43,7 +43,7 @@ Derivativo::Application.configure do
   # config.force_ssl = true
 
   # Set to :debug to see everything in the log.
-  config.log_level = :debug
+  config.log_level = :error
 
   # Prepend all log lines with the following tags.
   # config.log_tags = [ :subdomain, :uuid ]
@@ -70,7 +70,7 @@ Derivativo::Application.configure do
     location: '/usr/sbin/sendmail',
     arguments: '-i -t'
   }
-  config.action_mailer.default_url_options = { host: 'all-nginx-dev1.cul.columbia.edu' }
+  config.action_mailer.default_url_options = { host: 'dvorak.cul.columbia.edu' }
 
   # Enable locale fallbacks for I18n (makes lookups for any locale fall back to
   # the I18n.default_locale when a translation can not be found).

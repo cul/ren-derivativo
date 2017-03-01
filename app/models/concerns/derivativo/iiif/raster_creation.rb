@@ -9,10 +9,9 @@ module Derivativo::Iiif::RasterCreation
   # This method will raise an error if base derivative
   # generation hasn't been run yet, or is in progress.
   def create_raster
-		raise 'Could not create raster because base derivatives are currently being created.' if db_cache_record.derivative_generation_in_progress
+		raise "Could not create requested raster because base derivatives haven't been created yet." unless base_derivatives_complete?
 		
 		is_featured_region = self.region == 'featured'
-    raise 'Could not create raster because base derivatives have not been generated yet.' unless (is_featured_region ? featured_base_exists? : base_exists?)
     
     opts = raster_opts
     # Imogen expects format to be a symbol

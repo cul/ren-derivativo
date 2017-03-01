@@ -7,6 +7,7 @@ class Iiif
   include Derivativo::Iiif::BaseCreation
   include Derivativo::Iiif::CreateAndStore
   include Derivativo::Iiif::RasterCreation
+  include Derivativo::Iiif::IiifSlicePreCache
   
   TILE_SIZE = 512
   FORMATS = {'jpg' => 'image/jpeg', 'png' => 'image/png'}

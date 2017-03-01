@@ -3,7 +3,8 @@ module Derivativo::Iiif::CreateAndStore
   
   JP2_DATASTREAM_NAME = 'zoom'
   THUMBNAIL_DATASTREAM_NAME = 'thumbnail'
-  CREATE_AND_STORE_TYPES = [JP2_DATASTREAM_NAME, THUMBNAIL_DATASTREAM_NAME]
+  #CREATE_AND_STORE_TYPES = [JP2_DATASTREAM_NAME, THUMBNAIL_DATASTREAM_NAME] # Not storing JP2 images anymore
+  CREATE_AND_STORE_TYPES = [THUMBNAIL_DATASTREAM_NAME]
   
   def queue_create_and_store
 		Resque.enqueue_to(Derivativo::Queue::CREATE_AND_STORE, CreateAndStoreJob, id, Time.now.to_s)

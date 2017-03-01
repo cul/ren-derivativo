@@ -99,10 +99,10 @@ module Derivativo::Iiif::BaseCreation
     # Kick off create and store jobs
 		if DERIVATIVO[:queue_long_jobs]
 			queue_create_and_store
-			queue_iiif_slice_pre_cache # Not pre-caching IIIF slices due to disk space limitations
+			#queue_iiif_slice_pre_cache # Not pre-caching IIIF slices due to disk space limitations
 		else
 			create_and_store
-			create_iiif_slice_pre_cache # Not pre-caching IIIF slices due to disk space limitations
+			#create_iiif_slice_pre_cache # Not pre-caching IIIF slices due to disk space limitations
 		end
   end
 end

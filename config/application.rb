@@ -29,8 +29,10 @@ module Derivativo
     
     config.after_initialize do
       # Ensure that cache path exists
-      raise 'Please specifiy a cache directory in derivativo.yml' if DERIVATIVO[:cache_directory].blank?
-      FileUtils.mkdir_p(DERIVATIVO[:cache_directory])
+      raise 'Please specifiy a cache_base_directory in derivativo.yml' if DERIVATIVO[:cache_base_directory].blank?
+      raise 'Please specifiy a cache_iiif_directory in derivativo.yml' if DERIVATIVO[:cache_iiif_directory].blank?
+      FileUtils.mkdir_p(DERIVATIVO[:cache_base_directory])
+      FileUtils.mkdir_p(DERIVATIVO[:cache_iiif_directory])
     end
   end
 end

@@ -98,7 +98,7 @@ module Derivativo::Iiif::BaseCreation
 ###			# for the IIIF zooming image viewer to load (while it creates these derivatives)
 ###			unless zooming_image_tiles_exist?
 ###				# Create IIIF zooming images slices
-###				iiif_dir = iiif_cache_dir(true)
+###				iiif_dir = iiif_cache_dir_path(true)
 ###				Imogen.with_image(base_cache_path) do |img|
 ###					Rails.logger.debug 'Creating zooming image tiles...'
 ###					start_time = Time.now

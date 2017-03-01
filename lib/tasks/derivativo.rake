@@ -32,7 +32,8 @@ namespace :derivativo do
       end
       
       pid = ENV['pid']
-      puts "\nCache directory for #{pid}:\n" + Derivativo::CachePathBuilder.path_for_id(pid) + "\n"
+      puts "\nBase cache directory for #{pid}:\n" + Derivativo::CachePathBuilder.base_path_for_id(pid) + "\n"
+      puts "\nIIIF directory for #{pid}:\n" + Derivativo::CachePathBuilder.iiif_path_for_id(pid) + "\n"
     end
   end
   

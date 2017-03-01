@@ -18,7 +18,8 @@ class DerivativoResource
   
   def clear_cache
     # Completely destroy cache directory for this object
-    FileUtils.rm_rf(Derivativo::CachePathBuilder.path_for_id(self.id))
+    FileUtils.rm_rf(Derivativo::CachePathBuilder.base_path_for_id(self.id))
+    FileUtils.rm_rf(Derivativo::CachePathBuilder.iiif_path_for_id(self.id))
     
     # Clear IIIF cached properties if this is a rasterable generic resource
     # If it's not a rasterable generic resource, this line won't do anything bad,

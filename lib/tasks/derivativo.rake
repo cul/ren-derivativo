@@ -40,7 +40,7 @@ namespace :derivativo do
   
   namespace :queue do
 
-    desc "Queue base derivatives for the given pids (base, featured base, iiif slices)"
+    desc "Queue base derivatives for the given pids"
     task :base_derivatives => :environment do
       start_time = Time.now
       
@@ -50,7 +50,7 @@ namespace :derivativo do
       end
 
       Derivativo::Pids.each(ENV['pids'], ENV['pidlist']) do |pid, counter, total|
-        Resque.enqueue_to(Derivativo::Queue::LOW, CreateBaseDerivativesJob, id, Time.now.to_s)
+        Resque.enqueue_to(Derivativo::Queue::LOW, CreateBaseDerivativesJob, pid, Time.now.to_s)
         puts "Queued #{counter} of #{total}: #{pid}"
       end
       

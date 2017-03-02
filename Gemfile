@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.7.1'
+gem 'rails', '4.2.8'
 
 # Use sqlite3 or mysql2 as the databases for Active Record
 gem 'sqlite3'
@@ -56,7 +56,7 @@ gem 'free-image', :git => 'https://github.com/barmintor/free-image-ruby.git', :b
 gem 'retriable', '~> 2.1'
 
 # Use resque for background jobs
-gem 'resque', '~> 1.0'
+gem 'resque', '~> 1.27'
 
 # OpenSeadragon js viewer. Helpers + assets
 gem 'openseadragon'

@@ -3,5 +3,6 @@ module Derivativo::Exceptions
 
   class UnsupportedRegionError < DerivativoError; end
   class ResourceNotFound < DerivativoError; end
+  class InvalidCacheKey < DerivativoError; end
   
 end

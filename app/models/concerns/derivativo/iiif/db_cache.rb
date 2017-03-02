@@ -3,19 +3,19 @@ module Derivativo::Iiif::DbCache
   
   def db_cache_record
     @db_cache_recod ||= begin
-      DbCacheRecord.find_by(pid: self.id) || DbCacheRecord.create(pid: self.id, data: {})
+      DbCacheRecord.find_by(pid: @id) || DbCacheRecord.create(pid: @id, data: {})
     end
   end
   
   def db_cache_clear
-    db_cache_record.data = {}
-    db_cache_record.save
+    db_cache_record.destroy
+    @db_cache_record = nil
   end
   
-  def db_cache_set(key, value, save_db_cache_record_after_set = true)
+  def db_cache_set(key, value)
     raise_error_if_invalid_cache_key(key)
-    db_cache_record.data['key'] = value
-    db_cache_record.save if save_db_cache_record_after_set
+    db_cache_record.data[key] = value
+    db_cache_record.save
   end
   
   def db_cache_get(key)
@@ -29,7 +29,7 @@ module Derivativo::Iiif::DbCache
   end
   
   def raise_error_if_invalid_cache_key(key)
-    raise "Invalid key: #{key}" unless Derivativo::Iiif::CacheKeys::PROPERTY_CACHE_KEYS.include?(key)
+    raise Derivativo::Exceptions::InvalidCacheKey, "Invalid key: #{key}" unless Derivativo::Iiif::CacheKeys::PROPERTY_CACHE_KEYS.include?(key)
   end
   
 end

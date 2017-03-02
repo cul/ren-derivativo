@@ -37,7 +37,7 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
     original_image_width = rels_int.relationships(content_ds, :image_width).first.object.value.to_i if rels_int.relationships(content_ds, :image_width).present?
     original_image_height = rels_int.relationships(content_ds, :image_length).first.object.value.to_i if rels_int.relationships(content_ds, :image_length).present?
     if original_image_width.blank? || original_image_height.blank?
-      representative_generic_resource.with_ds_resource('content', (! DERIVATIVO['no_mount']) ) do |image_path|	
+      representative_generic_resource.with_ds_resource('content', (! DERIVATIVO['no_mount']) ) do |image_path|
         Imogen.with_image(image_path) do |img|
           original_image_width = img.width
           original_image_height = img.height
@@ -83,6 +83,34 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
   
   def fedora_get_representative_generic_resource_id
     fedora_get_representative_generic_resource.present? ? fedora_get_representative_generic_resource.pid : nil
+  end
+  
+  def fedora_get_featured_region
+    representative_generic_resource = fedora_get_representative_generic_resource
+    return nil if representative_generic_resource.nil?
+    
+    # Get featured region from Fedora object, or auto-detect a featured region (and save that featured region in Fedora for future retrieval)
+    featured_region = representative_generic_resource.relationships(:region_featured).first.to_s if representative_generic_resource.relationships(:region_featured).present?
+    
+    if featured_region.blank?
+      representative_generic_resource.with_ds_resource('content', (! DERIVATIVO['no_mount']) ) do |image_path|
+        Imogen.with_image(image_path) do |img|
+          # No featured region has been set, so we'll use Imogen's AutoCrop feature detection to set a "best guess" featured region
+					frame = Imogen::AutoCrop::Edges.new(img)
+					x1, y1, x2, y2 = frame.get([img.width, img.height].min)
+					x = x1
+					y = y1
+					width = x2-x1
+					height = y2-y1
+					featured_region = [x, y, width, height].join(',')
+					representative_generic_resource.add_relationship(:region_featured, featured_region, true)
+        end
+      end
+      Retriable.retriable on: [RestClient::RequestTimeout], tries: 3, base_interval: 5 do
+        representative_generic_resource.save(update_index: false)
+      end
+    end
+    featured_region
   end
   
 end

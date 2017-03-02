@@ -3,7 +3,6 @@ module Derivativo::Iiif::BaseCreation
   
   def base_derivatives_complete?
 		return false unless base_exists?
-		return false unless featured_base_exists?
 		return false if db_cache_record.derivative_generation_in_progress
 		true
 	end
@@ -29,9 +28,7 @@ module Derivativo::Iiif::BaseCreation
 					return
 				end
 				placeholder_base_dst_file = base_cache_path(true)
-				placeholder_featured_dst_file = featured_base_cache_path(true)
 				FileUtils.cp(placeholder_src_file, placeholder_base_dst_file)
-				FileUtils.cp(placeholder_src_file, placeholder_featured_dst_file)
 				return
 			end
 	
@@ -77,19 +74,9 @@ module Derivativo::Iiif::BaseCreation
 				end
 			end
 			
-			unless File.exists?(featured_base_cache_path = featured_base_cache_path(true))
-				# Create featured base image from base image
-				Imogen.with_image(base_cache_path) do |img|
-					Rails.logger.debug 'Creating featured base image...'
-					start_time = Time.now
-					Imogen::Iiif.convert(img, featured_base_cache_path, :png, {
-						region: 'featured',
-						size: 'full',
-						rotation: generic_resource.required_rotation_for_upright_display.to_s
-					})
-					Rails.logger.debug 'Created featured base image in ' + (Time.now-start_time).to_s + ' seconds'
-				end
-			end
+			# Pre-cache (or generate, for the first time) the featured region
+			get_cachable_property(Derivativo::Iiif::CacheKeys::FEATURED_REGION_KEY)
+			
 		ensure
 			# Regardless of success or failure, derivative generation has ended,
 			# so we will mark it as no longer in progress

@@ -12,8 +12,7 @@ module Derivativo::Iiif::CachableProperties
 		# Remove rails cache entry
 		
     # Clear database cache for this record
-    db_cache_record.data = {}
-    db_cache_record.save
+    db_cache_clear
       
     Derivativo::Iiif::CacheKeys::PROPERTY_CACHE_KEYS.each do |cache_key|
 			# Remove instance variable for this key
@@ -61,6 +60,7 @@ module Derivativo::Iiif::CachableProperties
   end
   
   def has_placeholder_image?
+		return true if id.start_with?('placeholder:') && Derivativo::Iiif::CacheKeys::DC_TYPES_TO_PLACEHOLDER_TYPES[id.gsub('placeholder:', '')]
 		get_cachable_property(Derivativo::Iiif::CacheKeys::PLACEHOLDER_IMAGE_TYPE_KEY).present?
 	end
   
@@ -88,6 +88,8 @@ module Derivativo::Iiif::CachableProperties
 	end
   
   def placeholder_image_type
+		return id.gsub('placeholder:', '') if id.start_with?('placeholder:') && Derivativo::Iiif::CacheKeys::DC_TYPES_TO_PLACEHOLDER_TYPES.has_value?(id.gsub('placeholder:', ''))
+		
 		dc_type = fedora_get_representative_generic_resource_dc_type
 		
 		# If no dc_type is returned, then that means that
@@ -103,6 +105,10 @@ module Derivativo::Iiif::CachableProperties
   def representative_resource_id
 		fedora_get_representative_generic_resource_id
   end
+  
+  def featured_region
+		fedora_get_featured_region
+	end
   
   def instance_variable_symbol_for_cache_key(cache_key)
 		('@' + cache_key.to_s).to_sym

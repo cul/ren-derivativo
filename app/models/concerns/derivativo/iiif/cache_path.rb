@@ -2,7 +2,6 @@ module Derivativo::Iiif::CachePath
   extend ActiveSupport::Concern
   
   BASE_FILE_NAME = 'base.png'
-  FEATURED_BASE_FILE_NAME = 'featured_base.png'
   ZOOMING_TILES_COMPLETE_FILENAME = 'zooming_tiles_complete'
   
   def base_cache_path(make_dirs = false)
@@ -10,12 +9,6 @@ module Derivativo::Iiif::CachePath
     FileUtils.mkdir_p(File.dirname(path)) if make_dirs
     path
   end
-
-	def featured_base_cache_path(make_dirs = false)
-		path = File.join(Derivativo::CachePathBuilder.base_path_for_id(self.id), FEATURED_BASE_FILE_NAME)
-		FileUtils.mkdir_p(File.dirname(path)) if make_dirs
-    path
-	end
 	
 	def iiif_cache_dir_path(make_dirs = false)
 		path = Derivativo::CachePathBuilder.iiif_path_for_id(self.id)
@@ -41,10 +34,6 @@ module Derivativo::Iiif::CachePath
   
   def base_exists?
     File.exists?(base_cache_path)
-  end
-  
-  def featured_base_exists?
-    File.exists?(featured_base_cache_path)
   end
   
   # Checks to see if IIIF tiles exist for a zooming image viewer.

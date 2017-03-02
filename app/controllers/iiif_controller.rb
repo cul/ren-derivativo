@@ -18,7 +18,7 @@ class IiifController < ApplicationController
     unless base_derivatives_complete
       if DERIVATIVO[:queue_long_jobs]
         # Queue base derivatives, set info response 'sizes' to blank, and tell client not to cache this response
-        iiif.queue_base_derivatives_if_not_exist
+        iiif.queue_base_derivatives_if_not_exist(Derivativo::Queue::HIGH)
         iiif_info['sizes'] = []
         expires_now
       else
@@ -93,7 +93,7 @@ class IiifController < ApplicationController
         # Always create placeholder images on-demand rather than queueing
         iiif.create_base_derivatives_if_not_exist
       elsif DERIVATIVO[:queue_long_jobs]
-        iiif.queue_base_derivatives_if_not_exist
+        iiif.queue_base_derivatives_if_not_exist(Derivativo::Queue::HIGH)
       else
         iiif.create_base_derivatives_if_not_exist
       end

@@ -7,8 +7,8 @@ module Derivativo::Iiif::BaseCreation
 		true
 	end
   
-  def queue_base_derivatives_if_not_exist
-		Resque.enqueue_to(Derivativo::Queue::LOW, CreateBaseDerivativesJob, id, Time.now.to_s)
+  def queue_base_derivatives_if_not_exist(queue_name=Derivativo::Queue::LOW)
+		Resque.enqueue_to(queue_name, CreateBaseDerivativesJob, id, Time.now.to_s)
 	end
   
   def create_base_derivatives_if_not_exist

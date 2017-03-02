@@ -57,6 +57,57 @@ namespace :derivativo do
       puts "Done.  Took: #{(Time.now-start_time).to_s} seconds."
     end
     
+    task :specific_raster => :environment do
+      start_time = Time.now
+      
+      if ENV['pids'].blank? && ENV['pidlist'].blank?
+        puts 'Please specify one or more pids (e.g. pids=cul:123,cul:456 or pidlist=/path/to/list/file)'
+        next
+      end
+      
+      validation_errors = false
+      
+      if ENV['region'].blank?
+        puts 'Missing required arg: region'
+        validation_errors = true
+      end
+      
+      if ENV['size'].blank?
+        puts 'Missing required arg: size'
+        validation_errors = true
+      end
+      
+      if ENV['rotation'].blank?
+        puts 'Missing required arg: rotation'
+        validation_errors = true
+      end
+      
+      if ENV['format'].blank?
+        puts 'Missing required arg: format (e.g. png, jpg)'
+        validation_errors = true
+      end
+      
+      unless ['png', 'jpg'].include?(ENV['format'])
+        puts 'Format must be one of: png, jpg'
+        validation_errors = true
+      end
+      
+      next if validation_errors
+      
+      iiif_conditions = {}
+      iiif_conditions['region'] = ENV['region'] # e.g. full
+      iiif_conditions['size'] = ENV['size'] # e.g. full
+      iiif_conditions['format'] = ENV['format'] # png, jpg
+      iiif_conditions['rotation'] = ENV['rotation'] # e.g. 0
+
+      Derivativo::Pids.each(ENV['pids'], ENV['pidlist']) do |pid, counter, total|
+        Resque.enqueue_to(Derivativo::Queue::LOW, CreateRasterJob, iiif_conditions.merge({id: pid}), Time.now.to_s)
+        puts "Queued #{counter} of #{total}: #{pid}"
+      end
+      
+      puts "Done.  Took: #{(Time.now-start_time).to_s} seconds."
+    end
+    
   end
   
   namespace :clear do

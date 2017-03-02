@@ -73,22 +73,20 @@ module Derivativo::Iiif::BaseCreation
 					end
 				end
 			end
-			
-			# Pre-cache (or generate, for the first time) the featured region
-			get_cachable_property(Derivativo::Iiif::CacheKeys::FEATURED_REGION_KEY)
-			
 		ensure
 			# Regardless of success or failure, derivative generation has ended,
 			# so we will mark it as no longer in progress
 			db_cache_record.update(derivative_generation_in_progress: false)
 		end
     
-    # Kick off create and store jobs
+    # Kick off create and store jobs, and pre-cache (or generate, for the first time) the featured region
 		if DERIVATIVO[:queue_long_jobs]
 			queue_create_and_store
+			Resque.enqueue_to(Derivativo::Queue::LOW, DetectAndStoreFeaturedRegionJob, self.id, Time.now.to_s)
 			#queue_iiif_slice_pre_cache # Not pre-caching IIIF slices due to disk space limitations
 		else
 			create_and_store
+			get_cachable_property(Derivativo::Iiif::CacheKeys::FEATURED_REGION_KEY)
 			#create_iiif_slice_pre_cache # Not pre-caching IIIF slices due to disk space limitations
 		end
   end

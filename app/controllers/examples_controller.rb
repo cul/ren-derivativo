@@ -1,6 +1,6 @@
 class ExamplesController < ApplicationController
 
-  # GET /example/iiif
+  # GET /examples/zooming_viewer
   # Example IIIF zooming viewer (OpenSeadragon)
   def zooming_viewer
   end

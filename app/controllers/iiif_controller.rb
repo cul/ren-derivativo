@@ -15,7 +15,11 @@ class IiifController < ApplicationController
     iiif_info = iiif.info(iiif_id_url(id: params[:id], version: params[:version]), params[:version])
     
     base_derivatives_complete = iiif.base_derivatives_complete?
-    unless base_derivatives_complete
+    if base_derivatives_complete
+      # Note: Not doing this for now.  Allowing browser requests to create derivatives on-demand.
+      # Immediately pre-cache IIIF slices for this image
+      #iiif.create_iiif_slice_pre_cache
+    else
       if DERIVATIVO[:queue_long_jobs]
         # Queue base derivatives, set info response 'sizes' to blank, and tell client not to cache this response
         iiif.queue_base_derivatives_if_not_exist(Derivativo::Queue::HIGH)

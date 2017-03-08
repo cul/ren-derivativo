@@ -13,7 +13,7 @@ module Derivativo::Iiif::BaseCreation
   
   def create_base_derivatives_if_not_exist
 		# Avoid duplicate base creation requests while base creation is in progress
-    return if db_cache_record.derivative_generation_in_progress
+    return if db_cache_record.derivative_generation_in_progress || base_derivatives_complete?
     
     # Mark derivative generation as being in progress in the database
     db_cache_record.update(derivative_generation_in_progress: true)

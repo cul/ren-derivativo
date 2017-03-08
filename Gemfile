@@ -42,6 +42,7 @@ gem 'active_fedora_relsint', :git => 'https://github.com/cul/active_fedora_relsi
 
 # Use imogen for generating images
 gem 'imogen', '0.1.7'
+#gem 'imogen', :path => '../imogen'
 
 # Use rmagick for pdf image derivatives
 gem 'rmagick'

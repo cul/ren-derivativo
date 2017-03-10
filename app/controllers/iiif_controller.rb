@@ -112,14 +112,9 @@ class IiifController < ApplicationController
       end
     end
     
-    # Above steps may have generated a raster,
-    # so we'll check again to see if the raster exists.
-    # If so, immediately serve from cache.
-    if raster_file_exists
-      expires_in 1.day, public: true  # TODO: Decide how long we want to cache things on the client side
-      send_file(iiif.raster_cache_path, :disposition => disposition, :filename => "image.#{params[:format]}", :content_type => Iiif::FORMATS[params[:format].to_s])
-      return
-    end
+    # If we're here, a raster exists in the cache.  Serve up that raster.
+    expires_in 1.day, public: true  # TODO: Decide how long we want to cache things on the client side
+    send_file(iiif.raster_cache_path, :disposition => disposition, :filename => "image.#{params[:format]}", :content_type => Iiif::FORMATS[params[:format].to_s])
   end
   
   private

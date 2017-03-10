@@ -33,6 +33,7 @@ module Derivativo::Iiif::RasterCreation
     Imogen.with_image(base_cache_path) do |src_image|
 			Imogen::Iiif.convert(src_image, raster_cache_path(true), opts[:format], opts)
 		end
+    Derivativo::Utils::FileUtils.block_until_file_exists(raster_cache_path) # Account for network disk delays
   end
   
 end

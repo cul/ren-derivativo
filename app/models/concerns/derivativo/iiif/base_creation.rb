@@ -29,6 +29,7 @@ module Derivativo::Iiif::BaseCreation
 				end
 				placeholder_base_dst_file = base_cache_path(true)
 				FileUtils.cp(placeholder_src_file, placeholder_base_dst_file)
+				Derivativo::Utils::FileUtils.block_until_file_exists(placeholder_base_dst_file) # Account for network disk delays
 				return
 			end
 	
@@ -72,6 +73,7 @@ module Derivativo::Iiif::BaseCreation
 						Rails.logger.debug 'Created base image from PDF in ' + (Time.now-start_time).to_s + ' seconds'
 					end
 				end
+				Derivativo::Utils::FileUtils.block_until_file_exists(base_cache_path) # Account for network disk delays
 			end
 		ensure
 			# Regardless of success or failure, derivative generation has ended,

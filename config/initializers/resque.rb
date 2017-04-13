@@ -6,10 +6,8 @@ if DERIVATIVO['queue_long_jobs']
   Resque.redis = RESQUE_CONFIG['url']
   Resque.redis.namespace = 'resque:' + RESQUE_CONFIG['namespace']
   
-  #Resque.logger = MonoLogger.new(File.open("#{Rails.root}/log/resque.log", "w+"))
-  #Resque.logger.formatter = Resque::VerboseFormatter.new
-  
   Resque.logger = Logger.new(Rails.root.join('log', "#{Rails.env}_resque.log"))
+  Resque.logger.level = Rails.logger.level
 end
 
 

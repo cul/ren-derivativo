@@ -13,7 +13,7 @@ describe ResourcesController, :type => :controller do
       expect(response.body).to eq('{"api_version":"1.0.0"}')
     end
   end
-  
+
   describe '#update' do
     subject do
       put :update, params
@@ -62,10 +62,42 @@ describe ResourcesController, :type => :controller do
       end
     end
   end
-  
+
   describe '#destroy' do
     subject do
       delete :destroy, params
+      response.status
+    end
+    context 'no api_key' do
+      let(:api_key) { nil }
+      let(:params) { { id: 'good:id' } }
+      it { is_expected.to eql(401) }
+    end
+    context 'invalid api_key' do
+      let(:api_key) do
+        ActionController::HttpAuthentication::Token.encode_credentials(DERIVATIVO['remote_request_api_key'] + "bad")
+      end
+      let(:params) { { id: 'good:id' } }
+      it { is_expected.to eql(403) }
+    end
+    context 'valid api_key' do
+      let(:api_key) do
+        ActionController::HttpAuthentication::Token.encode_credentials(DERIVATIVO['remote_request_api_key'])
+      end
+      context 'bad doc id' do
+        let(:params) { { id: 'baad:id' } }
+        it { is_expected.to eql(200) }
+      end
+      context 'good doc id' do
+        let(:params) { { id: 'good:id' } }
+        it { is_expected.to eql(200) }
+      end
+    end
+  end
+
+  describe '#destroy_cachable_properties' do
+    subject do
+      delete :destroy_cachable_properties, params
       response.status
     end
     context 'no api_key' do

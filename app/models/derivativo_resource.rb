@@ -1,13 +1,13 @@
 # Abstraction layer around cache generation and clearing.
 # Currently only for IIIF, but could be for text and video later on.
 class DerivativoResource
-  
+
   attr_reader :id
-  
+
   def initialize(id)
     @id = id
   end
-  
+
   def fedora_object
     begin
       @fedora_object ||= ActiveFedora::Base.find(self.id)
@@ -15,19 +15,23 @@ class DerivativoResource
       raise Derivativo::Exceptions::ResourceNotFound unless @fedora_obj.present?
     end
   end
-  
+
   def clear_cache
     # Completely destroy cache directory for this object
     FileUtils.rm_rf(Derivativo::CachePathBuilder.base_path_for_id(self.id))
     FileUtils.rm_rf(Derivativo::CachePathBuilder.iiif_path_for_id(self.id))
-    
+
+    clear_cachable_properties
+  end
+
+  def clear_cachable_properties
     # Clear IIIF cached properties if this is a rasterable generic resource
     # If it's not a rasterable generic resource, this line won't do anything bad,
     # so it's fine to call without checking whether the id is valid. This makes
     # cache clearing operations faster.
     Iiif.new(id: self.id).clear_cachable_properties
   end
-  
+
   def generate_cache
     # If this is a rasterable IIIF generic resource, do IIIF caching
     if Derivativo::FedoraObjectTypeCheck.is_rasterable_generic_resource?(fedora_object)
@@ -45,6 +49,6 @@ class DerivativoResource
         end
       end
     end
-    
+
   end
 end

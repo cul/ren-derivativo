@@ -1,6 +1,9 @@
 class ResourcesController < ApplicationController
-
   include Derivativo::RequestTokenAuthentication
+
+  # Prevent CSRF attacks by raising an exception.
+  # For APIs, you may want to use :null_session instead.
+  protect_from_forgery with: :null_session
 
   # GET /resource
   # API Info
@@ -58,5 +61,4 @@ class ResourcesController < ApplicationController
     end
     render status: status, json: { "success" => true }
   end
-
 end

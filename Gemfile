@@ -59,6 +59,9 @@ gem 'retriable', '~> 2.1'
 # Use resque for background jobs
 gem 'resque', '~> 1.27'
 
+# Use redis-rails for redis-backed rails cache
+gem 'redis-rails'
+
 # OpenSeadragon js viewer. Helpers + assets
 gem 'openseadragon'
 

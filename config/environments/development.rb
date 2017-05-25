@@ -5,9 +5,17 @@ Rails.application.configure do
   # every request. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
-  
+
   # Configure rails cache type
   config.cache_store = :memory_store, { size: 128.megabytes }
+  # config.cache_store = :redis_store, {
+  #   host: 'localhost',
+  #   port: 6379,
+  #   db: 0,
+  #   password: Rails.application.secrets.redis_cache_connection_password || nil,
+  #   namespace: 'derivativo_dev_cache',
+  #   expires_in: 1.month
+  # }
 
   # Do not eager load code on boot.
   config.eager_load = false

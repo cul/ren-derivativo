@@ -54,7 +54,7 @@ Derivativo::Application.configure do
   # Use a different cache store in production.
   #config.cache_store = :memory_store, { size: 256.megabytes }
   config.cache_store = :redis_store, {
-    host: 'localhost',
+    host: 'dvorak.cul.columbia.edu',
     port: 6379,
     db: 0,
     password: Rails.application.secrets.redis_cache_connection_password || nil,

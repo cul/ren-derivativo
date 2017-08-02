@@ -1,14 +1,15 @@
 module Derivativo::Iiif::CacheKeys
   extend ActiveSupport::Concern
-  
+
   DC_TYPES_TO_PLACEHOLDER_TYPES = {
     'File' => 'file',
     'MovingImage' => 'moving_image',
     'Software' => 'software',
     'Sound' => 'sound',
-    'Text' => 'text'
+    'Text' => 'text',
+    'PageDescription' => 'text'
   }
-  
+
   ORIGINAL_IMAGE_DIMENSIONS_KEY = :original_image_dimensions
   SCALE_FACTORS_KEY = :scale_factors
   IS_RESTRICTED_SIZE_IMAGE_KEY = :is_restricted_size_image

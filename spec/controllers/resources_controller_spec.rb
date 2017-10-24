@@ -65,6 +65,8 @@ describe ResourcesController, :type => :controller do
 
   describe '#destroy' do
     subject do
+      # Mock implementation of DerivativoResource#clear_cache so we don't try to make a call to Fedora for this test
+      allow_any_instance_of(DerivativoResource).to receive(:clear_cache).and_return(nil)
       delete :destroy, params
       response.status
     end

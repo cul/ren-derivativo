@@ -13,7 +13,7 @@ class ResourcesController < ApplicationController
     }
   end
 
-  # PUT /resource/:id
+  # PUT /resources/:id
   def update
     id = params[:id]
     unless (status = authenticate_request_token) == :ok
@@ -30,7 +30,7 @@ class ResourcesController < ApplicationController
     render status: status, json: { "success" => true }
   end
 
-  # DELETE /resource/:id
+  # DELETE /resources/:id
   def destroy
     id = params[:id]
     unless (status = authenticate_request_token) == :ok
@@ -46,7 +46,7 @@ class ResourcesController < ApplicationController
     render status: status, json: { "success" => true }
   end
 
-  # DELETE /resource/:id/cachable_properties
+  # DELETE /resources/:id/destroy_cachable_properties
   def destroy_cachable_properties
     id = params[:id]
     unless (status = authenticate_request_token) == :ok

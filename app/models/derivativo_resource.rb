@@ -21,6 +21,18 @@ class DerivativoResource
     FileUtils.rm_rf(Derivativo::CachePathBuilder.base_path_for_id(self.id))
     FileUtils.rm_rf(Derivativo::CachePathBuilder.iiif_path_for_id(self.id))
 
+    # For audio and video resources, we run a delete command in both the public
+    # and restricted directories so that if the restriction property has been
+    # changed since original derivative generation, we properly delete all copies
+    object_project_pid = fedora_object.relationships(:is_constituent_of).first.gsub('info:fedora/', '')
+    if Derivativo::FedoraObjectTypeCheck.is_generic_resource_audio?(fedora_object)
+      FileUtils.rm_rf(Derivativo::CachePathBuilder.media_path_for_id('audio', true, object_project_pid, self.id))
+      FileUtils.rm_rf(Derivativo::CachePathBuilder.media_path_for_id('audio', false, object_project_pid, self.id))
+    elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_video?(fedora_object)
+      FileUtils.rm_rf(Derivativo::CachePathBuilder.media_path_for_id('video', true, object_project_pid, self.id))
+      FileUtils.rm_rf(Derivativo::CachePathBuilder.media_path_for_id('video', false, object_project_pid, self.id))
+    end
+
     clear_cachable_properties
   end
 
@@ -47,6 +59,20 @@ class DerivativoResource
           render status: :not_found, json: { "error" => "Resource not found with id: #{self.id}" }
           return
         end
+      end
+    elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_audio?(fedora_object)
+      audio = Audio.new(fedora_object)
+      if DERIVATIVO[:queue_long_jobs]
+        audio.queue_access_copy_generation
+      else
+        audio.create_access_copy_if_not_exist
+      end
+    elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_video?(fedora_object)
+      video = Video.new(fedora_object)
+      if DERIVATIVO[:queue_long_jobs]
+        video.queue_access_copy_generation
+      else
+        video.create_access_copy_if_not_exist
       end
     end
 

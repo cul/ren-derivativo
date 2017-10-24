@@ -47,6 +47,9 @@ gem 'imogen', '0.1.7'
 # Use rmagick for pdf image derivatives
 gem 'rmagick'
 
+# Use streamio-ffmpeg for audio/video
+gem 'streamio-ffmpeg', '~> 3.0'
+
 # For http requests
 gem 'rest-client'
 
@@ -64,6 +67,9 @@ gem 'redis-rails'
 
 # OpenSeadragon js viewer. Helpers + assets
 gem 'openseadragon'
+
+# URI Escaping
+gem 'addressable', '~> 2.5'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

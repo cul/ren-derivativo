@@ -1,5 +1,9 @@
 class Video < MediaResource
 
+  def queue_access_copy_generation(queue_name = Derivativo::Queue::MEDIA_CONVERSION_LOW)
+    Resque.enqueue_to(queue_name, CreateVideoAccessCopyJob, id, Time.now.to_s)
+  end
+
   def ffmpeg_args(ffmpeg_movie_object)
     ffmpeg_args_template = DERIVATIVO[media_type + '_access_copy_settings']['ffmpeg_args']
     video_quality_constant = DERIVATIVO[media_type + '_access_copy_settings']['video_quality_constant']

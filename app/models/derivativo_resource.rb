@@ -60,7 +60,9 @@ class DerivativoResource
           return
         end
       end
-    elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_audio?(fedora_object)
+    end
+
+    if Derivativo::FedoraObjectTypeCheck.is_generic_resource_audio?(fedora_object)
       audio = Audio.new(fedora_object)
       if DERIVATIVO[:queue_long_jobs]
         audio.queue_access_copy_generation

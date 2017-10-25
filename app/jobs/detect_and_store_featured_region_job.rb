@@ -1,5 +1,3 @@
-#require "open-uri"
-
 class DetectAndStoreFeaturedRegionJob
   @queue = Derivativo::Queue::CREATE_AND_STORE # This is the default queue for this job
 

@@ -19,6 +19,10 @@ class MediaResource
     raise "Error: Non-#{media_type} resource" unless Derivativo::FedoraObjectTypeCheck.send(:"is_generic_resource_#{media_type}?", @fedora_object)
   end
 
+  def queue_access_copy_generation(queue_name = Derivativo::Queue::MEDIA_CONVERSION_LOW)
+    raise 'override this in a subclass'
+  end
+
   def media_type
     self.class.name.downcase
   end

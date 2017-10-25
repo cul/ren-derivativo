@@ -32,7 +32,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 
 # Hydra stack
 gem 'nokogiri', '~> 1.7.0'
-gem 'blacklight', '>= 5.4.0'
+gem 'blacklight', '~> 5.19'
 gem 'hydra-head', '~>7'
 
 # Columbia Hydra models

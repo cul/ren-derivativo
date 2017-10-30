@@ -56,16 +56,15 @@ describe Derivativo::CachePathBuilder do
   context "#media_path_for_id" do
     context "should return the expected cache path directory for the supplied params" do
       let(:asset_id) { 'abc:123' }
-      let(:project_pid) { 'fake:project' }
       let(:expected) {
-        File.join(DERIVATIVO['cache_path'][restricted ? 'restricted' : 'public'][media_type], project_pid.gsub(':', '_'), digest[0..1], digest[2..3], digest[4..5], digest)
+        File.join(DERIVATIVO['cache_path'][restricted ? 'restricted' : 'public'][media_type], digest[0..1], digest[2..3], digest[4..5], digest)
       }
 
       context "public audio" do
         let(:restricted) { false }
         let(:media_type) { 'audio' }
         it do
-          expect(cache_path_builder.media_path_for_id(media_type, restricted, project_pid, asset_id)).to eql expected
+          expect(cache_path_builder.media_path_for_id(media_type, restricted, asset_id)).to eql expected
         end
       end
 
@@ -73,7 +72,7 @@ describe Derivativo::CachePathBuilder do
         let(:restricted) { true }
         let(:media_type) { 'audio' }
         it do
-          expect(cache_path_builder.media_path_for_id(media_type, restricted, project_pid, asset_id)).to eql expected
+          expect(cache_path_builder.media_path_for_id(media_type, restricted, asset_id)).to eql expected
         end
       end
 
@@ -81,7 +80,7 @@ describe Derivativo::CachePathBuilder do
         let(:restricted) { false }
         let(:media_type) { 'video' }
         it do
-          expect(cache_path_builder.media_path_for_id(media_type, restricted, project_pid, asset_id)).to eql expected
+          expect(cache_path_builder.media_path_for_id(media_type, restricted, asset_id)).to eql expected
         end
       end
 
@@ -89,7 +88,7 @@ describe Derivativo::CachePathBuilder do
         let(:restricted) { true }
         let(:media_type) { 'video' }
         it do
-          expect(cache_path_builder.media_path_for_id(media_type, restricted, project_pid, asset_id)).to eql expected
+          expect(cache_path_builder.media_path_for_id(media_type, restricted, asset_id)).to eql expected
         end
       end
 

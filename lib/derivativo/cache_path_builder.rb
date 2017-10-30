@@ -40,14 +40,13 @@ class Derivativo::CachePathBuilder
 		File.join(self.cache_base_directory, local_path_for_id(id))
 	end
 
-	def self.media_path_for_id(media_type, restricted, project_pid, id)
-		factory.media_path_for_id(media_type, restricted, project_pid, id)
+	def self.media_path_for_id(media_type, restricted, id)
+		factory.media_path_for_id(media_type, restricted, id)
 	end
 
-	def media_path_for_id(media_type, restricted, project_pid, id)
+	def media_path_for_id(media_type, restricted, id)
 		File.join(
       DERIVATIVO['cache_path'][restricted ? 'restricted' : 'public'][media_type],
-      project_pid.gsub(':', '_'),
       Derivativo::CachePathBuilder.local_path_for_id(id)
     )
 	end

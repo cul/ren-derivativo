@@ -37,16 +37,11 @@ class MediaResource
     access_ds = fedora_object.datastreams[ACCESS_DATASTREAM_NAME]
     return if access_ds.present? && File.exists?(get_file_path_from_ds_location_value(access_ds.dsLocation))
 
-    # Get project pid
-    project_rel = fedora_object.relationships(:is_constituent_of).first
-    raise "Error: Project missing for: #{@id}" if project_rel.nil?
-    project_pid = project_rel.gsub('info:fedora/', '')
-
     # Get onsite restriction status
     restricted = fedora_object.relationships(:restriction).include?(ONSITE_RESTRICTION_LITERAL_VALUE)
 
     access_copy_filename = DERIVATIVO[media_type + '_access_copy_settings']['filename']
-    derivative_directory = Derivativo::CachePathBuilder.media_path_for_id(media_type, restricted, project_pid, @id)
+    derivative_directory = Derivativo::CachePathBuilder.media_path_for_id(media_type, restricted, @id)
 
     FileUtils.mkdir_p derivative_directory
     access_copy_path = File.join(derivative_directory, access_copy_filename)

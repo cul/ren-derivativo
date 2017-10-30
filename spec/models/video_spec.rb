@@ -29,7 +29,7 @@ RSpec.describe Video, type: :model do
 
   context "#create_access_copy_if_not_exist" do
     it "creates derivative for public resource in public directory and sets access datastream RELS-INT :rdf_type equal to ServiceFile" do
-      expect(subject.create_access_copy_if_not_exist).to eq("/Users/Shared/derivativo_test_home/public/video/fake_project/01/51/32/015132720f46e3160860dd1fcbdb6ad9fb10921b55df686d610c42fee10d9a62/access.mp4")
+      expect(subject.create_access_copy_if_not_exist).to eq("/Users/Shared/derivativo_test_home/public/video/01/51/32/015132720f46e3160860dd1fcbdb6ad9fb10921b55df686d610c42fee10d9a62/access.mp4")
       expect(
         subject.fedora_object.rels_int.relationships(
           subject.fedora_object.datastreams[MediaResource::ACCESS_DATASTREAM_NAME], :rdf_type
@@ -39,7 +39,7 @@ RSpec.describe Video, type: :model do
 
     it "creates derivative for restricted resource in restricted directory and sets access datastream RELS-INT :rdf_type equal to ServiceFile" do
       subject.fedora_object.add_relationship(:restriction, MediaResource::ONSITE_RESTRICTION_LITERAL_VALUE)
-      expect(subject.create_access_copy_if_not_exist).to eq("/Users/Shared/derivativo_test_home/restricted/video/fake_project/01/51/32/015132720f46e3160860dd1fcbdb6ad9fb10921b55df686d610c42fee10d9a62/access.mp4")
+      expect(subject.create_access_copy_if_not_exist).to eq("/Users/Shared/derivativo_test_home/restricted/video/01/51/32/015132720f46e3160860dd1fcbdb6ad9fb10921b55df686d610c42fee10d9a62/access.mp4")
       expect(
         subject.fedora_object.rels_int.relationships(
           subject.fedora_object.datastreams[MediaResource::ACCESS_DATASTREAM_NAME], :rdf_type

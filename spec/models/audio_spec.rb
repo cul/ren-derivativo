@@ -28,13 +28,23 @@ RSpec.describe Audio, type: :model do
   end
 
   context "#create_access_copy_if_not_exist" do
-    it "creates derivative for public resource in public directory" do
+    it "creates derivative for public resource in public directory and sets access datastream RELS-INT :rdf_type equal to ServiceFile" do
       expect(subject.create_access_copy_if_not_exist).to eq("/Users/Shared/derivativo_test_home/public/audio/fake_project/00/cc/94/00cc94415af4fec64d40b22ef14aef3969b5d658fb2641422bb439d86a153df0/access.mp3")
+      expect(
+        subject.fedora_object.rels_int.relationships(
+          subject.fedora_object.datastreams[MediaResource::ACCESS_DATASTREAM_NAME], :rdf_type
+        ).first.object.value
+      ).to eq('http://pcdm.org/use#ServiceFile')
     end
 
-    it "creates derivative for restricted resource in restricted directory" do
+    it "creates derivative for restricted resource in restricted directory and sets access datastream RELS-INT :rdf_type equal to ServiceFile" do
       subject.fedora_object.add_relationship(:restriction, MediaResource::ONSITE_RESTRICTION_LITERAL_VALUE)
       expect(subject.create_access_copy_if_not_exist).to eq("/Users/Shared/derivativo_test_home/restricted/audio/fake_project/00/cc/94/00cc94415af4fec64d40b22ef14aef3969b5d658fb2641422bb439d86a153df0/access.mp3")
+      expect(
+        subject.fedora_object.rels_int.relationships(
+          subject.fedora_object.datastreams[MediaResource::ACCESS_DATASTREAM_NAME], :rdf_type
+        ).first.object.value
+      ).to eq('http://pcdm.org/use#ServiceFile')
     end
   end
 

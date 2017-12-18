@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-RSpec.describe Iiif, type: :model do
+RSpec.describe IiifResource, type: :model do
   
   context "#initialize" do
-    subject { Iiif.new(opts) }
+    subject { described_class.new(opts) }
     
     context "initiaze with valid params" do
       let(:opts) do

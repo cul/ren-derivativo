@@ -11,7 +11,7 @@ class IiifController < ApplicationController
     # CORS support: Any site should be able to do a cross-domain info request
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Content-Type'] = 'application/ld+json'
-    iiif = Iiif.new(params)
+    iiif = IiifResource.new(params)
     iiif_info = iiif.info(iiif_id_url(id: params[:id], version: params[:version]), params[:version])
     
     base_derivatives_complete = iiif.base_derivatives_complete?
@@ -43,12 +43,12 @@ class IiifController < ApplicationController
     disposition = params[:download] == 'true' ? 'attachment' : 'inline'
     
     # Only allow approved formats
-    unless Iiif::FORMATS.include? params[:format]
+    unless IiifResource::FORMATS.include? params[:format]
       render :nothing => true, :status => 400
       return
     end
     
-    iiif = Iiif.new(params)
+    iiif = IiifResource.new(params)
     raster_file_exists = iiif.raster_exists?
     
     unless raster_file_exists
@@ -69,14 +69,14 @@ class IiifController < ApplicationController
         # Case 1: This resource has a placeholder image.
         # Change params[:id] to the placeholder id.
         params[:id] = 'placeholder:' + iiif.get_cachable_property(Derivativo::Iiif::CacheKeys::PLACEHOLDER_IMAGE_TYPE_KEY)
-        iiif = Iiif.new(params) # Update iiif variable so we can reference it again later with the updated id
+        iiif = IiifResource.new(params) # Update iiif variable so we can reference it again later with the updated id
         raster_file_exists = iiif.raster_exists?
       elsif iiif.has_representative_resource_id?
         if iiif.get_cachable_property(Derivativo::Iiif::CacheKeys::REPRESENTATIVE_RESOURCE_ID_KEY) != iiif.id
           # Case 2: This resource has a representative image id that is different than its own id.
           # Change params[:id] to the representative id.
           params[:id] = iiif.get_cachable_property(Derivativo::Iiif::CacheKeys::REPRESENTATIVE_RESOURCE_ID_KEY)
-          iiif = Iiif.new(params) # Update iiif variable so we can reference it again later with the updated id
+          iiif = IiifResource.new(params) # Update iiif variable so we can reference it again later with the updated id
           raster_file_exists = iiif.raster_exists?
         else
           # Case 3: This resource has a representative image that's the same as its own id.
@@ -114,13 +114,13 @@ class IiifController < ApplicationController
     
     # If we're here, a raster exists in the cache.  Serve up that raster.
     expires_in 1.day, public: true  # TODO: Decide how long we want to cache things on the client side
-    send_file(iiif.raster_cache_path, :disposition => disposition, :filename => "image.#{params[:format]}", :content_type => Iiif::FORMATS[params[:format].to_s])
+    send_file(iiif.raster_cache_path, :disposition => disposition, :filename => "image.#{params[:format]}", :content_type => IiifResource::FORMATS[params[:format].to_s])
   end
   
   private
   
   def reduce_size_param_if_restricted_image!(parms)
-    iiif = Iiif.new(parms)
+    iiif = IiifResource.new(parms)
     if parms[:region] != 'featured' && iiif.get_cachable_property(Derivativo::Iiif::CacheKeys::IS_RESTRICTED_SIZE_IMAGE_KEY)
       # Reduce user's size param if this is a restricted size image
       original_width, original_height = iiif.get_cachable_property(Derivativo::Iiif::CacheKeys::ORIGINAL_IMAGE_DIMENSIONS_KEY)

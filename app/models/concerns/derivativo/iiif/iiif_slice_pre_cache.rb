@@ -20,7 +20,7 @@ module Derivativo::Iiif::IiifSlicePreCache
 			Imogen.with_image(base_cache_path) do |img|
 				Rails.logger.debug 'Creating zooming image tiles...'
 				start_time = Time.now
-				Imogen::Iiif::Tiles.for(img, iiif_dir, :jpeg, Iiif::TILE_SIZE) do |bitmap, tile_dest_path, format, iiif_opts|
+				Imogen::Iiif::Tiles.for(img, iiif_dir, :jpeg, IiifResource::TILE_SIZE) do |bitmap, tile_dest_path, format, iiif_opts|
 					FileUtils.mkdir_p(File.dirname(tile_dest_path))
 					Imogen::Iiif.convert(bitmap,tile_dest_path,format,iiif_opts)
 				end

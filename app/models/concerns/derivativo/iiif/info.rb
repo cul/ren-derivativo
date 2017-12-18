@@ -17,14 +17,14 @@ module Derivativo::Iiif::Info
       "sizes" => iiif_allowed_sizes(original_width, original_height, is_restricted_size_image, DERIVATIVO[:restricted_use_image_size], DERIVATIVO[:sizes]),
       "tiles" => [
         {
-          "width" => Iiif::TILE_SIZE,
+          "width" => IiifResource::TILE_SIZE,
           "scaleFactors" => [scale_factors]
         }
       ],
       "profile" => [
         "http://iiif.io/api/image/2/level2.json",
         {
-          "formats" => Iiif::FORMATS.keys,
+          "formats" => IiifResource::FORMATS.keys,
           "qualities" => [ "default", "gray", "bitonal" ],
         }
       ]

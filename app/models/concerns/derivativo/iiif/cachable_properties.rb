@@ -76,7 +76,7 @@ module Derivativo::Iiif::CachableProperties
   
   def scale_factors
 		original_width, original_height = original_image_dimensions
-		Imogen::Iiif::Tiles.scale_factor_for(original_width, original_height, Iiif::TILE_SIZE)
+		Imogen::Iiif::Tiles.scale_factor_for(original_width, original_height, IiifResource::TILE_SIZE)
 	end
   
   def is_restricted_size_image

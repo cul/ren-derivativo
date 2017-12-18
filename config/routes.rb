@@ -9,9 +9,24 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'pages#home'
 
-  get '/iiif/:version/:id', to: 'iiif#iiif_id', as: 'iiif_id', version: /2/
-  get '/iiif/:version/:id/info.:format', to: 'iiif#info', as: 'iiif_info', version: /2/
-  get '/iiif/:version/:id/:region/:size/:rotation/:quality', to: 'iiif#raster', as: 'iiif_raster', version: /2/
+#  get '/iiif/:version/:id', to: 'iiif#iiif_id', as: 'iiif_id', version: /2/
+#  get '/iiif/:version/:id/info.:format', to: 'iiif#info', as: 'iiif_info', version: /2/
+#  get '/iiif/:version/:id/:region/:size/:rotation/:quality', to: 'iiif#raster', as: 'iiif_raster', version: /2/
+
+  namespace :iiif do
+    scope ':version', version: /2/, defaults: { version: 2 } do
+      defaults format: :json do
+        get '/presentation/:id', to: 'presentations#show', as: :presentation
+        get '/presentation/:id/manifest', to: 'presentations#manifest', as: :manifest
+        get '/presentation/:presentation_id/range/:id', to: 'presentations#range', as: :range
+        get '/presentation/:presentation_id/canvas/:id', to: 'presentations#canvas', as: :canvas
+        get '/presentation/:presentation_id/annotation/:id', to: 'presentations#annotation', as: :annotation
+        get '/:id', to: 'images#iiif_id', as: 'id'
+        get '/:id/info.:format', to: 'images#info', as: 'info'
+      end
+      get '/:id/:region/:size/:rotation/:quality', to: 'images#raster', as: 'raster'
+    end
+  end
 
   resources :resources, only: [:index, :update, :destroy] do
     member do

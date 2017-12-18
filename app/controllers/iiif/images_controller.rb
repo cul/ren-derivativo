@@ -1,4 +1,4 @@
-class IiifController < ApplicationController
+class Iiif::ImagesController < ApplicationController
   
   include Derivativo::Iiif::IiifImageSizeRestriction
 

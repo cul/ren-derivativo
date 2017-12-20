@@ -9,10 +9,6 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root 'pages#home'
 
-#  get '/iiif/:version/:id', to: 'iiif#iiif_id', as: 'iiif_id', version: /2/
-#  get '/iiif/:version/:id/info.:format', to: 'iiif#info', as: 'iiif_info', version: /2/
-#  get '/iiif/:version/:id/:region/:size/:rotation/:quality', to: 'iiif#raster', as: 'iiif_raster', version: /2/
-
   namespace :iiif do
     scope ':version', version: /2/, defaults: { version: 2 } do
       defaults format: :json do

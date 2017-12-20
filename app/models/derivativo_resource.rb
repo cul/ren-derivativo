@@ -86,5 +86,13 @@ class DerivativoResource
       end
     end
 
+    unless Derivativo::FedoraObjectTypeCheck.is_generic_resource?(fedora_object)
+      manifest = Manifest.new(fedora_object)
+      if DERIVATIVO[:queue_long_jobs]
+        manifest.queue_manifest_generation
+      else
+        manifest.create_manifest_if_not_exist
+      end
+    end
   end
 end

@@ -77,5 +77,14 @@ class DerivativoResource
       end
     end
 
+    if Derivativo::FedoraObjectTypeCheck.is_text_extractable_generic_resource?(fedora_object)
+      extractable_text_resource = ExtractableTextResource.new(fedora_object)
+      if DERIVATIVO[:queue_long_jobs]
+        extractable_text_resource.queue_fulltext_extraction
+      else
+        extractable_text_resource.extract_fulltext_if_not_exist
+      end
+    end
+
   end
 end

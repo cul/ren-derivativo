@@ -10,6 +10,10 @@ module Derivativo::FedoraObjectTypeCheck
 		return is_generic_resource_image?(fedora_obj) || is_generic_resource_pdf?(fedora_obj)
 	end
 
+	def self.is_text_extractable_generic_resource?(fedora_object)
+		return is_generic_resource_pdf?(fedora_object) || is_generic_resource_office_document?(fedora_object)
+	end
+
 	def self.is_generic_resource_image?(fedora_obj)
 		return false unless is_generic_resource?(fedora_obj)
 		# Verify mimetype
@@ -24,6 +28,14 @@ module Derivativo::FedoraObjectTypeCheck
 		mime_type_downcase = fedora_obj.datastreams['content'].mimeType.downcase
 		return false unless mime_type_downcase == 'application/pdf'
 		true
+	end
+
+	def self.is_generic_resource_office_document?(fedora_obj)
+		return false unless is_generic_resource?(fedora_obj)
+		# Verify mimetype
+		mime_type_downcase = fedora_obj.datastreams['content'].mimeType.downcase
+		return true if mime_type_downcase.match(/text|msword|ms-word|officedocument|powerpoint|excel|iwork/)
+		false
 	end
 
 	def self.is_generic_resource_audio?(fedora_obj)

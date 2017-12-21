@@ -17,7 +17,6 @@ RSpec.describe Audio, type: :model do
 			:dsLabel => "audio.wav",
 			:versionable => false
 		))
-    fedora_audio_generic_resource.add_relationship(:is_constituent_of, 'info:fedora/fake:project')
     Audio.new(fedora_audio_generic_resource)
   }
 

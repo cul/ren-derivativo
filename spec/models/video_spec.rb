@@ -17,7 +17,6 @@ RSpec.describe Video, type: :model do
 			:dsLabel => "video.mov",
 			:versionable => false
 		))
-    fedora_video_generic_resource.add_relationship(:is_constituent_of, 'info:fedora/fake:project')
     Video.new(fedora_video_generic_resource)
   }
 

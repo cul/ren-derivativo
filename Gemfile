@@ -31,7 +31,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # gem 'unicorn'
 
 # Hydra stack
-gem 'nokogiri', '~> 1.7.0'
+gem 'nokogiri', '~> 1.8.1'
 gem 'blacklight', '~> 5.19'
 gem 'hydra-head', '~>7'
 
@@ -60,16 +60,20 @@ gem 'free-image', :git => 'https://github.com/barmintor/free-image-ruby.git', :b
 gem 'retriable', '~> 2.1'
 
 # Use resque for background jobs
-gem 'resque', '~> 1.27'
+gem 'resque', '~> 1.26'
 
 # Use redis-rails for redis-backed rails cache
 gem 'redis-rails'
+gem 'redis-store', '>= 1.4.0'
 
 # OpenSeadragon js viewer. Helpers + assets
 gem 'openseadragon'
 
 # URI Escaping
 gem 'addressable', '~> 2.5'
+
+# Ensure min version of rubyzip because of security vulnerability in earlier version
+gem 'rubyzip', '>= 1.2.1'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

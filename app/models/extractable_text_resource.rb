@@ -24,7 +24,7 @@ class ExtractableTextResource
   def extract_fulltext_if_not_exist
     # Return if Fedora object already has a fulltext datastream
     fulltext_ds = fedora_object.datastreams[FULLTEXT_DATASTREAM_NAME]
-    return if fulltext_ds.present?
+    return true if fulltext_ds.present?
     fulltext_ds = fedora_object.create_datastream(
       ActiveFedora::Datastream,
       FULLTEXT_DATASTREAM_NAME,
@@ -36,10 +36,14 @@ class ExtractableTextResource
     fedora_object.add_datastream(fulltext_ds)
     # Now begin processing
     fedora_object.with_ds_resource('content', (! DERIVATIVO['no_mount']) ) do |file_path|
-      fulltext_ds.content = Derivativo::TikaTextExtractor.extract_text_from_file(file_path)
-      fedora_object.save(update_index: false)
+      text = Derivativo::TikaTextExtractor.extract_text_from_file(file_path)
+      if text.present?
+        fulltext_ds.content = text
+        fedora_object.save(update_index: false)
+        return true
+      end
     end
 
-    fulltext_ds
+    false
   end
 end

@@ -23,27 +23,45 @@ module Derivativo
 end
 
 namespace :derivativo do
-  
+
   namespace :path do
     task :for_pid => :environment do
       if ENV['pid'].blank?
         puts 'Please supply a pid (e.g. pid=abc:123)'
         next
       end
-      
+
       pid = ENV['pid']
       puts "\nBase cache directory for #{pid}:\n" + Derivativo::CachePathBuilder.base_path_for_id(pid) + "\n"
       puts "\nIIIF directory for #{pid}:\n" + Derivativo::CachePathBuilder.iiif_path_for_id(pid) + "\n"
     end
   end
-  
-  
+
+
   namespace :queue do
+
+    desc "Generate cache for the given pids (via DerivativoResource#generate_cache)"
+    task :generate_cache => :environment do
+      start_time = Time.now
+      queue_processing = (ENV['queue'].present? && ENV['queue'].downcase == 'true')
+
+      if ENV['pids'].blank? && ENV['pidlist'].blank?
+        puts 'Please specify one or more pids (e.g. pids=cul:123,cul:456 or pidlist=/path/to/list/file)'
+        next
+      end
+
+      Derivativo::Pids.each(ENV['pids'], ENV['pidlist']) do |pid, counter, total|
+        DerivativoResource.new(pid).generate_cache(queue_processing)
+        puts "#{queue_processing ? 'Queued' : 'Processed'} #{counter} of #{total}: #{pid}"
+      end
+
+      puts "Done.  Took: #{(Time.now-start_time).to_s} seconds."
+    end
 
     desc "Queue base derivatives for the given pids"
     task :base_derivatives => :environment do
       start_time = Time.now
-      
+
       if ENV['pids'].blank? && ENV['pidlist'].blank?
         puts 'Please specify one or more pids (e.g. pids=cul:123,cul:456 or pidlist=/path/to/list/file)'
         next
@@ -53,47 +71,47 @@ namespace :derivativo do
         Resque.enqueue_to(Derivativo::Queue::LOW, CreateBaseDerivativesJob, pid, Time.now.to_s)
         puts "Queued #{counter} of #{total}: #{pid}"
       end
-      
+
       puts "Done.  Took: #{(Time.now-start_time).to_s} seconds."
     end
-    
+
     task :specific_raster => :environment do
       start_time = Time.now
-      
+
       if ENV['pids'].blank? && ENV['pidlist'].blank?
         puts 'Please specify one or more pids (e.g. pids=cul:123,cul:456 or pidlist=/path/to/list/file)'
         next
       end
-      
+
       validation_errors = false
-      
+
       if ENV['region'].blank?
         puts 'Missing required arg: region'
         validation_errors = true
       end
-      
+
       if ENV['size'].blank?
         puts 'Missing required arg: size'
         validation_errors = true
       end
-      
+
       if ENV['rotation'].blank?
         puts 'Missing required arg: rotation'
         validation_errors = true
       end
-      
+
       if ENV['format'].blank?
         puts 'Missing required arg: format (e.g. png, jpg)'
         validation_errors = true
       end
-      
+
       unless ['png', 'jpg'].include?(ENV['format'])
         puts 'Format must be one of: png, jpg'
         validation_errors = true
       end
-      
+
       next if validation_errors
-      
+
       iiif_conditions = {}
       iiif_conditions['region'] = ENV['region'] # e.g. full
       iiif_conditions['size'] = ENV['size'] # e.g. full
@@ -104,28 +122,28 @@ namespace :derivativo do
         Resque.enqueue_to(Derivativo::Queue::LOW, CreateRasterJob, iiif_conditions.merge({id: pid}), Time.now.to_s)
         puts "Queued #{counter} of #{total}: #{pid}"
       end
-      
+
       puts "Done.  Took: #{(Time.now-start_time).to_s} seconds."
     end
-    
+
   end
-  
+
   namespace :clear do
     task :cache => :environment do
-      
+
       if ENV['pids'].blank? && ENV['pidlist'].blank?
         puts 'Please specify one or more pids (e.g. pids=cul:123,cul:456 or pidlist=/path/to/list/file)'
         next
       end
-      
+
       Derivativo::Pids.each(ENV['pids'], ENV['pidlist']) do |pid, counter, total|
         res = DerivativoResource.new(pid)
         res.clear_cache
         puts "Cleared #{counter} of #{total}: #{pid}"
       end
-      
-      
+
+
     end
   end
-  
+
 end

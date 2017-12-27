@@ -43,11 +43,11 @@ class DerivativoResource
     Iiif.new(id: self.id).clear_cachable_properties
   end
 
-  def generate_cache
+  def generate_cache(queue_long_jobs = DERIVATIVO[:queue_long_jobs])
     # If this is a rasterable IIIF generic resource, do IIIF caching
     if Derivativo::FedoraObjectTypeCheck.is_rasterable_generic_resource?(fedora_object)
       iiif = Iiif.new(id: self.id)
-      if DERIVATIVO[:queue_long_jobs]
+      if queue_long_jobs
         Rails.logger.debug "Queueing derivative generation for #{self.id}"
         iiif.queue_base_derivatives_if_not_exist
       else
@@ -63,14 +63,14 @@ class DerivativoResource
 
     if Derivativo::FedoraObjectTypeCheck.is_generic_resource_audio?(fedora_object)
       audio = Audio.new(fedora_object)
-      if DERIVATIVO[:queue_long_jobs]
+      if queue_long_jobs
         audio.queue_access_copy_generation
       else
         audio.create_access_copy_if_not_exist
       end
     elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_video?(fedora_object)
       video = Video.new(fedora_object)
-      if DERIVATIVO[:queue_long_jobs]
+      if queue_long_jobs
         video.queue_access_copy_generation
       else
         video.create_access_copy_if_not_exist
@@ -79,7 +79,7 @@ class DerivativoResource
 
     if Derivativo::FedoraObjectTypeCheck.is_text_extractable_generic_resource?(fedora_object)
       extractable_text_resource = ExtractableTextResource.new(fedora_object)
-      if DERIVATIVO[:queue_long_jobs]
+      if queue_long_jobs
         extractable_text_resource.queue_fulltext_extraction
       else
         extractable_text_resource.extract_fulltext_if_not_exist

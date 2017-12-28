@@ -1,5 +1,11 @@
 require 'json'
 class Iiif::PresentationsController < ApplicationController
+  include Derivativo::RequestTokenAuthentication
+
+  # Prevent CSRF attacks by raising an exception.
+  # For APIs, you may want to use :null_session instead.
+  protect_from_forgery with: :null_session
+
   def show
     redirect_to iiif_manifest_url(id: params[:id], version: 2), status: 302
   end
@@ -14,6 +20,16 @@ class Iiif::PresentationsController < ApplicationController
         send_file(path, :filename => "manifest.#{params[:format]}", :content_type => IiifResource::FORMATS[params[:format].to_s])
       end
     end
+  end
+
+  def destroy
+    unless (status = authenticate_request_token) == :ok
+      render status: status, json: {"error" => "Invalid credentials"}
+      return
+    end
+    manifest = Manifest.new(params[:id], self)
+    File.delete(manifest.path)
+    head :no_content
   end
 
   def range

@@ -13,6 +13,7 @@ Rails.application.routes.draw do
     scope ':version', version: /2/, defaults: { version: 2 } do
       defaults format: :json do
         get '/presentation/:id', to: 'presentations#show', as: :presentation
+        delete '/presentation/:id', to: 'presentations#destroy'
         get '/presentation/:id/manifest', to: 'presentations#manifest', as: :manifest
         get '/presentation/:presentation_id/range/:id', to: 'presentations#range', as: :range
         get '/presentation/:presentation_id/canvas/:id', to: 'presentations#canvas', as: :canvas

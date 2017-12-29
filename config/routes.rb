@@ -10,14 +10,15 @@ Rails.application.routes.draw do
   root 'pages#home'
 
   namespace :iiif do
-    scope ':version', version: /2/, defaults: { version: 2 } do
+    scope ':version', version: /2/, registrant: /10\.[^\/]+/, doi: /[^\/]+/,
+      defaults: { version: 2 } do
       defaults format: :json do
-        get '/presentation/:id', to: 'presentations#show', as: :presentation
-        delete '/presentation/:id', to: 'presentations#destroy'
-        get '/presentation/:id/manifest', to: 'presentations#manifest', as: :manifest
-        get '/presentation/:presentation_id/range/:id', to: 'presentations#range', as: :range
-        get '/presentation/:presentation_id/canvas/:id', to: 'presentations#canvas', as: :canvas
-        get '/presentation/:presentation_id/annotation/:id', to: 'presentations#annotation', as: :annotation
+        get '/presentation/:registrant/:doi', to: 'presentations#show', as: :presentation
+        delete '/presentation/:registrant/:doi', to: 'presentations#destroy'
+        get '/presentation/:registrant/:doi/manifest', to: 'presentations#manifest', as: :manifest
+        get '/presentation/:registrant/:doi/range/:id', to: 'presentations#range', as: :range
+        get '/presentation/:registrant/:doi/canvas/:id', to: 'presentations#canvas', as: :canvas
+        get '/presentation/:registrant/:doi/annotation/:id', to: 'presentations#annotation', as: :annotation
         get '/:id', to: 'images#iiif_id', as: 'id'
         get '/:id/info.:format', to: 'images#info', as: 'info'
       end

@@ -7,12 +7,13 @@ class Iiif::PresentationsController < ApplicationController
   protect_from_forgery with: :null_session
 
   def show
-    redirect_to iiif_manifest_url(id: params[:id], version: 2), status: 302
+    redirect_to iiif_manifest_url(params), status: 302
   end
 
   def manifest
     cors_headers
-    manifest = Manifest.new(params[:id], self)
+    doi = "#{params[:registrant]}/#{params[:doi]}"
+    manifest = Manifest.new(doi, self)
     path = manifest.create_manifest_if_not_exist
     respond_to do |fmt|
       fmt.json do
@@ -27,7 +28,8 @@ class Iiif::PresentationsController < ApplicationController
       render status: status, json: {"error" => "Invalid credentials"}
       return
     end
-    manifest = Manifest.new(params[:id], self)
+    doi = "#{params[:registrant]}/#{params[:doi]}"
+    manifest = Manifest.new(doi, self)
     File.delete(manifest.path)
     head :no_content
   end
@@ -41,8 +43,9 @@ class Iiif::PresentationsController < ApplicationController
     data = IIIF_TEMPLATES['canvas'].deep_dup
     respond_to do |fmt|
       fmt.json do
-        manifest = Manifest.new(params[:presentation_id], self)
-        opts = { presentation_id: params[:presentation_id], id: params[:id] }
+        doi = "#{params[:registrant]}/#{params[:doi]}"
+        manifest = Manifest.new(doi, self)
+        opts = { registrant: params[:registrant], doi: params[:doi], id: params[:id] }
         canvas = manifest.canvas_for(opts).to_h
         canvas["@context"] = "http://iiif.io/api/presentation/2/context.json"
         send_data JSON.pretty_generate(canvas)

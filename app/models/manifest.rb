@@ -71,10 +71,10 @@ class Manifest < CacheableResource
             default_sequence['viewingDirection'] = struct_map['DIRECTION'].to_s
           end
           manifest = IIIF_TEMPLATES['manifest'].deep_dup
-          manifest['@id'] = route_helper.iiif_manifest_url(id: @id)
+          manifest['@id'] = route_helper.iiif_manifest_url(routing_opts)
           manifest['label'] = fedora_object.label
           manifest['sequences'][0] = default_sequence
-          thumb_id = IiifResource.new(id: @id).get_cachable_property(Derivativo::Iiif::CacheKeys::REPRESENTATIVE_RESOURCE_ID_KEY)
+          thumb_id = IiifResource.new(id: fedora_object.pid).get_cachable_property(Derivativo::Iiif::CacheKeys::REPRESENTATIVE_RESOURCE_ID_KEY)
           manifest['thumbnail'] = Canvas.new(thumb_id, route_helper).thumbnail
           if range.branches.length != 0
             #TODO: structure serialization
@@ -95,6 +95,11 @@ class Manifest < CacheableResource
     path
   end
 
+  def routing_opts
+    registrant, doi = @id.split('/')
+    { registrant: registrant, doi: doi } 
+  end
+
   def structMetadata
     ds = @fedora_object.datastreams['structMetadata']
     if ds.new?
@@ -109,7 +114,7 @@ class Manifest < CacheableResource
     divs = node.xpath('mets:div', METS_NS).sort_by { |div| div['ORDER'].to_i }
     divs.each do |div|
       if div['CONTENTIDS'] # canvas, image
-        canvas = canvas_for(presentation_id: @id, id: div['CONTENTIDS'].to_s)
+        canvas = canvas_for(routing_opts.merge(id: div['CONTENTIDS'].to_s))
         range.canvases << canvas
         canvases << canvas
       else # range

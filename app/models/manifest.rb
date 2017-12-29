@@ -74,8 +74,8 @@ class Manifest < CacheableResource
           manifest['@id'] = route_helper.iiif_manifest_url(routing_opts)
           manifest['label'] = fedora_object.label
           manifest['sequences'][0] = default_sequence
-          thumb_id = IiifResource.new(id: fedora_object.pid).get_cachable_property(Derivativo::Iiif::CacheKeys::REPRESENTATIVE_RESOURCE_ID_KEY)
-          manifest['thumbnail'] = Canvas.new(thumb_id, route_helper).thumbnail
+          thumb_id = IiifResource.new(id: fedora_pid).get_cachable_property(Derivativo::Iiif::CacheKeys::REPRESENTATIVE_RESOURCE_ID_KEY)
+          manifest['thumbnail'] = Canvas.new(thumb_id, routing_opts, route_helper).thumbnail
           if range.branches.length != 0
             #TODO: structure serialization
           end
@@ -97,7 +97,7 @@ class Manifest < CacheableResource
 
   def routing_opts
     registrant, doi = @id.split('/')
-    { registrant: registrant, doi: doi } 
+    { manifest_registrant: registrant, manifest_doi: doi } 
   end
 
   def structMetadata
@@ -114,7 +114,7 @@ class Manifest < CacheableResource
     divs = node.xpath('mets:div', METS_NS).sort_by { |div| div['ORDER'].to_i }
     divs.each do |div|
       if div['CONTENTIDS'] # canvas, image
-        canvas = canvas_for(routing_opts.merge(id: div['CONTENTIDS'].to_s))
+        canvas = canvas_for(div['CONTENTIDS'].to_s, routing_opts)
         range.canvases << canvas
         canvases << canvas
       else # range
@@ -124,34 +124,45 @@ class Manifest < CacheableResource
     range
   end
 
-  def canvas_for(opts)
-    canvas_id = route_helper.iiif_canvas_url(opts)
-    canvas = Canvas.new(canvas_id, route_helper)
+  def canvas_for(id, opts)
+    canvas = Canvas.new(id, opts, route_helper)
+    puts canvas.doi.inspect
+    registrant, doi = canvas.doi.split('/')
+    opts = opts.merge(registrant: registrant, doi: doi)
     image = IIIF_TEMPLATES['image'].deep_dup
     image['@id'] = route_helper.iiif_annotation_url(opts)
-    underscore = opts[:id].dup
-    underscore.sub!(':','_')
-    image['resource']['@id'] = route_helper.iiif_presentation_url(id: opts[:presentation_id]) + "/res/#{underscore}.jpg"
-    image['resource']['service']['@id'] = route_helper.iiif_id_url(id: opts[:id])
-    image['on'] = canvas_id
+    underscore = "#{opts[:registrant]}.#{opts[:doi]}"
+    underscore.sub!(/[^A-Za-z0-9]/,'_')
+    manifest_opts = {manifest_registrant: opts[:manifest_registrant], manifest_doi: opts[:manifest_doi]}
+    image['resource']['@id'] = route_helper.iiif_presentation_url(manifest_opts) + "/res/#{underscore}.jpg"
+    image['resource']['service']['@id'] = route_helper.iiif_id_url(id: canvas.fedora_pid)
+    image['on'] = canvas.uri
     canvas.image = image
     canvas
   end
 
-  class Canvas
+  class Canvas < CacheableResource
     attr_reader :uri, :id, :height, :width, :route_helper
     attr_accessor :image, :label
 
-    def initialize(canvas_uri, route_helper, label=nil)
-      @uri = canvas_uri
-      @id = (canvas_uri =~ /\//) ? canvas_uri.split('/')[-1] : canvas_uri
+    def initialize(id, manifest_routing_opts, route_helper, label=nil)
+      super(id)
+      @manifest_routing_opts = manifest_routing_opts
       @label = label
       @route_helper = route_helper
     end
 
+    def uri
+      @uri ||= begin
+        registrant, doi = self.doi.split('/')
+        routing_opts = @manifest_routing_opts.merge(registrant: registrant, doi: doi)
+        route_helper.iiif_canvas_url(routing_opts)
+      end
+    end
+
     def to_h
       canvas = IIIF_TEMPLATES['canvas'].deep_dup
-      canvas['@id'] = @uri
+      canvas['@id'] = uri
       canvas['label'] = label.to_s
       canvas['height'] = dimensions[:height]
       canvas['width'] = dimensions[:width]
@@ -161,7 +172,7 @@ class Manifest < CacheableResource
     end
     def dimensions
       @dimensions ||= begin
-        _dims = IiifResource.new(id: @id).get_cachable_property(Derivativo::Iiif::CacheKeys::ORIGINAL_IMAGE_DIMENSIONS_KEY)
+        _dims = IiifResource.new(id: fedora_pid).get_cachable_property(Derivativo::Iiif::CacheKeys::ORIGINAL_IMAGE_DIMENSIONS_KEY)
         { width: _dims[0].to_i, height: _dims[1].to_i }.freeze
       end
     end
@@ -176,7 +187,7 @@ class Manifest < CacheableResource
           _props[:height] = 256
         end
         _props[:'@type'] = 'dctypes:Image'
-        _props[:'@id'] = route_helper.iiif_raster_url(THUMBNAIL_OPTS.merge(id: @id))
+        _props[:'@id'] = route_helper.iiif_raster_url(THUMBNAIL_OPTS.merge(id: fedora_pid))
         _props.freeze
       end
     end

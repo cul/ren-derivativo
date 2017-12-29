@@ -18,24 +18,45 @@ class CacheableResource
       @fedora_object = id_or_fedora_obj
     end
   end
-  def fedora_object
-    @fedora_object ||= begin
+  def fedora_pid
+    @fedora_pid ||= begin
       if self.id =~ DOI_PATTERN
         # look up the DOI in the RISearch
         query = "select $pid from <#ri> where $pid <#{DOI_PREDICATE}> <doi:#{self.id}>"
-        puts query
         search_response = 
           JSON(Cul::Hydra::Fedora.repository.find_by_itql(query,
             :type => 'tuples',
             :format => 'json',
             :limit => '',
             :stream => 'on'))
-        pid = search_response['results'][0]['pid']
-        pid = pid.split('/')[-1] if pid
-        ActiveFedora::Base.find(pid) if pid
+        result = search_response['results'][0] || {}
+        pid = result['pid']
+        pid.split('/')[-1] if pid
       else
-        ActiveFedora::Base.find(self.id)
+        self.id
       end
     end
+  end
+  def doi
+    @doi ||= begin
+      if self.id =~ DOI_PATTERN
+        self.id
+      else
+        # look up the DOI in the RISearch
+        query = "select $doi from <#ri> where <info:fedora/#{self.id}> <#{DOI_PREDICATE}> $doi"
+        search_response = 
+          JSON(Cul::Hydra::Fedora.repository.find_by_itql(query,
+            :type => 'tuples',
+            :format => 'json',
+            :limit => '',
+            :stream => 'on'))
+        result = search_response['results'][0] || {}
+        doi = result['doi']
+        doi.sub(/^doi:/,'') if doi
+      end
+    end
+  end
+  def fedora_object
+    @fedora_object ||= ActiveFedora::Base.find(fedora_pid)
   end
 end

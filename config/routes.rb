@@ -36,7 +36,6 @@ Rails.application.routes.draw do
 
   namespace :v0 do
     post 'thumbnails', to: 'thumbnails#create'
-    post 'thumbnails2', to: 'thumbnails#create2'
   end
 
   # Example of regular route:

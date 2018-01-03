@@ -75,7 +75,7 @@ class Manifest < CacheableResource
           manifest['label'] = fedora_object.label
           manifest['sequences'][0] = default_sequence
           thumb_id = IiifResource.new(id: fedora_pid).get_cachable_property(Derivativo::Iiif::CacheKeys::REPRESENTATIVE_RESOURCE_ID_KEY)
-          manifest['thumbnail'] = Canvas.new(thumb_id, routing_opts, route_helper).thumbnail
+          manifest['thumbnail'] = Iiif::Canvas.new(thumb_id, routing_opts, route_helper).thumbnail
           if range.branches.length != 0
             #TODO: structure serialization
           end
@@ -110,7 +110,7 @@ class Manifest < CacheableResource
   end
 
   # accumulate divs as iiif constructs, returning the node/range to which they're appended
-  def accumulate_structure(node, canvases, range = Range.new)
+  def accumulate_structure(node, canvases, range = Iiif::Range.new)
     divs = node.xpath('mets:div', METS_NS).sort_by { |div| div['ORDER'].to_i }
     divs.each do |div|
       if div['CONTENTIDS'] # canvas, image
@@ -125,88 +125,6 @@ class Manifest < CacheableResource
   end
 
   def canvas_for(id, opts)
-    canvas = Canvas.new(id, opts, route_helper)
-    puts canvas.doi.inspect
-    registrant, doi = canvas.doi.split('/')
-    opts = opts.merge(registrant: registrant, doi: doi)
-    image = IIIF_TEMPLATES['image'].deep_dup
-    image['@id'] = route_helper.iiif_annotation_url(opts)
-    underscore = "#{opts[:registrant]}.#{opts[:doi]}"
-    underscore.sub!(/[^A-Za-z0-9]/,'_')
-    manifest_opts = {manifest_registrant: opts[:manifest_registrant], manifest_doi: opts[:manifest_doi]}
-    image['resource']['@id'] = route_helper.iiif_presentation_url(manifest_opts) + "/res/#{underscore}.jpg"
-    image['resource']['service']['@id'] = route_helper.iiif_id_url(id: canvas.fedora_pid)
-    image['on'] = canvas.uri
-    canvas.image = image
-    canvas
-  end
-
-  class Canvas < CacheableResource
-    attr_reader :uri, :id, :height, :width, :route_helper
-    attr_accessor :image, :label
-
-    def initialize(id, manifest_routing_opts, route_helper, label=nil)
-      super(id)
-      @manifest_routing_opts = manifest_routing_opts
-      @label = label
-      @route_helper = route_helper
-    end
-
-    def uri
-      @uri ||= begin
-        registrant, doi = self.doi.split('/')
-        routing_opts = @manifest_routing_opts.merge(registrant: registrant, doi: doi)
-        route_helper.iiif_canvas_url(routing_opts)
-      end
-    end
-
-    def to_h
-      canvas = IIIF_TEMPLATES['canvas'].deep_dup
-      canvas['@id'] = uri
-      canvas['label'] = label.to_s
-      canvas['height'] = dimensions[:height]
-      canvas['width'] = dimensions[:width]
-      canvas['thumbnail'] = thumbnail
-      canvas['images'] = [image] if image
-      canvas
-    end
-    def dimensions
-      @dimensions ||= begin
-        _dims = IiifResource.new(id: fedora_pid).get_cachable_property(Derivativo::Iiif::CacheKeys::ORIGINAL_IMAGE_DIMENSIONS_KEY)
-        { width: _dims[0].to_i, height: _dims[1].to_i }.freeze
-      end
-    end
-    def thumbnail
-      @thumbnail ||= begin
-        _props = dimensions.dup
-        if _props[:width] > _props[:height]
-          _props[:height] = (_props[:height] * 256) / (_props[:width])
-          _props[:width] = 256
-        else
-          _props[:width] = (_props[:width] * 256) / (_props[:height])
-          _props[:height] = 256
-        end
-        _props[:'@type'] = 'dctypes:Image'
-        _props[:'@id'] = route_helper.iiif_raster_url(THUMBNAIL_OPTS.merge(id: fedora_pid))
-        _props.freeze
-      end
-    end
-  end
-
-  class Range
-    attr_reader :prefix, :branches, :canvases
-    def initialize(prefix = nil)
-      @prefix = prefix
-      @branches = []
-      @canvases = []
-    end
-    def to_h
-    end
-    def branch!
-      branch = (branches.length + 1).to_s
-      branch = "#{prefix}.#{branch}" unless prefix.blank?
-      branches << Range.new(branch)
-      branches[-1]
-    end
+    Iiif::Canvas.new(id, opts, route_helper)
   end
 end

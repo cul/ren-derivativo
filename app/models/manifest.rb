@@ -38,6 +38,41 @@ class Manifest < CacheableResource
     File.join(directory, filename)
   end
 
+  def self.struct_map_to_h(xml, route_helper, routing_opts)
+    xml = Nokogiri::XML(xml) unless xml.is_a? Nokogiri::XML::Node
+    manifest = IIIF_TEMPLATES['manifest'].deep_dup
+    canvases = []
+    xml.at_xpath('/mets:structMap', METS_NS).tap do |struct_map|
+      range = accumulate_structure(struct_map, canvases, route_helper, routing_opts)
+      default_sequence = IIIF_TEMPLATES['sequence'].deep_dup
+      default_sequence['canvases'] = canvases.map { |canvas| canvas.to_h }
+      default_sequence['label'] = struct_map['LABEL'].to_s
+      if IIIF_TEMPLATES['hints'].include? struct_map['TYPE'].to_s
+        default_sequence['viewingHint'] = struct_map['TYPE'].to_s
+      else
+        if canvases.length < 3
+          default_sequence['viewingHint'] = 'paged'
+        else
+          default_sequence['viewingHint'] = 'individuals'
+        end
+      end
+      if IIIF_TEMPLATES['directions'].include? struct_map['DIRECTION'].to_s
+        default_sequence['viewingDirection'] = struct_map['DIRECTION'].to_s
+      end
+      manifest['@id'] = route_helper.iiif_manifest_url(routing_opts)
+      manifest['sequences'][0] = default_sequence
+      if range.branches.length != 0
+        #TODO: structure serialization
+      end
+      #TODO: 'navDate'
+      #TODO: 'metadata'
+      #TODO: 'license'
+      #TODO: 'attribution'
+      #TODO: PDF download at 'rendering' in the manifest
+    end
+    manifest
+  end
+
   def create_manifest_if_not_exist
     FileUtils.mkdir_p directory
     manifest_processing_file_path = path + '.processing'
@@ -53,39 +88,12 @@ class Manifest < CacheableResource
       fedora_object.datastreams['structMetadata'].tap do |ds|
         struct_xml = Nokogiri::XML(ds.content)
         canvases = []
-        struct_xml.xpath('/mets:structMap', METS_NS).each do |struct_map|
-          range = accumulate_structure(struct_map, canvases)
-          default_sequence = IIIF_TEMPLATES['sequence'].deep_dup
-          default_sequence['canvases'] = canvases.map { |canvas| canvas.to_h }
-          default_sequence['label'] = struct_map['LABEL'].to_s
-          if IIIF_TEMPLATES['hints'].include? struct_map['TYPE'].to_s
-            default_sequence['viewingHint'] = struct_map['TYPE'].to_s
-          else
-            if canvases.length < 3
-              default_sequence['viewingHint'] = 'paged'
-            else
-              default_sequence['viewingHint'] = 'individuals'
-            end
-          end
-          if IIIF_TEMPLATES['directions'].include? struct_map['DIRECTION'].to_s
-            default_sequence['viewingDirection'] = struct_map['DIRECTION'].to_s
-          end
-          manifest = IIIF_TEMPLATES['manifest'].deep_dup
-          manifest['@id'] = route_helper.iiif_manifest_url(routing_opts)
-          manifest['label'] = fedora_object.label
-          manifest['sequences'][0] = default_sequence
-          thumb_id = IiifResource.new(id: fedora_pid).get_cachable_property(Derivativo::Iiif::CacheKeys::REPRESENTATIVE_RESOURCE_ID_KEY)
-          manifest['thumbnail'] = Iiif::Canvas.new(thumb_id, routing_opts, route_helper).thumbnail
-          if range.branches.length != 0
-            #TODO: structure serialization
-          end
-          #TODO: 'navDate'
-          #TODO: 'metadata'
-          #TODO: 'license'
-          #TODO: 'attribution'
-          #TODO: PDF download at 'rendering' in the manifest
-          open(path, 'w') { |io| io.write(JSON.pretty_generate(manifest)) }
-        end
+        manifest = Manifest.struct_map_to_h(struct_xml, route_helper, routing_opts)
+        # add properties with dependencies external to structMap
+        manifest['label'] = fedora_object.label
+        thumb_id = IiifResource.new(id: fedora_pid).get_cachable_property(Derivativo::Iiif::CacheKeys::REPRESENTATIVE_RESOURCE_ID_KEY)
+        manifest['thumbnail'] = Manifest.canvas_for(thumb_id, route_helper, routing_opts).thumbnail
+        open(path, 'w') { |io| io.write(JSON.pretty_generate(manifest)) }
       end
     ensure
       # Remove touched processing file after processing is complete
@@ -110,21 +118,21 @@ class Manifest < CacheableResource
   end
 
   # accumulate divs as iiif constructs, returning the node/range to which they're appended
-  def accumulate_structure(node, canvases, range = Iiif::Range.new)
+  def self.accumulate_structure(node, canvases, route_helper, routing_opts, range = Iiif::Range.new)
     divs = node.xpath('mets:div', METS_NS).sort_by { |div| div['ORDER'].to_i }
     divs.each do |div|
       if div['CONTENTIDS'] # canvas, image
-        canvas = canvas_for(div['CONTENTIDS'].to_s, routing_opts)
+        canvas = canvas_for(div['CONTENTIDS'].to_s, route_helper, routing_opts)
         range.canvases << canvas
         canvases << canvas
       else # range
-        accumulate_structure(div, canvases, range.branch!)
+        accumulate_structure(div, canvases, route_helper, routing_opts, range.branch!)
       end
     end
     range
   end
 
-  def canvas_for(id, opts)
-    Iiif::Canvas.new(id, opts, route_helper)
+  def self.canvas_for(id, route_helper, routing_opts)
+    Iiif::Canvas.new(id, routing_opts, route_helper)
   end
 end

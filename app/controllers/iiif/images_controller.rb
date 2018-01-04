@@ -114,7 +114,12 @@ class Iiif::ImagesController < ApplicationController
     
     # If we're here, a raster exists in the cache.  Serve up that raster.
     expires_in 1.day, public: true  # TODO: Decide how long we want to cache things on the client side
-    send_file(iiif.raster_cache_path, :disposition => disposition, :filename => "image.#{params[:format]}", :content_type => IiifResource::FORMATS[params[:format].to_s])
+    file_params = {
+      disposition: disposition, filename: "image.#{params[:format]}",
+      content_type: IiifResource::FORMATS[params[:format].to_s]
+    }
+    response['Content-Length'] = File.size(iiif.raster_cache_path).to_s
+    send_file(iiif.raster_cache_path, file_params )
   end
   
   private

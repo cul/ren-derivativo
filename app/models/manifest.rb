@@ -84,7 +84,6 @@ class Manifest < CacheableResource
     FileUtils.touch manifest_processing_file_path
 
     begin
-      is_fs_mounted = false # documentary
       fedora_object.datastreams['structMetadata'].tap do |ds|
         struct_xml = Nokogiri::XML(ds.content)
         canvases = []

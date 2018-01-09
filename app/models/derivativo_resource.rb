@@ -43,7 +43,7 @@ class DerivativoResource
     IiifResource.new(id: self.id).clear_cachable_properties
   end
 
-  def generate_cache(queue_long_jobs = DERIVATIVO[:queue_long_jobs])
+  def generate_cache(queue_long_jobs = DERIVATIVO[:queue_long_jobs], route_helper = nil)
     # If this is a rasterable IIIF generic resource, do IIIF caching
     if Derivativo::FedoraObjectTypeCheck.is_rasterable_generic_resource?(fedora_object)
       iiif = IiifResource.new(id: self.id)
@@ -87,8 +87,8 @@ class DerivativoResource
     end
 
     unless Derivativo::FedoraObjectTypeCheck.is_generic_resource?(fedora_object)
-      manifest = Manifest.new(fedora_object)
-      if DERIVATIVO[:queue_long_jobs]
+      manifest = Manifest.new(fedora_object, route_helper)
+      if queue_long_jobs
         manifest.queue_manifest_generation
       else
         manifest.create_manifest_if_not_exist

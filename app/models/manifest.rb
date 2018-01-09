@@ -19,7 +19,8 @@ class Manifest < CacheableResource
   end
 
   def queue_manifest_generation(queue_name = Derivativo::Queue::HIGH)
-    Resque.enqueue_to(queue_name, CreateManifestJob, @id, Time.now.to_s)
+    base_url = route_helper.iiif_id_url(id: 'do_not_use', version: THUMBNAIL_OPTS[:version])
+    Resque.enqueue_to(queue_name, CreateManifestJob, @id, base_url, Time.now.to_s)
   end
 
   def settings
@@ -84,7 +85,8 @@ class Manifest < CacheableResource
     FileUtils.touch manifest_processing_file_path
 
     begin
-      fedora_object.datastreams['structMetadata'].tap do |ds|
+      ds = fedora_object.datastreams['structMetadata']
+      if ds && !ds.new?
         struct_xml = Nokogiri::XML(ds.content)
         canvases = []
         manifest = Manifest.struct_map_to_h(struct_xml, route_helper, routing_opts)

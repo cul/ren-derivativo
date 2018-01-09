@@ -22,7 +22,7 @@ class ResourcesController < ApplicationController
     end
     begin
       res = DerivativoResource.new(id)
-      res.generate_cache
+      res.generate_cache(DERIVATIVO[:queue_long_jobs], self)
     rescue Derivativo::Exceptions::ResourceNotFound
       render status: :not_found, json: { "error" => "Resource not found" }
       return

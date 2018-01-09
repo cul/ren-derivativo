@@ -52,7 +52,7 @@ describe ResourcesController, :type => :controller do
             and_return(fobj)
           allow(Derivativo::FedoraObjectTypeCheck).to receive(:is_rasterable_generic_resource?).
             and_return(true)
-          allow_any_instance_of(Iiif).to receive(:create_base_derivatives_if_not_exist).
+          allow_any_instance_of(IiifResource).to receive(:create_base_derivatives_if_not_exist).
             and_return(nil)
         end
         let(:params) { { id: 'good:id' } }

@@ -1,4 +1,4 @@
-class Iiif
+class IiifResource
   include Derivativo::Iiif::DbCache
   include Derivativo::Iiif::FedoraPropertyRetrieval
   include Derivativo::Iiif::CachableProperties

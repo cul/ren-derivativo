@@ -40,13 +40,13 @@ class DerivativoResource
     # If it's not a rasterable generic resource, this line won't do anything bad,
     # so it's fine to call without checking whether the id is valid. This makes
     # cache clearing operations faster.
-    Iiif.new(id: self.id).clear_cachable_properties
+    IiifResource.new(id: self.id).clear_cachable_properties
   end
 
-  def generate_cache(queue_long_jobs = DERIVATIVO[:queue_long_jobs])
+  def generate_cache(queue_long_jobs = DERIVATIVO[:queue_long_jobs], route_helper = nil)
     # If this is a rasterable IIIF generic resource, do IIIF caching
     if Derivativo::FedoraObjectTypeCheck.is_rasterable_generic_resource?(fedora_object)
-      iiif = Iiif.new(id: self.id)
+      iiif = IiifResource.new(id: self.id)
       if queue_long_jobs
         Rails.logger.debug "Queueing derivative generation for #{self.id}"
         iiif.queue_base_derivatives_if_not_exist
@@ -86,5 +86,13 @@ class DerivativoResource
       end
     end
 
+    unless Derivativo::FedoraObjectTypeCheck.is_generic_resource?(fedora_object)
+      manifest = Manifest.new(fedora_object, route_helper)
+      if queue_long_jobs
+        manifest.queue_manifest_generation
+      else
+        manifest.create_manifest_if_not_exist
+      end
+    end
   end
 end

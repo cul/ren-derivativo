@@ -20,6 +20,7 @@ class Manifest < CacheableResource
 
   def queue_manifest_generation(queue_name = Derivativo::Queue::HIGH)
     base_url = route_helper.iiif_id_url(id: 'do_not_use', version: THUMBNAIL_OPTS[:version])
+    base_url = base_url.split('/')[0...-1].join('/')
     Resque.enqueue_to(queue_name, CreateManifestJob, @id, base_url, Time.now.to_s)
   end
 

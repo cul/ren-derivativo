@@ -68,5 +68,6 @@ class Iiif::PresentationsController < ApplicationController
     # CORS support: Any site should be able to do a cross-domain info request
     response.headers['Access-Control-Allow-Origin'] = '*'
     response.headers['Content-Type'] = 'application/ld+json'
+    expires_in(1.day, public: true)
   end
 end

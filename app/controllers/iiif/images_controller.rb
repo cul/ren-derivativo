@@ -3,6 +3,8 @@ class Iiif::ImagesController < ApplicationController
   include Derivativo::Iiif::IiifImageSizeRestriction
 
   def iiif_id
+    # CORS support: Any site should be able to do a cross-domain info request
+    response.headers['Access-Control-Allow-Origin'] = '*'
     # id url just redirects to info url for that id
     redirect_to iiif_info_url(id: params[:id], format: :json, version: params[:version]), status: :found
   end

@@ -130,7 +130,6 @@ namespace :derivativo do
 
   namespace :clear do
     task :cache => :environment do
-
       if ENV['pids'].blank? && ENV['pidlist'].blank?
         puts 'Please specify one or more pids (e.g. pids=cul:123,cul:456 or pidlist=/path/to/list/file)'
         next
@@ -141,8 +140,18 @@ namespace :derivativo do
         res.clear_cache
         puts "Cleared #{counter} of #{total}: #{pid}"
       end
+    end
 
+    task :cachable_properties => :environment do
+      if ENV['pids'].blank? && ENV['pidlist'].blank?
+        puts 'Please specify one or more pids (e.g. pids=cul:123,cul:456 or pidlist=/path/to/list/file)'
+        next
+      end
 
+      Derivativo::Pids.each(ENV['pids'], ENV['pidlist']) do |pid, counter, total|
+        IiifResource.new(id: pid).clear_cachable_properties
+        puts "Cleared #{counter} of #{total}: #{pid}"
+      end
     end
   end
 

@@ -52,12 +52,7 @@ class DerivativoResource
         iiif.queue_base_derivatives_if_not_exist
       else
         Rails.logger.debug "Generating derivatives for #{self.id} if not exist"
-        begin
-          iiif.create_base_derivatives_if_not_exist
-        rescue
-          render status: :not_found, json: { "error" => "Resource not found with id: #{self.id}" }
-          return
-        end
+        iiif.create_base_derivatives_if_not_exist
       end
     end
 

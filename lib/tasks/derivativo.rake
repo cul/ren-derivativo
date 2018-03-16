@@ -37,26 +37,25 @@ namespace :derivativo do
     end
   end
 
+  desc "Generate cache for the given pids (via DerivativoResource#generate_cache)"
+  task :generate_cache => :environment do
+    start_time = Time.now
+    queue_processing = (ENV['queue'].present? && ENV['queue'].downcase == 'true')
+
+    if ENV['pids'].blank? && ENV['pidlist'].blank?
+      puts 'Please specify one or more pids (e.g. pids=cul:123,cul:456 or pidlist=/path/to/list/file)'
+      next
+    end
+
+    Derivativo::Pids.each(ENV['pids'], ENV['pidlist']) do |pid, counter, total|
+      DerivativoResource.new(pid).generate_cache(queue_processing)
+      puts "#{queue_processing ? 'Queued' : 'Processed'} #{counter} of #{total}: #{pid}"
+    end
+
+    puts "Done.  Took: #{(Time.now-start_time).to_s} seconds."
+  end
 
   namespace :queue do
-
-    desc "Generate cache for the given pids (via DerivativoResource#generate_cache)"
-    task :generate_cache => :environment do
-      start_time = Time.now
-      queue_processing = (ENV['queue'].present? && ENV['queue'].downcase == 'true')
-
-      if ENV['pids'].blank? && ENV['pidlist'].blank?
-        puts 'Please specify one or more pids (e.g. pids=cul:123,cul:456 or pidlist=/path/to/list/file)'
-        next
-      end
-
-      Derivativo::Pids.each(ENV['pids'], ENV['pidlist']) do |pid, counter, total|
-        DerivativoResource.new(pid).generate_cache(queue_processing)
-        puts "#{queue_processing ? 'Queued' : 'Processed'} #{counter} of #{total}: #{pid}"
-      end
-
-      puts "Done.  Took: #{(Time.now-start_time).to_s} seconds."
-    end
 
     desc "Queue base derivatives for the given pids"
     task :base_derivatives => :environment do

@@ -1,5 +1,5 @@
 class Iiif::ImagesController < ApplicationController
-  
+
   include Derivativo::Iiif::IiifImageSizeRestriction
 
   def iiif_id
@@ -15,7 +15,7 @@ class Iiif::ImagesController < ApplicationController
     response.headers['Content-Type'] = 'application/ld+json'
     iiif = IiifResource.new(params)
     iiif_info = iiif.info(iiif_id_url(id: params[:id], version: params[:version]), params[:version])
-    
+
     base_derivatives_complete = iiif.base_derivatives_complete?
     if base_derivatives_complete
       # Note: Not doing this for now.  Allowing browser requests to create derivatives on-demand.
@@ -32,27 +32,27 @@ class Iiif::ImagesController < ApplicationController
         base_derivatives_complete = true
       end
     end
-    
+
     expires_in(1.day, public: true) if base_derivatives_complete # TODO: Decide how long we want to cache things on the client side
     render json: iiif_info
   end
-  
+
   def raster
     # Some images have copyright restrictions, so we need to limit the maximum served up size.
     reduce_size_param_if_restricted_image!(params)
-    
+
     # Allow users to request images as downloads
     disposition = params[:download] == 'true' ? 'attachment' : 'inline'
-    
+
     # Only allow approved formats
     unless IiifResource::FORMATS.include? params[:format]
       render :nothing => true, :status => 400
       return
     end
-    
+
     iiif = IiifResource.new(params)
     raster_file_exists = iiif.raster_exists?
-    
+
     unless raster_file_exists
       # No raster was found at the cache path. This could be because:
       # 1) This resource isn't an image and should display a generic file
@@ -90,7 +90,7 @@ class Iiif::ImagesController < ApplicationController
         return
       end
     end
-    
+
     # Above steps may have generated a raster,
     # so we'll check again to see if the raster exists.
     unless raster_file_exists
@@ -103,7 +103,7 @@ class Iiif::ImagesController < ApplicationController
       else
         iiif.create_base_derivatives_if_not_exist
       end
-      
+
       if iiif.base_derivatives_complete?
         # If base derivatives are complete, then generate the raster immediately
         iiif.create_raster
@@ -111,9 +111,10 @@ class Iiif::ImagesController < ApplicationController
       else
         # If base derivative generation is incomplete, we'll redirect to the 'placeholder:file' image.
         redirect_to ({}.merge(params).merge(id: 'placeholder:file')), status: 302
+        return
       end
     end
-    
+
     # If we're here, a raster exists in the cache.  Serve up that raster.
     expires_in 1.day, public: true  # TODO: Decide how long we want to cache things on the client side
     file_params = {
@@ -123,9 +124,9 @@ class Iiif::ImagesController < ApplicationController
     response['Content-Length'] = File.size(iiif.raster_cache_path).to_s
     send_file(iiif.raster_cache_path, file_params )
   end
-  
+
   private
-  
+
   def reduce_size_param_if_restricted_image!(parms)
     iiif = IiifResource.new(parms)
     if parms[:region] != 'featured' && iiif.get_cachable_property(Derivativo::Iiif::CacheKeys::IS_RESTRICTED_SIZE_IMAGE_KEY)
@@ -140,5 +141,5 @@ class Iiif::ImagesController < ApplicationController
       )
     end
   end
-  
+
 end

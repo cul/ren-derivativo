@@ -34,13 +34,16 @@ module Derivativo::FedoraObjectTypeCheck
 	end
 
 	def self.is_generic_resource_audio?(fedora_obj)
-		is_generic_resource?(fedora_obj) &&
-			content_mimetype_matches?(fedora_obj, /^audio/)
+		is_generic_resource?(fedora_obj) && BestType.dc_type.for_mime_type(content_mime_type(fedora_obj)) == 'Sound'
 	end
 
 	def self.is_generic_resource_video?(fedora_obj)
-		is_generic_resource?(fedora_obj) &&
-			content_mimetype_matches?(fedora_obj, /^video/,/\/mp4$/)
+		is_generic_resource?(fedora_obj) && BestType.dc_type.for_mime_type(content_mime_type(fedora_obj)) == 'MovingImage'
+	end
+
+	def self.content_mime_type(fedora_obj)
+		return '' unless (ds = fedora_obj.datastreams['content']) && (mime_type = ds.mimeType.downcase)
+		mime_type
 	end
 
 	def self.content_mimetype_matches?(fedora_obj, *patterns)

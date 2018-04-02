@@ -44,6 +44,9 @@ gem 'active_fedora_relsint', :git => 'https://github.com/cul/active_fedora_relsi
 gem 'imogen', '0.1.7'
 #gem 'imogen', :path => '../imogen'
 
+# Use best type for mime/dc lookups
+gem 'best_type', '0.0.3'
+
 # Use rmagick for pdf image derivatives
 gem 'rmagick'
 
@@ -82,7 +85,7 @@ gem 'rubyzip', '>= 1.2.1'
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
-  
+
   gem 'rspec-rails', '~> 3.5'
   gem 'jettywrapper', '>= 1.5.1'
 end
@@ -102,4 +105,3 @@ group :development do
   # Just add it to your Gemfile and require it in your Capfile.
   gem 'capistrano-passenger', '~> 0.1', require: false
 end
-

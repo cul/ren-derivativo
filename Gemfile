@@ -79,8 +79,10 @@ gem 'openseadragon'
 # URI Escaping
 gem 'addressable', '~> 2.5'
 
-# Ensure min version of rubyzip because of security vulnerability in earlier version
+# Gem min versions that are only specified here because of vulnerabilities in earlier versions:
 gem 'rubyzip', '>= 1.2.1'
+gem 'rack-protection', '>= 1.5.5'
+gem 'loofah', '>= 2.2.1'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

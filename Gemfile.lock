@@ -127,7 +127,7 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
     crass (1.0.4)
-    cul_hydra (1.4.12)
+    cul_hydra (1.5.0)
       active-fedora (~> 7.0)
       active-triples (~> 0.2.2)
       active_fedora_finders (>= 0.5.0)
@@ -142,6 +142,7 @@ GEM
       mods
       rake (<= 11.3)
       rdf (>= 1.1.5)
+      rubydora (~> 2.0.0)
       sparql (= 1.1.4)
       thread
     cul_image_props (0.3.6)
@@ -515,7 +516,7 @@ DEPENDENCIES
   capistrano-rails (~> 1.1)
   capistrano-rvm (~> 0.1)
   coffee-rails (~> 4.1.0)
-  cul_hydra (~> 1.4.8)
+  cul_hydra (~> 1.5.0)
   free-image!
   hydra-head (~> 7)
   imogen (= 0.1.7)

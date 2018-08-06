@@ -26,11 +26,12 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
       raise "Invalid key for fedora property: #{key}"
     end
   end
-  
+
+  # @return [Array<Integer>] width, height of base (full) derivative
   def fedora_get_original_image_dimensions
     representative_generic_resource = fedora_get_representative_generic_resource
     return [0, 0] if representative_generic_resource.nil?
-    
+
     # Get image dimensions from Fedora object, or get dimensions from original content if unavailable (and save those dimensions in Fedora for future retrieval)
     content_ds = representative_generic_resource.datastreams['content']
     rels_int = representative_generic_resource.rels_int
@@ -52,7 +53,12 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
         rels_int.save if rels_int.changed?
       end
     end
-    [original_image_width.to_i || 0, original_image_height.to_i || 0]
+    # if the image is rotated 90, 270, 450, etc then source dimensions must be rotated
+    if (representative_generic_resource.required_rotation_for_upright_display / 10).odd?
+      [original_image_height.to_i || 0, original_image_width.to_i || 0]
+    else
+      [original_image_width.to_i || 0, original_image_height.to_i || 0]
+    end
   end
   
   def fedora_get_is_restricted_size_image

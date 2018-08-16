@@ -20,16 +20,9 @@ class DerivativoResource
     # Completely destroy cache directory for this object
     FileUtils.rm_rf(Derivativo::CachePathBuilder.base_path_for_id(self.id))
     FileUtils.rm_rf(Derivativo::CachePathBuilder.iiif_path_for_id(self.id))
-
-    # For audio and video resources, we run a delete command in both the public
-    # and restricted directories so that if the restriction property has been
-    # changed since original derivative generation, we properly delete all copies
-    if Derivativo::FedoraObjectTypeCheck.is_generic_resource_audio?(fedora_object)
-      FileUtils.rm_rf(Derivativo::CachePathBuilder.media_path_for_id('audio', true, self.id))
-      FileUtils.rm_rf(Derivativo::CachePathBuilder.media_path_for_id('audio', false, self.id))
-    elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_video?(fedora_object)
-      FileUtils.rm_rf(Derivativo::CachePathBuilder.media_path_for_id('video', true, self.id))
-      FileUtils.rm_rf(Derivativo::CachePathBuilder.media_path_for_id('video', false, self.id))
+    # Also destroy media access copy if this is audiovisual material
+    if Derivativo::FedoraObjectTypeCheck.is_generic_resource_audio_or_video?(fedora_object)
+      FileUtils.rm_rf(Derivativo::CachePathBuilder.media_path_for_id(self.id))
     end
 
     clear_cachable_properties

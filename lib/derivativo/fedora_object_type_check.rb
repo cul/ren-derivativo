@@ -12,7 +12,7 @@ module Derivativo::FedoraObjectTypeCheck
 	end
 
 	def self.is_text_extractable_generic_resource?(fedora_object)
-		return is_generic_resource_pdf?(fedora_object) || is_generic_resource_office_document?(fedora_object)
+		is_generic_resource_pdf?(fedora_object) || is_generic_resource_office_document?(fedora_object)
 	end
 
 	def self.is_generic_resource_image?(fedora_obj)
@@ -39,6 +39,10 @@ module Derivativo::FedoraObjectTypeCheck
 
 	def self.is_generic_resource_video?(fedora_obj)
 		is_generic_resource?(fedora_obj) && BestType.dc_type.for_mime_type(content_mime_type(fedora_obj)) == 'MovingImage'
+	end
+
+	def self.is_generic_resource_audio_or_video?(fedora_obj)
+		is_generic_resource_audio?(fedora_obj) || is_generic_resource_video?(fedora_obj)
 	end
 
 	def self.content_mime_type(fedora_obj)

@@ -28,7 +28,7 @@ class MediaResource < CacheableResource
     restricted = fedora_object.relationships(:restriction).include?(ONSITE_RESTRICTION_LITERAL_VALUE)
 
     access_copy_filename = DERIVATIVO[media_type + '_access_copy_settings']['filename']
-    derivative_directory = Derivativo::CachePathBuilder.media_path_for_id(media_type, restricted, id)
+    derivative_directory = Derivativo::CachePathBuilder.media_path_for_id(id)
 
     FileUtils.mkdir_p derivative_directory
     access_copy_path = File.join(derivative_directory, access_copy_filename)

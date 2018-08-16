@@ -54,44 +54,12 @@ describe Derivativo::CachePathBuilder do
   end
 
   context "#media_path_for_id" do
-    context "should return the expected cache path directory for the supplied params" do
-      let(:asset_id) { 'abc:123' }
-      let(:expected) {
-        File.join(DERIVATIVO['cache_path'][restricted ? 'restricted' : 'public'][media_type], digest[0..1], digest[2..3], digest[4..5], digest)
-      }
-
-      context "public audio" do
-        let(:restricted) { false }
-        let(:media_type) { 'audio' }
-        it do
-          expect(cache_path_builder.media_path_for_id(media_type, restricted, asset_id)).to eql expected
-        end
-      end
-
-      context "restricted audio" do
-        let(:restricted) { true }
-        let(:media_type) { 'audio' }
-        it do
-          expect(cache_path_builder.media_path_for_id(media_type, restricted, asset_id)).to eql expected
-        end
-      end
-
-      context "public video" do
-        let(:restricted) { false }
-        let(:media_type) { 'video' }
-        it do
-          expect(cache_path_builder.media_path_for_id(media_type, restricted, asset_id)).to eql expected
-        end
-      end
-
-      context "restricted video" do
-        let(:restricted) { true }
-        let(:media_type) { 'video' }
-        it do
-          expect(cache_path_builder.media_path_for_id(media_type, restricted, asset_id)).to eql expected
-        end
-      end
-
+    let(:asset_id) { 'abc:123' }
+    let(:expected) {
+      File.join(DERIVATIVO['cache_path'], digest[0..1], digest[2..3], digest[4..5], digest)
+    }
+    it "should return the expected cache path directory for the supplied params" do
+      expect(cache_path_builder.media_path_for_id(asset_id)).to eql expected
     end
   end
 

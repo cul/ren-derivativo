@@ -19,6 +19,9 @@ class Manifest < CacheableResource
   end
 
   def queue_manifest_generation(queue_name = Derivativo::Queue::HIGH)
+    # if route_helper is nil (which it can be when scripting cache generation),
+    #the code below will fail, so we won't attempt to queue manifest generation
+    return if route_helper.nil?
     base_url = route_helper.iiif_id_url(id: 'do_not_use', version: THUMBNAIL_OPTS[:version])
     base_url = base_url.split('/')[0...-1].join('/')
     Resque.enqueue_to(queue_name, CreateManifestJob, @id, base_url, Time.now.to_s)
@@ -107,7 +110,7 @@ class Manifest < CacheableResource
 
   def routing_opts
     registrant, doi = @id.split('/')
-    { manifest_registrant: registrant, manifest_doi: doi } 
+    { manifest_registrant: registrant, manifest_doi: doi }
   end
 
   def structMetadata

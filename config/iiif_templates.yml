@@ -10,7 +10,7 @@ canvas :
   "@type" : "sc:Canvas"
   images : []
 image :
-  "@type" : "sc:Annotation"
+  "@type" : "oa:Annotation"
   motivation : "sc:Painting"
   resource :
     "@type" : "dctypes:Image"

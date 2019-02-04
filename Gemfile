@@ -79,6 +79,9 @@ gem 'openseadragon'
 # URI Escaping
 gem 'addressable', '~> 2.5'
 
+# Lock on logger ~> 1.2.8.1 until we upgrade app past ruby 2.2
+gem 'logger', '~> 1.2.8.1'
+
 # Gem min versions that are only specified here because of vulnerabilities in earlier versions:
 gem 'rubyzip', '>= 1.2.1'
 gem 'rack-protection', '>= 1.5.5'

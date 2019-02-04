@@ -58,7 +58,10 @@ class MediaResource < CacheableResource
     FileUtils.touch access_copy_processing_file_path
 
     begin
-      fedora_object.with_ds_resource('content', (! DERIVATIVO['no_mount']) ) do |file_path|
+      # Attempt to use 'service' copy if present, but fall back to main 'content'
+      source_datastream = fedora_object.datastreams['service'].present? ? 'service' : 'content'
+
+      fedora_object.with_ds_resource(source_datastream, (! DERIVATIVO['no_mount']) ) do |file_path|
         movie = FFMPEG::Movie.new(file_path)
         movie.transcode(access_copy_path, ffmpeg_output_args, {input_options: ffmpeg_input_args})
       end

@@ -2,7 +2,6 @@ class CacheableResource
   attr_reader :id
 
   ACCESS_DATASTREAM_NAME = 'access'
-  ONSITE_RESTRICTION_LITERAL_VALUE = 'onsite restriction'
 
   DOI_PATTERN = /^10\.[^\/]+\/[^\/]+$/
   PID_PATTERN = /^[A-Za-z0-9]+:[A-Za-z0-9]+$/
@@ -23,7 +22,7 @@ class CacheableResource
       if self.id =~ DOI_PATTERN
         # look up the DOI in the RISearch
         query = "select $pid from <#ri> where $pid <#{DOI_PREDICATE}> <doi:#{self.id}>"
-        search_response = 
+        search_response =
           JSON(Cul::Hydra::Fedora.repository.find_by_itql(query,
             :type => 'tuples',
             :format => 'json',
@@ -44,7 +43,7 @@ class CacheableResource
       else
         # look up the DOI in the RISearch
         query = "select $doi from <#ri> where <info:fedora/#{self.id}> <#{DOI_PREDICATE}> $doi"
-        search_response = 
+        search_response =
           JSON(Cul::Hydra::Fedora.repository.find_by_itql(query,
             :type => 'tuples',
             :format => 'json',

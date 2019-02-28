@@ -5,7 +5,7 @@ gem 'rails', '4.2.8'
 
 # Use sqlite3 or mysql2 as the databases for Active Record
 gem 'sqlite3'
-gem 'mysql2', '0.3.18'
+gem 'mysql2', '0.4.10'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -86,6 +86,8 @@ gem 'logger', '~> 1.2.8.1'
 gem 'rubyzip', '>= 1.2.1'
 gem 'rack-protection', '>= 1.5.5'
 gem 'loofah', '>= 2.2.1'
+
+gem "libreconv"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

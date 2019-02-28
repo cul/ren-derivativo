@@ -49,7 +49,7 @@ class ExtractableTextResource < MediaResource
     false
   end
 
-  def queue_access_copy_generation(queue_name = Derivativo::Queue::MEDIA_CONVERSION_LOW)
+  def queue_access_copy_generation(queue_name = Derivativo::Queue::LOW)
     Resque.enqueue_to(queue_name, CreateDocumentAccessCopyJob, id, Time.now.to_s)
   end
 end

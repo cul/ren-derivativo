@@ -50,27 +50,21 @@ class DerivativoResource
     end
 
     if Derivativo::FedoraObjectTypeCheck.is_generic_resource_audio?(fedora_object)
-      audio = Audio.new(fedora_object)
-      if queue_long_jobs
-        audio.queue_access_copy_generation
-      else
-        audio.create_access_copy_if_not_exist
-      end
+      media_model = Audio
     elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_video?(fedora_object)
-      video = Video.new(fedora_object)
-      if queue_long_jobs
-        video.queue_access_copy_generation
-      else
-        video.create_access_copy_if_not_exist
-      end
+      media_model = Video
+    elsif Derivativo::FedoraObjectTypeCheck.is_text_extractable_generic_resource?(fedora_object)
+      media_model = ExtractableTextResource
     end
 
-    if Derivativo::FedoraObjectTypeCheck.is_text_extractable_generic_resource?(fedora_object)
-      extractable_text_resource = ExtractableTextResource.new(fedora_object)
+    if media_model
+      media = media_model.new(fedora_object)
       if queue_long_jobs
-        extractable_text_resource.queue_fulltext_extraction
+        media.queue_access_copy_generation
+        media.queue_fulltext_extraction if media.is_a? ExtractableTextResource
       else
-        extractable_text_resource.extract_fulltext_if_not_exist
+        media.create_access_copy_if_not_exist
+        media.extract_fulltext_if_not_exist if media.is_a? ExtractableTextResource
       end
     end
 

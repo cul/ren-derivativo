@@ -35,4 +35,15 @@ RSpec.describe ExtractableTextResource, type: :model do
     end
   end
 
+  context "#create_access_copy_if_not_exist" do
+    it "creates derivative in expected location and sets access datastream RELS-INT :rdf_type equal to ServiceFile" do
+      expect(subject.create_access_copy_if_not_exist).to eq("/Users/Shared/derivativo_test_home/f7/93/75/f79375c0cf8084b91d125dc9db9d1291e3db342a616ea31def0765827c171a76/access.pdf")
+      expect(
+        subject.fedora_object.rels_int.relationships(
+          subject.fedora_object.datastreams[MediaResource::ACCESS_DATASTREAM_NAME], :rdf_type
+        ).first.object.value
+      ).to eq('http://pcdm.org/use#ServiceFile')
+    end
+  end
+
 end

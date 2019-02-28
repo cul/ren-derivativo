@@ -38,7 +38,7 @@ class MediaResource < CacheableResource
       source_datastream = fedora_object.datastreams['service'].present? ? 'service' : 'content'
       mount = (! DERIVATIVO['no_mount'])
       routine = derivative_proc_for_output_path(access_copy_path)
-      fedora_object.with_ds_resource(source_datastream, mount) &routine
+      fedora_object.with_ds_resource(source_datastream, mount, &routine)
     ensure
       # Remove touched processing file after processing is complete
       FileUtils.rm access_copy_processing_file_path

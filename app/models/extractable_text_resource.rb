@@ -1,4 +1,6 @@
-class ExtractableTextResource
+class ExtractableTextResource < MediaResource
+  include Derivativo::PdfDerivatives
+
   attr_reader :id, :fedora_object
 
   FULLTEXT_DATASTREAM_NAME = 'fulltext'
@@ -45,5 +47,9 @@ class ExtractableTextResource
     end
 
     false
+  end
+
+  def queue_access_copy_generation(queue_name = Derivativo::Queue::MEDIA_CONVERSION_LOW)
+    Resque.enqueue_to(queue_name, CreateDocumentAccessCopyJob, id, Time.now.to_s)
   end
 end

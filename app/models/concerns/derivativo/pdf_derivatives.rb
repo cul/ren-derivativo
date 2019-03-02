@@ -8,6 +8,8 @@ module Derivativo::PdfDerivatives
 	end
 
 	def office_convert(in_path, out_path, soffice_path, office_export_format)
+		soffice_path ||= soffice_path || which('soffice') || which('soffice.bin')
+
 		# Create a unique, temporary home dir for this office process so we can run multiple
 		# conversion jobs independently. If two conversion processes use the same home dir,
 		# the first process will block the second one.
@@ -52,5 +54,18 @@ module Derivativo::PdfDerivatives
 
 		# Return succes value (true if successful, false if failure)
 		success
+	end
+
+	# Checks the user's $PATH for the given program
+	def which(program)
+	  exts = ENV['PATHEXT'] ? ENV['PATHEXT'].split(';') : ['']
+	  ENV['PATH'].split(File::PATH_SEPARATOR).each do |path|
+	    exts.each do |ext|
+	      exe = File.join(path, "#{program}#{ext}")
+	      return exe if File.executable? exe
+	    end
+	  end
+
+	  nil
 	end
 end

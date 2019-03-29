@@ -25,6 +25,13 @@ class DerivativoResource
       FileUtils.rm_rf(Derivativo::CachePathBuilder.media_path_for_id(self.id))
     end
 
+    if Derivativo::FedoraObjectTypeCheck.is_text_extractable_generic_resource?(fedora_object)
+      pdf_access_copy_path = File.join(
+        Derivativo::CachePathBuilder.media_path_for_id(self.id), DERIVATIVO['extractabletextresource_access_copy_settings']['filename']
+      )
+      FileUtils.rm_rf(pdf_access_copy_path)
+    end
+
     clear_cachable_properties
   end
 

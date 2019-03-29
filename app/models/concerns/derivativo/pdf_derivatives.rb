@@ -23,6 +23,12 @@ module Derivativo::PdfDerivatives
 		# temporarily before renaming it to 'file2.pdf'.
 		tmp_outdir = File.join(File.dirname(out_path), 'soffice-tmp')
 
+		# Copy our custom office settings to office_temp_homedir
+		soffice_home_userdir = File.join(office_temp_homedir, "user")
+		FileUtils.mkdir_p(soffice_home_userdir)
+
+		set_soffice_pdf_compression_level(soffice_home_userdir, 85) # default level
+
 		conversion_command = [
 			soffice_path,
 			"-env:UserInstallation=file://#{office_temp_homedir}",
@@ -34,12 +40,34 @@ module Derivativo::PdfDerivatives
 			Shellwords.escape(tmp_outdir),
 			Shellwords.escape(in_path)
 		].join(' ')
+		system(conversion_command)
 
 		# The office conversion process always keeps the original name of the file and replaces
 		# the extension with 'pdf', so we'll need to predict the tmp outpath and move it after.
 		expected_conversion_outpath = File.join(tmp_outdir, File.basename(in_path).sub(/(.+)\..+$/, '\1.pdf'))
 
-		system(conversion_command)
+		if File.exists?(expected_conversion_outpath)
+			file_size_in_mb = (File.size(expected_conversion_outpath)/1000000.0).to_i
+			# If the new access copy file is larger than 30 MB, we need to re-encode that new
+			# access copy at a lower compression level. We don't want to re-use the original copy
+			# because we don't know what level of compression has been applied its content/embedded images.
+			# The access copy we first generated has a standard degree of compression that we know,
+			# so we can base further compression on that baseline.
+			if file_size_in_mb > 30
+				integer_percentage = percentage_compression_for_file_size(file_size_in_mb)
+				set_soffice_pdf_compression_level(soffice_home_userdir, integer_percentage) # default level
+
+				# Move file at expected_conversion_outpath to new in_path (and update in_path) so we can re-export to that same original outpath
+				recode_in_path = File.join(File.dirname(expected_conversion_outpath), 'temp-' + File.basename(expected_conversion_outpath))
+				FileUtils.mv(expected_conversion_outpath, recode_in_path)
+
+				# Do the conversion, updating the in_path
+				in_path = recode_in_path
+				system(conversion_command)
+				# After successful conversion, delete the recode_in_path file, since it was temporary
+				File.delete(recode_in_path)
+			end
+		end
 
 		if (success = File.exists?(expected_conversion_outpath))
 			# Move the file to the correct out_path
@@ -67,5 +95,18 @@ module Derivativo::PdfDerivatives
 	  end
 
 	  nil
+	end
+
+	def set_soffice_pdf_compression_level(soffice_home_userdir, compression_integer)
+		settings_file_content = IO.read(Rails.root.join('config', 'soffice', 'registrymodifications-custom-compression.xcu'))
+		settings_file_content.gsub!('_COMPRESSION_VALUE_', compression_integer.to_s)
+		IO.write(File.join(soffice_home_userdir, 'registrymodifications.xcu'), settings_file_content)
+	end
+
+	def percentage_compression_for_file_size(file_size_in_mb)
+		return 10 if file_size_in_mb > 1000
+		return 100 if file_size_in_mb < 30
+		# This formula seems to give decent results, but might need more adjustments in the future.
+		((1/Math.log(file_size_in_mb, 10))**2 * 100).to_i
 	end
 end

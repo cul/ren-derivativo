@@ -62,6 +62,11 @@ class MediaResource < CacheableResource
       :versionable => false
     )
     access_ds.dsLocation = convert_file_path_to_ds_location_value(access_copy_path)
+
+    # Clear old rels_int values if present
+    fedora_object.rels_int.clear_relationship(access_ds, :extent)
+    fedora_object.rels_int.clear_relationship(access_ds, :rdf_type)
+    # Add new rels_int values
     fedora_object.rels_int.add_relationship(access_ds, :extent, access_copy_file_size.to_s, true) # last param *true* means that this is a literal value rather than a relationship
     fedora_object.rels_int.add_relationship(access_ds, :rdf_type, "http://pcdm.org/use#ServiceFile") # last param *true* means that this is a literal value rather than a relationship
     fedora_object.add_datastream(access_ds)

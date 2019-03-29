@@ -22,6 +22,8 @@ module Derivativo::PdfDerivatives
 		# 'file.docx' and 'file.pdf' and we wanted to write a temp file called 'file.pdf'
 		# temporarily before renaming it to 'file2.pdf'.
 		tmp_outdir = File.join(File.dirname(out_path), 'soffice-tmp')
+		# Clear tmp_outdir if it exists, in case there was a previously running job that crashed
+		FileUtils.rm_rf(tmp_outdir)
 
 		# Copy our custom office settings to office_temp_homedir
 		soffice_home_userdir = File.join(office_temp_homedir, "user")

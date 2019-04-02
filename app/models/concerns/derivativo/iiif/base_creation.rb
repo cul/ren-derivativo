@@ -1,24 +1,24 @@
 module Derivativo::Iiif::BaseCreation
-  extend ActiveSupport::Concern
-  
-  def base_derivatives_complete?
+	extend ActiveSupport::Concern
+
+	def base_derivatives_complete?
 		return false unless base_exists?
 		return false if db_cache_record.derivative_generation_in_progress
 		true
 	end
-  
-  def queue_base_derivatives_if_not_exist(queue_name=Derivativo::Queue::LOW)
+
+	def queue_base_derivatives_if_not_exist(queue_name=Derivativo::Queue::LOW)
 		Resque.enqueue_to(queue_name, CreateBaseDerivativesJob, id, Time.now.to_s)
 	end
-  
-  def create_base_derivatives_if_not_exist
+
+	def create_base_derivatives_if_not_exist
 		# Avoid duplicate base creation requests while base creation is in progress
-    return if db_cache_record.derivative_generation_in_progress || base_derivatives_complete?
-    
-    # Mark derivative generation as being in progress in the database
-    db_cache_record.update(derivative_generation_in_progress: true)
-    
-    begin
+		return if db_cache_record.derivative_generation_in_progress || base_derivatives_complete?
+	
+		# Mark derivative generation as being in progress in the database
+		db_cache_record.update(derivative_generation_in_progress: true)
+
+		begin
 			# Base derivatives for placeholder are based on specific app-supplied images
 			if self.id.start_with?('placeholder:')
 				placeholder_type = id.gsub('placeholder:', '')
@@ -34,11 +34,14 @@ module Derivativo::Iiif::BaseCreation
 			end
 	
 			generic_resource = ActiveFedora::Base.find(self.id)
-			
+
 			# We only ever want to create base derivatives for rasterable GenericResources (like images or PDFs).
 			# Serving up of representative images is handled elsewhere, by the IiifController, so we'll reject
 			# anything here that isn't a rasterable GenericResource.
-			unless Derivativo::FedoraObjectTypeCheck.is_rasterable_generic_resource?(generic_resource)
+			rasterable_dsid = ['content', 'access'].detect do |dsid|
+				Derivativo::FedoraObjectTypeCheck.is_rasterable_generic_resource?(generic_resource, dsid)
+			end
+			unless rasterable_dsid
 				if generic_resource.is_a?(GenericResource)
 					Rails.logger.info "Skipped creation of base image derivatives for GenericResource #{self.id} because it is not of a known rasterable type (image, PDF, etc)."
 				else
@@ -46,10 +49,10 @@ module Derivativo::Iiif::BaseCreation
 				end
 				return
 			end
-			
+
 			unless File.exists?(base_cache_path = base_cache_path(true))
-				generic_resource.with_ds_resource('content', (! DERIVATIVO['no_mount']) ) do |image_path|
-					if Derivativo::FedoraObjectTypeCheck.is_generic_resource_image?(generic_resource)
+				generic_resource.with_ds_resource(rasterable_dsid, (! DERIVATIVO['no_mount']) ) do |image_path|
+					if Derivativo::FedoraObjectTypeCheck.is_generic_resource_image?(generic_resource, rasterable_dsid)
 						Imogen.with_image(image_path) do |img|
 							# Create base image
 							Rails.logger.debug 'Creating base image...'
@@ -61,7 +64,7 @@ module Derivativo::Iiif::BaseCreation
 							})
 							Rails.logger.debug 'Created base image in ' + (Time.now-start_time).to_s + ' seconds'
 						end
-					elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_pdf?(generic_resource)
+					elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_pdf?(generic_resource, rasterable_dsid)
 						Rails.logger.debug 'Creating base image from PDF...'
 						start_time = Time.now
 						
@@ -80,8 +83,8 @@ module Derivativo::Iiif::BaseCreation
 			# so we will mark it as no longer in progress
 			db_cache_record.update(derivative_generation_in_progress: false)
 		end
-    
-    # Kick off create and store jobs, and pre-cache (or generate, for the first time) the featured region
+
+	# Kick off create and store jobs, and pre-cache (or generate, for the first time) the featured region
 		if DERIVATIVO[:queue_long_jobs]
 			queue_create_and_store
 			Resque.enqueue_to(Derivativo::Queue::LOW, DetectAndStoreFeaturedRegionJob, self.id, Time.now.to_s)
@@ -91,5 +94,5 @@ module Derivativo::Iiif::BaseCreation
 			get_cachable_property(Derivativo::Iiif::CacheKeys::FEATURED_REGION_KEY)
 			#create_iiif_slice_pre_cache # Not pre-caching IIIF slices due to disk space limitations
 		end
-  end
+	end
 end

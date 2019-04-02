@@ -29,7 +29,7 @@ module Derivativo::PdfDerivatives
 		soffice_home_userdir = File.join(office_temp_homedir, "user")
 		FileUtils.mkdir_p(soffice_home_userdir)
 
-		set_soffice_pdf_compression_level(soffice_home_userdir, 85) # default level
+		set_soffice_pdf_compression_level(soffice_home_userdir, 80) # default level
 
 		conversion_command = [
 			soffice_path,
@@ -106,7 +106,7 @@ module Derivativo::PdfDerivatives
 	end
 
 	def percentage_compression_for_file_size(file_size_in_mb)
-		return 10 if file_size_in_mb > 1000
+		return 8 if file_size_in_mb > 2000
 		return 100 if file_size_in_mb < 30
 		# This formula seems to give decent results, but might need more adjustments in the future.
 		((1/Math.log(file_size_in_mb, 10))**2 * 100).to_i

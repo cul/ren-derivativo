@@ -19,8 +19,9 @@ describe Derivativo::PdfDerivatives, :type => :unit do
         800 => 11,
         900 => 11,
         1000 => 11,
-        10000 => 10,
-        100000 => 10
+        2000 => 9,
+        10000 => 8,
+        100000 => 8
       }
     end
     it "returns the expected percentages" do

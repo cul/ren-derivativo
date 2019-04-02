@@ -4,8 +4,13 @@ class DerivativoResource
 
   attr_reader :id
 
-  def initialize(id)
-    @id = id
+  def initialize(id_or_fedora_obj)
+    if id_or_fedora_obj.is_a?(String)
+      @id = id_or_fedora_obj
+    elsif id_or_fedora_obj.is_a?(ActiveFedora::Base)
+      @id = id_or_fedora_obj.pid
+      @fedora_object = id_or_fedora_obj
+    end
   end
 
   def fedora_object

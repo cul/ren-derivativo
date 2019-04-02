@@ -72,6 +72,10 @@ class MediaResource < CacheableResource
     fedora_object.add_datastream(access_ds)
     fedora_object.save(update_index: false)
 
+    # Clear cachable properties after access copy creation so that image
+    # thumbnails can be based on access copy PDF for non-pdf documents.
+    DerivativoResource.new(fedora_object).clear_cachable_properties
+
     access_copy_path
   end
 

@@ -97,8 +97,11 @@ module Derivativo::Iiif::CachableProperties
 		# display a generic file placeholder icon
 		return 'unavailable' if dc_type.nil?
 
-     # If this resource is rasterable, return nil. We don't want to serve a placeholder for it.
-    return nil if Derivativo::FedoraObjectTypeCheck.is_rasterable_generic_resource?(fedora_get_representative_generic_resource)
+    # If this resource is rasterable, return nil. We don't want to serve a placeholder for it.
+    generic_resource = fedora_get_representative_generic_resource
+    return nil if ['content', 'access'].detect do |dsid|
+      Derivativo::FedoraObjectTypeCheck.is_rasterable_generic_resource?(generic_resource, dsid)
+    end
     Derivativo::Iiif::CacheKeys::DC_TYPES_TO_PLACEHOLDER_TYPES[dc_type] || 'file'
   end
 

@@ -8,7 +8,9 @@ module Derivativo::FedoraObjectTypeCheck
 	end
 
 	def self.is_rasterable_generic_resource?(fedora_obj, dsid='content')
-		is_generic_resource_image?(fedora_obj, dsid) || is_generic_resource_pdf?(fedora_obj, dsid)
+		is_generic_resource_image?(fedora_obj, dsid) ||
+		is_generic_resource_pdf?(fedora_obj, dsid) ||
+		is_generic_resource_rasterable_video?(fedora_obj, dsid)
 	end
 
 	def self.is_text_extractable_generic_resource?(fedora_object, dsid='content')
@@ -39,6 +41,11 @@ module Derivativo::FedoraObjectTypeCheck
 
 	def self.is_generic_resource_video?(fedora_obj, dsid='content')
 		is_generic_resource?(fedora_obj) && BestType.dc_type.for_mime_type(datastream_mime_type(fedora_obj, dsid)) == 'MovingImage'
+	end
+
+	def is_generic_resource_rasterable_video?(fedora_obj, dsid='content')
+		is_generic_resource_video?(fedora_obj) &&
+			datastream_mimetype_matches?(fedora_obj, dsid, /^video\/mp4$/)
 	end
 
 	def self.is_generic_resource_audio_or_video?(fedora_obj, dsid='content')

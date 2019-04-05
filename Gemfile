@@ -51,6 +51,7 @@ gem 'best_type', '0.0.3'
 gem 'rmagick'
 
 # Use streamio-ffmpeg for audio/video
+# https://github.com/streamio/streamio-ffmpeg
 gem 'streamio-ffmpeg', '~> 3.0'
 
 # For http requests

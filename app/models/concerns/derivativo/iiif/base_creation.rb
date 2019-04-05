@@ -38,7 +38,7 @@ module Derivativo::Iiif::BaseCreation
 			# We only ever want to create base derivatives for rasterable GenericResources (like images or PDFs).
 			# Serving up of representative images is handled elsewhere, by the IiifController, so we'll reject
 			# anything here that isn't a rasterable GenericResource.
-			rasterable_dsid = ['content', 'access'].detect do |dsid|
+			rasterable_dsid = ['service', 'content', 'access'].detect do |dsid|
 				Derivativo::FedoraObjectTypeCheck.is_rasterable_generic_resource?(generic_resource, dsid)
 			end
 			unless rasterable_dsid
@@ -67,13 +67,26 @@ module Derivativo::Iiif::BaseCreation
 					elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_pdf?(generic_resource, rasterable_dsid)
 						Rails.logger.debug 'Creating base image from PDF...'
 						start_time = Time.now
-						
+
 						# Using '[0]' at end of the filename to tell ImageMagick to only look at the first page.
 						# MUCH faster than Magick::ImageList.new(image_path) or Magick::Image.read(image_path) for multi-page PDFs.
 						pdf = Magick::Image.read(image_path + '[0]')
-						
+
 						pdf[0].write(base_cache_path)
 						Rails.logger.debug 'Created base image from PDF in ' + (Time.now-start_time).to_s + ' seconds'
+					elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_video?(generic_resource, rasterable_dsid)
+						Rails.logger.debug 'Creating base image from video...'
+						start_time = Time.now
+						# ffmpeg command
+						movie = FFMPEG::Movie.new(in_path)
+						halfway_point = (movie.duration / 2).floor
+						screenshot_args = {
+							vframes: 1,
+							quality: 4,
+							seek_time: halfway_point
+						}
+						movie.screenshot(out_path, screenshot_args)
+						Rails.logger.debug 'Created base image from video in ' + (Time.now-start_time).to_s + ' seconds'
 					end
 				end
 				Derivativo::Utils::FileUtils.block_until_file_exists(base_cache_path) # Account for network disk delays

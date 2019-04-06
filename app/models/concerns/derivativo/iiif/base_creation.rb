@@ -78,14 +78,14 @@ module Derivativo::Iiif::BaseCreation
 						Rails.logger.debug 'Creating base image from video...'
 						start_time = Time.now
 						# ffmpeg command
-						movie = FFMPEG::Movie.new(in_path)
+						movie = FFMPEG::Movie.new(image_path)
 						halfway_point = (movie.duration / 2).floor
 						screenshot_args = {
 							vframes: 1,
 							quality: 4,
 							seek_time: halfway_point
 						}
-						movie.screenshot(out_path, screenshot_args)
+						movie.screenshot(base_cache_path, screenshot_args)
 						Rails.logger.debug 'Created base image from video in ' + (Time.now-start_time).to_s + ' seconds'
 					end
 				end

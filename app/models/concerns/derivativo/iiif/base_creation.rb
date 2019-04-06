@@ -74,7 +74,7 @@ module Derivativo::Iiif::BaseCreation
 
 						pdf[0].write(base_cache_path)
 						Rails.logger.debug 'Created base image from PDF in ' + (Time.now-start_time).to_s + ' seconds'
-					elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_video?(generic_resource, rasterable_dsid)
+					elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_rasterable_video?(generic_resource, rasterable_dsid)
 						Rails.logger.debug 'Creating base image from video...'
 						start_time = Time.now
 						# ffmpeg command

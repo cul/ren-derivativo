@@ -43,7 +43,7 @@ module Derivativo::FedoraObjectTypeCheck
 		is_generic_resource?(fedora_obj) && BestType.dc_type.for_mime_type(datastream_mime_type(fedora_obj, dsid)) == 'MovingImage'
 	end
 
-	def is_generic_resource_rasterable_video?(fedora_obj, dsid='content')
+	def self.is_generic_resource_rasterable_video?(fedora_obj, dsid='content')
 		is_generic_resource_video?(fedora_obj) &&
 			datastream_mimetype_matches?(fedora_obj, dsid, /^video\/mp4$/)
 	end

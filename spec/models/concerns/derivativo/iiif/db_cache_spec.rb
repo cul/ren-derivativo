@@ -46,6 +46,7 @@ describe Derivativo::Iiif::DbCache, :type => :unit do
   context '#db_cache_get' do
     it "doesn't raise an error when getting an allowed key" do
       expect { iiif.db_cache_get(Derivativo::Iiif::CacheKeys::ORIGINAL_IMAGE_DIMENSIONS_KEY) }.not_to raise_error
+      expect { iiif.db_cache_get(Derivativo::Iiif::CacheKeys::REPRESENTATIVE_RESOURCE_CLOSED_KEY) }.not_to raise_error
     end
     
     it "raises an error when attempting to set a key that is not allowed" do

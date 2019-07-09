@@ -50,4 +50,8 @@ describe Derivativo::Iiif::FedoraPropertyRetrieval, type: :unit do
       is_expected.to eql(rotated_dims)
     end
   end
+  context "closed" do
+    before { allow(image_resource).to receive(:closed?).and_return(true) }
+    it { expect(test_obj.fedora_get_representative_generic_resource_closed).to be true }
+  end
 end

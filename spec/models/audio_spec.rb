@@ -28,7 +28,7 @@ RSpec.describe Audio, type: :model do
 
   context "#create_access_copy_if_not_exist" do
     it "creates derivative in expected location and sets access datastream RELS-INT :rdf_type equal to ServiceFile" do
-      expect(subject.create_access_copy_if_not_exist).to eq("/Users/Shared/derivativo_test_home/00/cc/94/00cc94415af4fec64d40b22ef14aef3969b5d658fb2641422bb439d86a153df0/access.mp3")
+      expect(subject.create_access_copy_if_not_exist).to eq(DERIVATIVO[:cache_path] + "/00/cc/94/00cc94415af4fec64d40b22ef14aef3969b5d658fb2641422bb439d86a153df0/access.m4a")
       expect(
         subject.fedora_object.rels_int.relationships(
           subject.fedora_object.datastreams[MediaResource::ACCESS_DATASTREAM_NAME], :rdf_type

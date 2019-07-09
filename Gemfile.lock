@@ -127,14 +127,13 @@ GEM
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
     crass (1.0.4)
-    cul_hydra (1.5.0)
-      active-fedora (~> 7.0)
+    cul_hydra (1.7.5)
+      active-fedora (>= 7.3.1)
       active-triples (~> 0.2.2)
       active_fedora_finders (>= 0.5.0)
       active_fedora_relsint (~> 0.4)
-      autoprefixer-rails (<= 6.1.1)
       blacklight
-      cancancan (~> 1.12.0)
+      bootstrap-sass (~> 3.3.7)
       cul_image_props
       httpclient
       hydra-head (~> 7)
@@ -143,7 +142,7 @@ GEM
       rake (<= 11.3)
       rdf (>= 1.1.5)
       rubydora (~> 2.0.0)
-      sparql (= 1.1.4)
+      sparql
       thread
     cul_image_props (0.3.6)
       nokogiri
@@ -516,7 +515,7 @@ DEPENDENCIES
   capistrano-rails (~> 1.1)
   capistrano-rvm (~> 0.1)
   coffee-rails (~> 4.1.0)
-  cul_hydra (~> 1.5.0)
+  cul_hydra (~> 1.7.5)
   free-image!
   hydra-head (~> 7)
   imogen (= 0.1.7)
@@ -549,4 +548,4 @@ DEPENDENCIES
   web-console (~> 2.0)
 
 BUNDLED WITH
-   1.16.2
+   1.16.6

@@ -23,7 +23,7 @@ class IiifResource
     @quality = opts.fetch(:quality, 'native')
     @format = opts.fetch(:format, 'jpg')
   end
-  
+
   def raster_opts
 		HashWithIndifferentAccess.new({
 			id: id,

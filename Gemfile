@@ -36,7 +36,7 @@ gem 'blacklight', '~> 5.19'
 gem 'hydra-head', '~>7'
 
 # Columbia Hydra models
-gem 'cul_hydra', '~> 1.5.0'
+gem 'cul_hydra', '~> 1.7.5'
 #gem 'cul_hydra', :path => '../cul_hydra'
 gem 'active_fedora_relsint', :git => 'https://github.com/cul/active_fedora_relsint.git', :branch => 'master'
 

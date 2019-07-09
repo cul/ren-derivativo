@@ -28,7 +28,7 @@ RSpec.describe Video, type: :model do
 
   context "#create_access_copy_if_not_exist" do
     it "creates derivative in expected location and sets access datastream RELS-INT :rdf_type equal to ServiceFile" do
-      expect(subject.create_access_copy_if_not_exist).to eq("/Users/Shared/derivativo_test_home/01/51/32/015132720f46e3160860dd1fcbdb6ad9fb10921b55df686d610c42fee10d9a62/access.mp4")
+      expect(subject.create_access_copy_if_not_exist).to eq(DERIVATIVO[:cache_path] + "/01/51/32/015132720f46e3160860dd1fcbdb6ad9fb10921b55df686d610c42fee10d9a62/access.mp4")
       expect(
         subject.fedora_object.rels_int.relationships(
           subject.fedora_object.datastreams[MediaResource::ACCESS_DATASTREAM_NAME], :rdf_type

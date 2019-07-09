@@ -22,6 +22,8 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
       fedora_get_representative_generic_resource_dc_type
     when Derivativo::Iiif::CacheKeys::REPRESENTATIVE_RESOURCE_ID_KEY
       fedora_get_representative_generic_resource_id
+    when Derivativo::Iiif::CacheKeys::REPRESENTATIVE_RESOURCE_CLOSED_KEY
+      fedora_get_representative_generic_resource_closed
     else
       raise "Invalid key for fedora property: #{key}"
     end
@@ -64,9 +66,9 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
   def fedora_get_is_restricted_size_image
     representative_generic_resource = fedora_get_representative_generic_resource
     return false if representative_generic_resource.nil?
-    return representative_generic_resource.relationships(:restriction).include?('size restriction')
+    return representative_generic_resource.access_levels.map(&:downcase).detect {|v| !"public".eql(v) }
   end
-  
+
   def fedora_get_representative_generic_resource_dc_type
     representative_generic_resource = fedora_get_representative_generic_resource
     return nil if representative_generic_resource.nil?
@@ -90,7 +92,11 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
   def fedora_get_representative_generic_resource_id
     fedora_get_representative_generic_resource.present? ? fedora_get_representative_generic_resource.pid : nil
   end
-  
+
+  def fedora_get_representative_generic_resource_closed
+    fedora_get_representative_generic_resource.present? ? fedora_get_representative_generic_resource.closed? : nil
+  end
+
   def fedora_get_featured_region
     representative_generic_resource = fedora_get_representative_generic_resource
     return nil if representative_generic_resource.nil?

@@ -54,4 +54,8 @@ describe Derivativo::Iiif::FedoraPropertyRetrieval, type: :unit do
     before { allow(image_resource).to receive(:closed?).and_return(true) }
     it { expect(test_obj.fedora_get_representative_generic_resource_closed).to be true }
   end
+  context "restricted image" do
+    before { allow(image_resource).to receive(:access_levels).and_return(["Embargoed"]) }
+    it { expect(test_obj.fedora_get_is_restricted_size_image).to be true }
+  end
 end

@@ -58,4 +58,8 @@ describe Derivativo::Iiif::FedoraPropertyRetrieval, type: :unit do
     before { allow(image_resource).to receive(:access_levels).and_return(["Embargoed"]) }
     it { expect(test_obj.fedora_get_is_restricted_size_image).to be true }
   end
+  context "public image" do
+    before { allow(image_resource).to receive(:access_levels).and_return(["Public Access"]) }
+    it { expect(test_obj.fedora_get_is_restricted_size_image).to be false }
+  end
 end

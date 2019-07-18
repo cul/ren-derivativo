@@ -66,7 +66,7 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
   def fedora_get_is_restricted_size_image
     representative_generic_resource = fedora_get_representative_generic_resource
     return false if representative_generic_resource.nil?
-    return !!representative_generic_resource.access_levels.map(&:downcase).detect {|v| !"public".eql?(v) }
+    return !!representative_generic_resource.access_levels.map(&:downcase).detect {|v| !"public access".eql?(v) }
   end
 
   def fedora_get_representative_generic_resource_dc_type

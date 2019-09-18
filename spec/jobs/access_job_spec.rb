@@ -1,5 +1,5 @@
 require 'rails_helper'
 
-RSpec.describe AccessJob, type: :job do
+RSpec.describe AccessJob do
   pending "add some examples to (or delete) #{__FILE__}"
 end

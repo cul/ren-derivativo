@@ -31,8 +31,5 @@ module Derivativo
 
     # Don't generate system test files.
     config.generators.system_tests = nil
-
-    # Set Resque as the queue adapter
-    config.active_job.queue_adapter = :resque
   end
 end

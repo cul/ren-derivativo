@@ -1,5 +1,5 @@
 require 'rails_helper'
 
-RSpec.describe ThumbnailJob, type: :job do
+RSpec.describe ThumbnailJob do
   pending "add some examples to (or delete) #{__FILE__}"
 end

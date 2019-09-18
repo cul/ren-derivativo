@@ -1,7 +1,7 @@
-class ThumbnailJob < ApplicationJob
-  queue_as :thumbnail
+class ThumbnailJob
+  @queue = :thumbnail
 
-  def perform(*args)
-    # Do something later
+  def self.perform(*args)
+    Rails.logger.info "Running thumbnail job with args: #{args.inspect}"
   end
 end

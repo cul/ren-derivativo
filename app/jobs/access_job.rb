@@ -1,7 +1,7 @@
-class AccessJob < ApplicationJob
-  queue_as :access
+class AccessJob
+  @queue = :access
 
-  def perform(*args)
-    # Do something later
+  def self.perform(*args)
+    Rails.logger.info "Running access job with args: #{args.inspect}"
   end
 end

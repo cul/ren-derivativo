@@ -70,9 +70,18 @@ module Derivativo::Iiif::BaseCreation
 
 						# Using '[0]' at end of the filename to tell ImageMagick to only look at the first page.
 						# MUCH faster than Magick::ImageList.new(image_path) or Magick::Image.read(image_path) for multi-page PDFs.
-						pdf = Magick::Image.read(image_path + '[0]')
-
-						pdf[0].write(base_cache_path)
+						conversion_command = [
+							"gs",
+							"-sDEVICE=png16m", # 24-bit RGB
+							"-dFirstPage=1",
+							"-dLastPage=1",
+							"-dNOPAUSE",
+							"-dQUIET",
+							"-dBATCH",
+							"-sOutputFile=#{base_cache_path}",
+							 image_path
+						].join(' ')
+						system(conversion_command)
 						Rails.logger.debug 'Created base image from PDF in ' + (Time.now-start_time).to_s + ' seconds'
 					elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_rasterable_video?(generic_resource, rasterable_dsid)
 						Rails.logger.debug 'Creating base image from video...'

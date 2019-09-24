@@ -28,7 +28,7 @@ And for faster React app recompiling during development, run this in a separate 
 ```
 
 ## Testing
-Our testing suite runs Rubocop, starts up Fedora and Solr, and then runs all of our ruby tests. Travis CI will automatically run the test suite for every commit and pull request.
+Our testing suite runs Rubocop and then runs all of our ruby tests. Travis CI will automatically run the test suite for every commit and pull request.
 
 To run the continuous integration test suite locally on your machine run:
 ```

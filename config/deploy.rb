@@ -5,6 +5,7 @@ set :instance, fetch(:department)
 set :application, 'derivativo'
 set :repo_name, "#{fetch(:department)}-#{fetch(:application)}"
 set :deploy_name, "#{fetch(:application)}_#{fetch(:stage)}"
+
 # used to run rake db:migrate, etc
 # Default value for :rails_env is fetch(:stage)
 set :rails_env, fetch(:deploy_name)
@@ -40,9 +41,9 @@ set :linked_files, fetch(:linked_files, []).push(
   "config/database.yml",
   "config/derivativo.yml",
   "config/fedora.yml",
+  "config/resque.yml",
   "config/secrets.yml",
-  "config/solr.yml",
-  "config/resque.yml"
+  "config/solr.yml"
 )
 
 namespace :deploy do

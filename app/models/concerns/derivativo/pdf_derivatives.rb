@@ -3,8 +3,53 @@ module Derivativo::PdfDerivatives
 
 	def derivative_proc_for_output_path(out_path)
 		Proc.new do |in_path|
-			office_convert(in_path, out_path, DERIVATIVO['soffice_path'], 'pdf:writer_pdf_Export')
+			if in_path.ends_with?('.pdf')
+				ghostscript_convert(in_path, out_path, DERIVATIVO['ghostscript_path'])
+			else
+				office_convert(in_path, out_path, DERIVATIVO['soffice_path'], 'pdf:writer_pdf_Export')
+			end
 		end
+	end
+
+	def ghostscript_version_specific_args(ghostscript_path)
+		stdout, _status = Open3.capture2("#{ghostscript_path} --version")
+		ver = stdout.match('(\d+)\.')[1].to_i
+		if ver < 9
+			['-dUseCIEColor', '-sColorConversionStrategy=UseDeviceIndependentColor']
+		else
+			['-dPDFA=2', '-dPDFACompatibilityPolicy=1']
+		end
+	end
+
+	def ghostscript_convert(in_path, out_path, ghostscript_path = nil)
+		ghostscript_path ||= ghostscript_path || which('gs')
+
+		conversion_command = [
+			ghostscript_path,
+			'-q',
+			'-dNOPAUSE',
+			'-dBATCH',
+			'-dPrinted=false',
+			'-dSAFER',
+			'-dQUIET',
+			'-dCompatibilityLevel=1.4',
+			'-dSimulateOverprint=true',
+			'-sDEVICE=pdfwrite',
+			'-dPDFSETTINGS=/screen',
+			'-dEmbedAllFonts=true',
+			'-dSubsetFonts=true',
+			'-dAutoRotatePages=/None',
+			'-dColorImageDownsampleType=/Bicubic',
+			'-dColorImageResolution=150',
+			'-dGrayImageDownsampleType=/Bicubic',
+			'-dGrayImageResolution=150',
+			'-dMonoImageDownsampleType=/Bicubic',
+			'-dMonoImageResolution=150'
+		].concat(ghostscript_version_specific_args(ghostscript_path)).concat(
+			["-sOutputFile=#{Shellwords.escape(out_path)}", Shellwords.escape(in_path)]
+		).join(' ')
+
+		Open3.capture2(conversion_command)
 	end
 
 	def office_convert(in_path, out_path, soffice_path, office_export_format)

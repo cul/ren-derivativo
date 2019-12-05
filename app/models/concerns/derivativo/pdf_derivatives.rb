@@ -3,7 +3,7 @@ module Derivativo::PdfDerivatives
 
 	def derivative_proc_for_output_path(out_path)
 		Proc.new do |in_path|
-			if in_path.ends_with?('.pdf')
+			if in_path =~ /pdf$/i
 				ghostscript_convert(in_path, out_path, DERIVATIVO['ghostscript_path'])
 			else
 				office_convert(in_path, out_path, DERIVATIVO['soffice_path'], 'pdf:writer_pdf_Export')

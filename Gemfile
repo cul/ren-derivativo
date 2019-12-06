@@ -86,7 +86,7 @@ gem 'logger', '~> 1.2.8.1'
 # Gem min versions that are only specified here because of vulnerabilities in earlier versions:
 gem 'rubyzip', '>= 1.2.1'
 gem 'rack-protection', '>= 1.5.5'
-gem 'loofah', '>= 2.2.1'
+gem 'loofah', '>= 2.3.1'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -14,7 +14,7 @@ module Derivativo::Iiif::BaseCreation
 	def create_base_derivatives_if_not_exist
 		# Avoid duplicate base creation requests while base creation is in progress
 		return if db_cache_record.derivative_generation_in_progress || base_derivatives_complete?
-	
+
 		# Mark derivative generation as being in progress in the database
 		db_cache_record.update(derivative_generation_in_progress: true)
 
@@ -32,7 +32,7 @@ module Derivativo::Iiif::BaseCreation
 				Derivativo::Utils::FileUtils.block_until_file_exists(placeholder_base_dst_file) # Account for network disk delays
 				return
 			end
-	
+
 			generic_resource = ActiveFedora::Base.find(self.id)
 
 			# We only ever want to create base derivatives for rasterable GenericResources (like images or PDFs).
@@ -70,9 +70,20 @@ module Derivativo::Iiif::BaseCreation
 
 						# Using '[0]' at end of the filename to tell ImageMagick to only look at the first page.
 						# MUCH faster than Magick::ImageList.new(image_path) or Magick::Image.read(image_path) for multi-page PDFs.
-						pdf = Magick::Image.read(image_path + '[0]')
-
-						pdf[0].write(base_cache_path)
+						conversion_command = [
+							"gs",
+							"-sDEVICE=png16m", # 24-bit RGB
+							"-r300", # 300 dpi resolution from source PDF
+							"-dTextAlphaBits=4", # font antialiasing
+							"-dFirstPage=1",
+							"-dLastPage=1",
+							"-dNOPAUSE",
+							"-dQUIET",
+							"-dBATCH",
+							"-sOutputFile=#{base_cache_path}",
+							 image_path
+						].join(' ')
+						system(conversion_command)
 						Rails.logger.debug 'Created base image from PDF in ' + (Time.now-start_time).to_s + ' seconds'
 					elsif Derivativo::FedoraObjectTypeCheck.is_generic_resource_rasterable_video?(generic_resource, rasterable_dsid)
 						Rails.logger.debug 'Creating base image from video...'

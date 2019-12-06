@@ -80,8 +80,8 @@ module Derivativo::Iiif::BaseCreation
 							"-dNOPAUSE",
 							"-dQUIET",
 							"-dBATCH",
-							"-sOutputFile=#{base_cache_path}",
-							 image_path
+							"-sOutputFile=#{Shellwords.escape(base_cache_path)}",
+							Shellwords.escape(image_path)
 						].join(' ')
 						system(conversion_command)
 						Rails.logger.debug 'Created base image from PDF in ' + (Time.now-start_time).to_s + ' seconds'

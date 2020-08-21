@@ -79,7 +79,7 @@ GEM
     autoprefixer-rails (6.1.1)
       execjs
       json
-    best_type (0.0.3)
+    best_type (0.0.9)
       mime-types (~> 3.0)
     binding_of_caller (0.7.3)
       debug_inspector (>= 0.0.1)
@@ -506,7 +506,7 @@ PLATFORMS
 DEPENDENCIES
   active_fedora_relsint!
   addressable (~> 2.5)
-  best_type (= 0.0.3)
+  best_type (= 0.0.9)
   blacklight (~> 5.19)
   byebug
   capistrano (~> 3.5.0)

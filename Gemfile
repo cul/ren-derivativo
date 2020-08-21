@@ -45,7 +45,7 @@ gem 'imogen', '0.1.7'
 #gem 'imogen', :path => '../imogen'
 
 # Use best type for mime/dc lookups
-gem 'best_type', '0.0.3'
+gem 'best_type', '0.0.9'
 
 # Use rmagick for pdf image derivatives
 gem 'rmagick'

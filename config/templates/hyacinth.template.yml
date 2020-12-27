@@ -1,0 +1,11 @@
+default: &default
+  url: http://localhost:3000
+  email: derivativo@library.columbia.edu
+  password: derivativo
+  request_timeout: 120
+
+development:
+  <<: *default
+
+test:
+  <<: *default

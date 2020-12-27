@@ -1,0 +1,12 @@
+Style/ConditionalAssignment:
+  Exclude:
+    - 'lib/derivativo/conversion/ffmpeg_helpers.rb'
+
+Metrics/ClassLength:
+  Exclude:
+    - 'lib/hyacinth/client.rb'
+
+RSpec/ExampleLength:
+  Exclude:
+    - 'spec/derivativo/file_helper_spec.rb'
+    - 'spec/hyacinth/client_spec.rb'

@@ -1,24 +1,31 @@
 inherit_gem:
-  bixby: bixby_default.yml
+  rubocul: rubocul_default.yml
+
+inherit_from: .rubocop_todo.yml
 
 AllCops:
   TargetRubyVersion: 2.6.4
-  TargetRailsVersion: 6.0.0
-  DisplayCopNames: true
+  TargetRailsVersion: 6.0.3
   Exclude:
+    - 'app/javascript/**/*'
     - 'bin/**/*'
     - 'db/**/*'
-    - 'app/javascript/**/*'
+    - 'lib/tasks/**/*'
     - 'node_modules/**/*'
     - 'vendor/**/*'
-    - 'lib/tasks/derivativo/**/*'
     - 'tmp/**/*'
 
-Style/BracesAroundHashParameters:
-  Enabled: false
-
-Style/FrozenStringLiteralComment:
-  Enabled: false
-
+# If we also want to disable this rule in another project, we'll end up disabling it in
+# the rubocul gem instead.
 Style/RedundantSelf:
   Enabled: false
+
+RSpec/ExampleLength:
+  Max: 7
+  Exclude:
+    - 'spec/derivativo/conversion/office_helpers_spec.rb'
+    - 'spec/derivativo/file_helper_spec.rb'
+
+Metrics/MethodLength:
+  Exclude:
+    - 'lib/hyacinth/client.rb'

@@ -337,18 +337,4 @@ RSpec.describe Hyacinth::Client do
       end
     end
   end
-
-  describe '.buffered_read_md5_digest' do
-    let(:file_path) { file_fixture('image.jpg') }
-    let(:expected_md5_base64digest) { '+zo3VVFQNvLBOqJbryFnZQ==' }
-
-    it 'generates the expected base64digest value' do
-      expect(described_class.buffered_read_md5_digest(file_path).base64digest).to eq(expected_md5_base64digest)
-    end
-
-    it 'generates the same sum as the Digest::MD5.file method' do
-      # This is important because we need this method's functionality to match what ActiveStorage uses to verify checksums.
-      expect(described_class.buffered_read_md5_digest(file_path).base64digest).to eq(Digest::MD5.file(file_path).base64digest)
-    end
-  end
 end

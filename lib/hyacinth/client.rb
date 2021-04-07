@@ -183,19 +183,6 @@ module Hyacinth
       JSON.parse(response.body)
     end
 
-    # TODO: Maybe delete this method since Digest::MD5.file(file_path) seems to be equivalent and just as fast (from limited benchmarking).
-    # Calculates the md5 digest of the given file, reading the file in buffered chunks to keep
-    # memory usage low during calculation.
-    def self.buffered_read_md5_digest(file_path, buffer_size = 1.megabyte)
-      md5digest = ::Digest::MD5.new
-      File.open(file_path, 'rb') do |f|
-        while (chunk = f.read(buffer_size))
-          md5digest.update(chunk)
-        end
-      end
-      md5digest
-    end
-
     module Exceptions
       class Error < StandardError; end
       class UnexpectedResponse < Error; end

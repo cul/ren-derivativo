@@ -18,7 +18,7 @@ module ResourceRequestJobs
         raise Derivativo::Exceptions::OptionError, "Missing required option: #{key}"
       end
 
-      return unless allowed_values.present? && !allowed_values.include?(value)
+      return unless allowed_values.present? && allowed_values.exclude?(value)
       raise Derivativo::Exceptions::OptionError, "Value #{value} is not allowed for option #{key}. Must be one of: #{allowed_values.join(', ')}"
     end
   end

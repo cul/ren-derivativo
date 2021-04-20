@@ -10,7 +10,7 @@ module Derivativo
           Imogen::Iiif.convert(
             img,
             dst_file_path,
-            File.extname(dst_file_path)[1..-1],
+            File.extname(dst_file_path).delete_prefix('.'),
             region: 'full',
             size: 'full',
             rotation: rotation,

@@ -57,7 +57,8 @@ describe Derivativo::Conversion::OfficeHelpers do
       200.megabytes => 18,
       500.megabytes => 13,
       1000.megabytes => 11,
-      2001.megabytes => 8
+      2000.megabytes => 9,
+      3000.megabytes => 8
     }.each do |file_size, expected_compression_integer|
       it "when given a value of #{file_size}, returns a compression value of #{expected_compression_integer}" do
         expect(described_class.compression_value_for_first_try_file_size(file_size)).to eq(expected_compression_integer)

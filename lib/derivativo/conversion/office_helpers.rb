@@ -36,7 +36,6 @@ module Derivativo
       end
 
       def self.compression_value_for_first_try_file_size(size)
-        return 8 if size > 2000.megabytes
         return 80 if size <= PDF_HIGHER_COMPRESSION_CONVERSION_THRESHOLD
         # This formula seems to give decent results, but might need more adjustments in the future.
         ((1 / Math.log(size.to_f / 1.megabyte, 10))**2 * 100).to_i

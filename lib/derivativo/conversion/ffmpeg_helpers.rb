@@ -32,7 +32,7 @@ module Derivativo
           # Arguments can either be standalone dash-prefixed keys OR dash-prefixed keys followed by a non-dash-prefixed value.
           next unless arg.start_with?('-')
 
-          key = arg[1..-1]
+          key = arg.delete_prefix('-')
           if args_as_arr.length == i + 1 || args_as_arr[i + 1].start_with?('-')
             # This is either the final argument in the list OR a dash-prefixed argument that's followed by a different dash-prefixed argument.
             # Either way, assign associated value to nil.

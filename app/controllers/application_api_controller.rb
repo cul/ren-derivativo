@@ -17,7 +17,7 @@ class ApplicationApiController < ActionController::API
     # used as a before_action callback for any controller actions that require authorization.
     def authenticate_request_token
       authenticate_or_request_with_http_token do |token, _options|
-        DERIVATIVO['remote_request_api_key'] == token
+        ActiveSupport::SecurityUtils.secure_compare(DERIVATIVO['remote_request_api_key'], token)
       end
     end
 end

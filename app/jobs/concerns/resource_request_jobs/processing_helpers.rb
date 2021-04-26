@@ -6,8 +6,10 @@ module ResourceRequestJobs
 
     def with_shared_error_handling(resource_request_id)
       yield
-    rescue Faraday::ConnectionFailed
-      Rails.logger.error("Unable to connect to Hyacinth, so #{self.class.name} for resource request #{resource_request_id} failed.")
+    rescue Faraday::ConnectionFailed => e
+      Rails.logger.error("Unable to connect to Hyacinth, so #{self.class.name} for resource request #{resource_request_id} failed. Error message: #{e.message}")
+    rescue Faraday::TimeoutError => e
+      Rails.logger.error("Connection to Hyacinth timed out, so #{self.class.name} for resource request #{resource_request_id} failed. Error message: #{e.message}")
     rescue Hyacinth::Client::Exceptions::UnexpectedResponse, Derivativo::Exceptions::OptionError => e
       Rails.logger.error("#{self.class.name} for resource request #{resource_request_id} failed. Error message: #{e.message}")
       Hyacinth::Client.instance.resource_request_failure!(resource_request_id, [e.message])

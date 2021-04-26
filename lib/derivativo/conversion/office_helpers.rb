@@ -63,13 +63,11 @@ module Derivativo
             expected_conversion_outpath = File.join(office_temp_outdir, File.basename(src_file_path).sub(/(.+)\..+$/, '\1.pdf'))
             Derivativo::FileHelper.block_until_file_exists(expected_conversion_outpath)
 
+            raise Derivativo::Exceptions::ConversionError, "Failed to convert document to PDF using command: #{cmd_to_run}" unless File.exist?(expected_conversion_outpath)
+
             # Move the generated file to the correct out_path
-            if File.exist?(expected_conversion_outpath)
-              FileUtils.mv(expected_conversion_outpath, dst_file_path)
-              Derivativo::FileHelper.block_until_file_exists(dst_file_path)
-            else
-              Rails.logger.error("Failed to convert document to PDF using command: #{cmd_to_run}")
-            end
+            FileUtils.mv(expected_conversion_outpath, dst_file_path)
+            Derivativo::FileHelper.block_until_file_exists(dst_file_path)
           end
         end
       end

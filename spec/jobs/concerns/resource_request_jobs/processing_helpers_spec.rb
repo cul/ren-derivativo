@@ -34,7 +34,7 @@ RSpec.describe ResourceRequestJobs::ProcessingHelpers do
           expect(Hyacinth::Client.instance).to receive(:resource_request_failure!).with(resource_request_id, [String])
         end
 
-        [Hyacinth::Client::Exceptions::UnexpectedResponse, Derivativo::Exceptions::OptionError].each do |error_class|
+        [Hyacinth::Client::Exceptions::UnexpectedResponse, Derivativo::Exceptions::OptionError, Derivativo::Exceptions::ConversionError].each do |error_class|
           context "when an error of type #{error_class} is raised" do
             it 'rescues the error' do
               expect {

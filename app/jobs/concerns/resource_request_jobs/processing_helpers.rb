@@ -10,7 +10,7 @@ module ResourceRequestJobs
       Rails.logger.error("Unable to connect to Hyacinth, so #{self.class.name} for resource request #{resource_request_id} failed. Error message: #{e.message}")
     rescue Faraday::TimeoutError => e
       Rails.logger.error("Connection to Hyacinth timed out, so #{self.class.name} for resource request #{resource_request_id} failed. Error message: #{e.message}")
-    rescue Hyacinth::Client::Exceptions::UnexpectedResponse, Derivativo::Exceptions::OptionError => e
+    rescue Hyacinth::Client::Exceptions::UnexpectedResponse, Derivativo::Exceptions::OptionError, Derivativo::Exceptions::ConversionError => e
       Rails.logger.error("#{self.class.name} for resource request #{resource_request_id} failed. Error message: #{e.message}")
       Hyacinth::Client.instance.resource_request_failure!(resource_request_id, [e.message])
     end

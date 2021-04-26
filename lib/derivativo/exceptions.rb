@@ -9,5 +9,7 @@ module Derivativo
 
     class InvalidJobType < DerivativoError; end
     class OptionError < DerivativoError; end
+
+    class ConversionError < DerivativoError; end
   end
 end

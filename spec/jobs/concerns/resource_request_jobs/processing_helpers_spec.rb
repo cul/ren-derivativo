@@ -15,11 +15,11 @@ RSpec.describe ResourceRequestJobs::ProcessingHelpers do
 
     context 'successfully rescued errors' do
       context 'loggable errors' do
-        [Faraday::ConnectionFailed].each do |error_class|
-          before do
-            expect(Rails.logger).to receive(:error)
-          end
+        [Faraday::ConnectionFailed, Faraday::TimeoutError].each do |error_class|
           context "when an error of type #{error_class} is raised" do
+            before do
+              expect(Rails.logger).to receive(:error)
+            end
             it 'rescues the error' do
               expect {
                 instance.with_shared_error_handling(resource_request_id) { raise error_class, 'Some message' }

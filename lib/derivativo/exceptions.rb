@@ -11,5 +11,6 @@ module Derivativo
     class OptionError < DerivativoError; end
 
     class ConversionError < DerivativoError; end
+    class TimeoutException < DerivativoError; end
   end
 end

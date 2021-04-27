@@ -38,14 +38,16 @@ module Derivativo
       end
     end
 
-    # Blocks until a file is found at the given path, or until timeout passes
+    # Waits for a while until a file is found at the given path, periodically checking along a
+    # given retry_interval.  One the number_of_retries has been exceeded, raises an exception
+    # if the file is still not found.
     def self.block_until_file_exists(path_to_file, retry_interval = 0.25, number_of_retries = 3)
       return true if File.exist?(path_to_file)
       number_of_retries.times do
         sleep retry_interval
-        return true if File.exist?(path_to_file)
+        return if File.exist?(path_to_file)
       end
-      false
+      raise Derivativo::Exceptions::TimeoutException, "Waited for a while, but did not find file at: #{path_to_file}"
     end
   end
 end

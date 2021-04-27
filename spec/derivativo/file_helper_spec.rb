@@ -107,7 +107,7 @@ describe Derivativo::FileHelper do
     let(:retry_interval) { 1.0 }
     let(:num_retries) { 3 }
 
-    it "will not sleep for :check_interval and will return immediately if file is found" do
+    it "will not sleep for retry_interval, instead returning immediately when the file is found" do
       with_auto_deleting_tempfile('foo', '.txt') do |file|
         start_time = Time.current
         result = described_class.block_until_file_exists(file.path, retry_interval, num_retries)
@@ -116,13 +116,12 @@ describe Derivativo::FileHelper do
       end
     end
 
-    it "will check max number of times for a file that doesn't exist and will return false" do
+    it "will check max number of times for a file that doesn't exist and will then raise an exception" do
       non_existent_file_path = '/definitely/does/not/exist/25379/25370/file'
       start_time = Time.current
-      result = described_class.block_until_file_exists(non_existent_file_path, retry_interval, num_retries)
+      expect { described_class.block_until_file_exists(non_existent_file_path, retry_interval, num_retries) }.to raise_error(Derivativo::Exceptions::TimeoutException)
       timing_margin_of_error = retry_interval * 0.1 # add a margin of error to our time comparison to account for minor timing differences in test
       expect(Time.current - start_time).to be >= ((num_retries * retry_interval) - timing_margin_of_error)
-      expect(result).to be false
     end
   end
 end

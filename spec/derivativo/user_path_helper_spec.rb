@@ -17,8 +17,13 @@ describe Derivativo::UserPathHelper do
         expect(described_class.which('ffmpeg')).to eq('/the/second/path/ffmpeg')
       end
 
-      it 'does not find a program that is not on the path' do
-        expect(described_class.which('not_a_real_program')).to eq(nil)
+      context "when a program is not on the path" do
+        before do
+          allow(described_class).to receive(:case_sensitive_file_path).and_return(nil)
+        end
+        it 'does not find a program that is not on the path' do
+          expect(described_class.which('not_a_real_program')).to eq(nil)
+        end
       end
     end
 
@@ -36,8 +41,13 @@ describe Derivativo::UserPathHelper do
         expect(described_class.which('ffmpeg')).to eq('C:\the\second\path\ffmpeg.exe')
       end
 
-      it 'does not find a program that is not on the path' do
-        expect(described_class.which('not_a_real_program')).to eq(nil)
+      context "when a program is not on the path" do
+        before do
+          allow(described_class).to receive(:case_sensitive_file_path).and_return(nil)
+        end
+        it 'does not find a program that is not on the path' do
+          expect(described_class.which('not_a_real_program')).to eq(nil)
+        end
       end
     end
   end
@@ -49,6 +59,14 @@ describe Derivativo::UserPathHelper do
 
     it 'returns the expected value' do
       expect(described_class.case_sensitive_file_path(directory_path, upcase_filename)).to eq(existing_file_path)
+    end
+
+    it 'returns nil when the given directory exists, but the file does not' do
+      expect(described_class.case_sensitive_file_path(directory_path, 'does-not-exist')).to eq(nil)
+    end
+
+    it 'returns nil when neither the directory does not exist' do
+      expect(described_class.case_sensitive_file_path('directory-that-does-not-exist', 'does-not-exist')).to eq(nil)
     end
   end
 

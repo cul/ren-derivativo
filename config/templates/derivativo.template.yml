@@ -1,0 +1,14 @@
+default: &default
+  remote_request_api_key: 'changethis'
+  ffmpeg_binary_path: 'ffmpeg'
+  soffice_binary_path: 'soffice'
+  ghostscript_binary_path: 'gs'
+  tika_jar_path: '/path/to/your/tika-app.jar'
+
+development:
+  <<: *default
+  working_directory: <%= Rails.root.join('tmp', 'development', 'working_directory') %>
+
+test:
+  <<: *default
+  working_directory: <%= Rails.root.join('tmp', 'test', 'working_directory') %>

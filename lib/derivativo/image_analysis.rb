@@ -1,0 +1,26 @@
+# frozen_string_literal: true
+
+require 'benchmark'
+
+module Derivativo
+  module ImageAnalysis
+    def self.featured_thumbnail_region(src_file_path:)
+      Rails.logger.info "Detecting featured thumbnail region for #{src_file_path} ..."
+      x = y = width = height = nil
+      time = Benchmark.measure do
+        Imogen.with_image(src_file_path) do |img|
+          # We try to use at least 768 pixels from any image when generating a featured
+          # area crop so that we don't unintentionally get a tiny 10px x 10px crop
+          # that ends up getting scaled up for users and looks blocky/blurry.
+          left_x, top_y, right_x, bottom_y = Imogen::Iiif::Region::Featured.get(img, 768)
+          x = left_x
+          y = top_y
+          width = right_x - left_x
+          height = bottom_y - top_y
+        end
+      end
+      Rails.logger.info("Finished detecting featured thumbnail region for file #{src_file_path} in #{time.real} seconds.")
+      [x, y, width, height].join(',')
+    end
+  end
+end

@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 namespace :derivativo do
   require 'rspec/core/rake_task'
   RSpec::Core::RakeTask.new(:rspec) do |spec|
+    spec.rspec_opts ||= []
     spec.rspec_opts << '--backtrace' if ENV['CI']
   end
 
@@ -25,7 +28,6 @@ namespace :derivativo do
       ENV['RAILS_ENV'] = 'test'
       Rails.env = ENV['RAILS_ENV']
 
-      puts "setting up test db...\n"
       Rake::Task['db:environment:set'].invoke
       Rake::Task['db:drop'].invoke
       Rake::Task['db:create'].invoke
@@ -36,7 +38,7 @@ namespace :derivativo do
         rspec_system_exit_failure_exception = e
       end
     end
-    puts "\nCI run finished in #{duration} seconds."
+    puts "CI run finished in #{duration} seconds."
     # If present, re-raise any caught exit exception after CI duration display,
     # so we can still display the run time even when a system exception comes up.
     # This exception triggers an exit call with the original error code sent out by rspec failure.

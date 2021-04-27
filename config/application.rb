@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'boot'
 
 require "rails"
@@ -24,6 +26,9 @@ module Derivativo
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 6.0
 
+    # Custom directories with classes and modules you want to be eager loaded.
+    config.eager_load_paths += %W[#{config.root}/lib]
+
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration can go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded after loading
@@ -31,5 +36,9 @@ module Derivativo
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+
+    config.active_job.queue_adapter = :resque
+    config.active_job.queue_name_prefix = "derivativo.#{Rails.env}"
+    config.active_job.queue_name_delimiter = '.'
   end
 end

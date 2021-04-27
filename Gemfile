@@ -1,15 +1,25 @@
+# frozen_string_literal: true
+
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.6.4'
 
+# Use best_type for media type detection
+gem 'best_type', '~> 0.0.10'
+# For schema validation
+gem 'dry-validation', '~> 1.6.0'
+# Faraday for http requests
+gem 'faraday', '~> 1.1'
+# Use imogen for generating images
+gem 'imogen', '~> 0.2.1'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.7'
 # Use Puma as the app server
-gem 'puma', '~> 3.11'
+gem 'puma', '~> 5.2'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0.0'
-# Rainbow for queued jobs
+gem 'rails', '~> 6.0.3'
+# Resque for queued jobs
 gem 'resque', '~> 2.0'
 # Rainbow for text coloring
 gem 'rainbow', '~> 3.0'
@@ -17,6 +27,8 @@ gem 'rainbow', '~> 3.0'
 gem 'sqlite3', '~> 1.4'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5'
+# For ffmpeg video conversion
+gem 'streamio-ffmpeg', '~> 3.0'
 # Transpile app-like JavaScript. Read more: https://github.com/rails/webpacker
 gem 'webpacker', '~> 4.0'
 # Use Redis adapter to run Action Cable in production
@@ -31,12 +43,18 @@ gem 'webpacker', '~> 4.0'
 gem 'bootsnap', '>= 1.4.2', require: false
 
 group :development, :test do
-  # rubocop + presets
-  gem 'bixby', '2.0.0.pre.beta1' # bixby (i.e. rubocop presets)
+  # rubocop + CUL presets
+  gem 'rubocul', '2.0.0'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # rspec for testing
   gem 'rspec-rails', '~> 3.8'
+  # json_spec for easier json comparison in tests
+  gem 'json_spec'
+  # simplecov for test coverage reports
+  gem 'simplecov', require: false
+  # for mocking http requests in tests
+  gem 'webmock'
 end
 
 group :development do

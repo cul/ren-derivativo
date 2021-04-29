@@ -19,6 +19,7 @@ class IiifResource
     @version = opts.fetch(:version, '2')
     @region = opts.fetch(:region, 'full')
     @size = opts.fetch(:size, 'full')
+    @size = 'full' if @size == 'max'
     @rotation = opts.fetch(:rotation, '0').to_s # .to_s in case someone passes an integer value because we expect a string
     @quality = opts.fetch(:quality, 'native')
     @format = opts.fetch(:format, 'jpg')

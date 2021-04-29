@@ -33,7 +33,13 @@ RSpec.describe IiifResource, type: :model do
         expect(subject.quality).to eql(opts[:quality])
         expect(subject.format).to eql(opts[:format])
       end
+      context "with a v3 size keyword, maps to v2" do
+        subject { described_class.new(opts.merge(size: 'max')) }
+        it "sets params properly" do
+          expect(subject.id).to eql(opts[:id])
+          expect(subject.size).to eql('full')
+        end
+      end
     end
   end
-  
 end

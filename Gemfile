@@ -15,6 +15,8 @@ gem 'faraday', '~> 1.1'
 gem 'imogen', '~> 0.2.1'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.7'
+# Use mysql as a database option for Active Record
+gem 'mysql2', '~> 0.5'
 # Use Puma as the app server
 gem 'puma', '~> 5.2'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
@@ -23,7 +25,7 @@ gem 'rails', '~> 6.0.3'
 gem 'resque', '~> 2.0'
 # Rainbow for text coloring
 gem 'rainbow', '~> 3.0'
-# Use sqlite3 as the database for Active Record
+# Use sqlite3 as a database option for Active Record
 gem 'sqlite3', '~> 1.4'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5'

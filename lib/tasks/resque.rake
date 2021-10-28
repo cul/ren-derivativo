@@ -51,33 +51,35 @@ namespace :resque do
 
     if pids.empty?
       puts "No workers to kill"
-    else
-      # First tell workers to stop accepting new work by sending USR2 signal
-      puts "\nTelling workers to finish current jobs, but not process any new jobs..."
-      syscmd = "kill -s USR2 #{pids.join(' ')}"
-      puts "$ #{syscmd}"
-      `#{syscmd}`
-      puts "\n"
-      puts "Waiting for workers to finish current jobs..."
-      start_time = Time.now
-      while (Time.now - start_time) < MAX_WAIT_TIME_TO_KILL_WORKERS do
-        sleep 1
-        num_workers_working = Resque.workers.select { |w| w.working? }.length
-        puts "#{num_workers_working} workers still working..."
-        break if num_workers_working.zero?
-      end
-      puts "\n"
-      if Resque.workers.select(&:working?).length > 0
-        puts "Workers are still running, but wait time of #{MAX_WAIT_TIME_TO_KILL_WORKERS} has been exceeded. Sending QUIT signal anyway."
-      else
-        puts 'Workers are no longer processing any jobs. Sending QUIT signal.'
-      end
-      syscmd = "kill -s QUIT #{pids.join(' ')}"
-      puts "$ #{syscmd}"
-      `#{syscmd}`
-      store_pids([], :write)
-      puts "\n"
+      return
     end
+
+    # First tell workers to stop accepting new work by sending USR2 signal
+    puts "\nTelling workers to finish current jobs, but not process any new jobs..."
+    syscmd = "kill -s USR2 #{pids.join(' ')}"
+    puts "$ #{syscmd}"
+    `#{syscmd}`
+    puts "\n"
+    puts "Waiting for workers to finish current jobs..."
+    start_time = Time.now
+    while (Time.now - start_time) < MAX_WAIT_TIME_TO_KILL_WORKERS do
+      sleep 1
+      num_workers_working = Resque.workers.select { |w| w.working? }.length
+      puts "#{num_workers_working} workers still working..."
+      break if num_workers_working.zero?
+    end
+    puts "\n"
+    if Resque.workers.select(&:working?).length > 0
+      puts "Workers are still running, but wait time of #{MAX_WAIT_TIME_TO_KILL_WORKERS} has been exceeded. Sending QUIT signal anyway."
+    else
+      puts 'Workers are no longer processing any jobs. Sending QUIT signal.'
+    end
+    syscmd = "kill -s QUIT #{pids.join(' ')}"
+    puts "$ #{syscmd}"
+    `#{syscmd}`
+    store_pids([], :write)
+    puts "\n"
+
     # Unregister old workers
     Resque.workers.each {|w| w.unregister_worker}
   end

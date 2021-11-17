@@ -1,11 +1,11 @@
 source 'https://rubygems.org'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.2.8'
+gem 'rails', '~> 4.2.11'
 
 # Use sqlite3 or mysql2 as the databases for Active Record
 gem 'sqlite3'
-gem 'mysql2', '0.4.10'
+gem 'mysql2', '~> 0.5'
 
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
@@ -41,7 +41,7 @@ gem 'cul_hydra', '~> 1.7.5'
 gem 'active_fedora_relsint', :git => 'https://github.com/cul/active_fedora_relsint.git', :branch => 'master'
 
 # Use imogen for generating images
-gem 'imogen', '0.1.7'
+gem 'imogen', '0.2.1'
 #gem 'imogen', :path => '../imogen'
 
 # Use best type for mime/dc lookups
@@ -56,9 +56,6 @@ gem 'streamio-ffmpeg', '~> 3.0'
 
 # For http requests
 gem 'rest-client'
-
-# Use free-image gem fork
-gem 'free-image', :git => 'https://github.com/barmintor/free-image-ruby.git', :branch => 'master'
 
 # For retrying code blocks that may return an error
 gem 'retriable', '~> 2.1'

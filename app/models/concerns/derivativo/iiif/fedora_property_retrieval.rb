@@ -1,6 +1,6 @@
 module Derivativo::Iiif::FedoraPropertyRetrieval
   extend ActiveSupport::Concern
-  
+
   def fedora_object
     @fedora_object ||= begin
       begin
@@ -11,7 +11,7 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
       end
     end
   end
-  
+
   def fedora_property_get(key)
     case key
     when Derivativo::Iiif::CacheKeys::ORIGINAL_IMAGE_DIMENSIONS_KEY
@@ -62,7 +62,7 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
       [original_image_width.to_i || 0, original_image_height.to_i || 0]
     end
   end
-  
+
   def fedora_get_is_restricted_size_image
     representative_generic_resource = fedora_get_representative_generic_resource
     return false if representative_generic_resource.nil?
@@ -74,12 +74,12 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
     return nil if representative_generic_resource.nil?
     representative_generic_resource.datastreams['DC'].dc_type.first
   end
-  
+
   def fedora_get_representative_generic_resource
     # If previously defined, @representative_generic_resource may have been assigned a value of nil,
     # and if so, we want to return that nil value
     return @representative_generic_resource if instance_variable_defined?(:@representative_generic_resource)
-    
+
     @representative_generic_resource ||= begin
       if fedora_object.nil?
         nil
@@ -88,7 +88,7 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
       end
     end
   end
-  
+
   def fedora_get_representative_generic_resource_id
     fedora_get_representative_generic_resource.present? ? fedora_get_representative_generic_resource.pid : nil
   end
@@ -100,10 +100,10 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
   def fedora_get_featured_region
     representative_generic_resource = fedora_get_representative_generic_resource
     return nil if representative_generic_resource.nil?
-    
+
     # Get featured region from Fedora object, or auto-detect a featured region (and save that featured region in Fedora for future retrieval)
     featured_region = representative_generic_resource.relationships(:region_featured).first.to_s if representative_generic_resource.relationships(:region_featured).present?
-    
+
     if featured_region.blank?
 			if base_derivatives_complete?
 				featured_region = featured_region_for_image(base_cache_path)
@@ -112,27 +112,28 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
 					featured_region = featured_region_for_image(image_path)
 				end
 			end
-			
+
 			representative_generic_resource.add_relationship(:region_featured, featured_region, true)
-      
+
       Retriable.retriable on: [RestClient::RequestTimeout], tries: 3, base_interval: 5 do
         representative_generic_resource.save(update_index: false)
       end
     end
     featured_region
   end
-  
+
   def featured_region_for_image(image_path)
-		Imogen.with_image(image_path) do |img|
-				# No featured region has been set, so we'll use Imogen's AutoCrop feature detection to set a "best guess" featured region
-				frame = Imogen::AutoCrop::Edges.new(img)
-				x1, y1, x2, y2 = frame.get([img.width, img.height].min)
-				x = x1
-				y = y1
-				width = x2-x1
-				height = y2-y1
-				[x, y, width, height].join(',')
-			end
+    x = y = width = height = nil
+    Imogen.with_image(image_path) do |img|
+      # We try to use at least 768 pixels from any image when generating a featured
+      # area crop so that we don't unintentionally get a tiny 10px x 10px crop
+      # that ends up getting scaled up for users and looks blocky/blurry.
+      left_x, top_y, right_x, bottom_y = Imogen::Iiif::Region::Featured.get(img, 768)
+      x = left_x
+      y = top_y
+      width = right_x - left_x
+      height = bottom_y - top_y
+    end
+    [x, y, width, height].join(',')
 	end
-  
 end

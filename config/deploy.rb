@@ -33,7 +33,7 @@ set :log_level, :info
 set :linked_dirs, fetch(:linked_dirs, []).push('log','tmp/pids')
 
 # Default value for keep_releases is 5
-set :keep_releases, 2
+set :keep_releases, 5
 
 set :passenger_restart_with_touch, true
 

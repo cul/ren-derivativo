@@ -384,7 +384,6 @@ GEM
       mime-types (>= 1.16, < 4.0)
       netrc (~> 0.8)
     retriable (2.1.0)
-    rmagick (2.16.0)
     rsolr (1.1.2)
       builder (>= 2.1.2)
     rspec-core (3.7.0)
@@ -528,7 +527,6 @@ DEPENDENCIES
   resque (~> 1.26.0)
   rest-client
   retriable (~> 2.1)
-  rmagick
   rspec-rails (~> 3.5)
   rubyzip (>= 1.2.1)
   sass-rails (~> 5.0)

@@ -68,8 +68,6 @@ module Derivativo::Iiif::BaseCreation
 						Rails.logger.debug 'Creating base image from PDF...'
 						start_time = Time.now
 
-						# Using '[0]' at end of the filename to tell ImageMagick to only look at the first page.
-						# MUCH faster than Magick::ImageList.new(image_path) or Magick::Image.read(image_path) for multi-page PDFs.
 						conversion_command = [
 							"gs",
 							"-sDEVICE=png16m", # 24-bit RGB

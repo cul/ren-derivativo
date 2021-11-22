@@ -47,9 +47,6 @@ gem 'imogen', '0.2.1'
 # Use best type for mime/dc lookups
 gem 'best_type', '0.0.9'
 
-# Use rmagick for pdf image derivatives
-gem 'rmagick'
-
 # Use streamio-ffmpeg for audio/video
 # https://github.com/streamio/streamio-ffmpeg
 gem 'streamio-ffmpeg', '~> 3.0'

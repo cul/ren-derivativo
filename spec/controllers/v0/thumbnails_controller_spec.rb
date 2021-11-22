@@ -1,6 +1,5 @@
 require 'rails_helper'
 require 'base64'
-require 'rmagick'
 
 RSpec.describe V0::ThumbnailsController, type: :controller do
   describe "verify_user" do
@@ -49,10 +48,11 @@ RSpec.describe V0::ThumbnailsController, type: :controller do
         Tempfile.open([fn, File.extname(fn).downcase], encoding: 'ascii-8bit') do |tempfile|
           tempfile.write(response.body)
           tempfile.close
-          img = Magick::Image.read(tempfile.path).first
-          expect(img.base_columns).to eql 100
-          expect(img.base_rows).to eql 100
-          expect(img.format).to eql 'JPEG'
+          Imogen.with_image(tempfile.path) do |img|
+            expect(img.width).to eql 100
+            expect(img.height).to eql 100
+            expect(img.get('vips-loader')).to eql 'jpegload'
+          end
         end
       end
     end

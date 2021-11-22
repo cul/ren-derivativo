@@ -23,6 +23,14 @@ module Derivativo
 end
 
 namespace :derivativo do
+  task :imogen_test => :environment do
+    puts 'start'
+    image_path = '/digital/preservation/RBML/tbm/RBML_CCOH_ContinentalGroupProject_4072540_001-a7185fcf-b2d5-4b51-bb7a-144b633d9da6/data/objects/CCOH_ContinentalGroupProject_4072540/Simple/CCOH_Fell_HarveyH_13537909/Master/CCOH_Fell_HarveyH_13537909_01_01_m.wav'
+    Imogen.with_image(image_path) do |img|
+      puts "opened image: #{image_path}"
+    end
+    puts 'done'
+  end
 
   namespace :path do
     task :for_pid => :environment do

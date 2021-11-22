@@ -1,6 +1,8 @@
 module Derivativo::Iiif::CachableProperties
   extend ActiveSupport::Concern
 
+  PLACEHOLDER_IMAGE_ORIGINAL_SIZE = 2292
+
   def self.included(base)
     # Ensure that private methods exist in this module for all PROPERTY_CACHE_KEYS
     Derivativo::Iiif::CacheKeys::PROPERTY_CACHE_KEYS.each do |cache_key|
@@ -71,6 +73,9 @@ module Derivativo::Iiif::CachableProperties
   private
 
   def original_image_dimensions
+    # resources that have placeholder images should return the width and height of the placeholder
+    return [PLACEHOLDER_IMAGE_ORIGINAL_SIZE, PLACEHOLDER_IMAGE_ORIGINAL_SIZE] if has_placeholder_image?
+
     fedora_get_original_image_dimensions
   end
 

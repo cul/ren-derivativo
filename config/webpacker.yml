@@ -86,7 +86,7 @@ test:
   # Compile test packs to a separate directory
   public_output_path: packs-test
 
-production:
+production: &production
   <<: *default
 
   # Production depends on precompilation of packs prior to booting for performance.
@@ -97,3 +97,15 @@ production:
 
   # Cache manifest.json for performance
   cache_manifest: true
+
+derivativo_new_dev:
+  <<: *production
+
+derivativo_new_test:
+  <<: *production
+
+derivativo_new_prod:
+  <<: *production
+
+derivativo_new_processing:
+  <<: *production

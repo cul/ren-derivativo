@@ -10,7 +10,7 @@
     <% # stylesheet_pack_tag is available as long as javascript_pack_tag includes at least one css file %>
     <%= stylesheet_pack_tag 'derivativo_ui_v1' %>
   </head>
-  <body class="derivativo-ui-v1">
+  <body class="derivativo-ui-v1" data-app-version="<%= File.read(Rails.root.join('VERSION')) %>">
     <%= yield %>
     <%= javascript_pack_tag 'derivativo_ui_v1' %>
   </body>

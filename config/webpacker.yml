@@ -98,6 +98,9 @@ production: &production
   # Cache manifest.json for performance
   cache_manifest: true
 
+derivativo_dev:
+  <<: *production
+
 derivativo_new_dev:
   <<: *production
 

@@ -1,7 +1,8 @@
 default: &default
   remote_request_api_key: 'changethis'
-  ffmpeg_binary_path: 'ffmpeg'
-  soffice_binary_path: 'soffice'
+  #ffmpeg_binary_path: '/usr/local/bin/ffmpeg'
+  #ffprobe_binary_path: '/usr/local/bin/ffprobe'
+  #ghostscript_binary_path: 'gs'
   ghostscript_binary_path: 'gs'
   tika_jar_path: '/path/to/your/tika-app.jar'
 

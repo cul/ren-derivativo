@@ -34,8 +34,11 @@ Note that some features (and the test suite) won't run properly if you don't hav
 
 ```
 ffmpeg_binary_path: '/path/to/ffmpeg'
+ffmpeg_binary_path: '/path/to/ffprobe'
 ghostscript_binary_path: '/path/to/gs'
 ```
+
+Make sure not to set the above overrides if you want to use the binary on your path.
 
 Note that the Tika jar location always needs to be specified in `config/derivativo.yml` because it's not a standalone executable like other binaries and needs to be run with the `java -jar` command:
 
@@ -47,6 +50,7 @@ And depending on how you install LibreOffice, the internal office binary may not
 ```
 soffice_binary_path: '/Applications/LibreOffice.app/Contents/MacOS/soffice'
 ```
+But once again, omit this override if you want to refer to the version on your path.
 
 ## Development Notes
 

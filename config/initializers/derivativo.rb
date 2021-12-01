@@ -2,6 +2,9 @@
 
 DERIVATIVO = Rails.application.config_for(:derivativo)
 
+FFMPEG.ffmpeg_binary = DERIVATIVO['ffmpeg_binary_path'] if DERIVATIVO['ffmpeg_binary_path'].present?
+FFMPEG.ffprobe_binary = DERIVATIVO['ffprobe_binary_path'] if DERIVATIVO['ffprobe_binary_path'].present?
+
 # If no working_directory is set, use default tmpdir.
 if DERIVATIVO['working_directory'].blank?
   DERIVATIVO['working_directory'] = Dir.tmpdir

@@ -1,7 +1,9 @@
 source 'https://rubygems.org'
 
+gem 'bootsnap'
+gem 'listen'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 4.2.11'
+gem 'rails', '~> 5.2.6'
 
 # Use sqlite3 or mysql2 as the databases for Active Record
 gem 'sqlite3'
@@ -11,8 +13,6 @@ gem 'mysql2', '~> 0.5'
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
-# Use CoffeeScript for .coffee assets and views
-gem 'coffee-rails', '~> 4.1.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 gem 'therubyracer', '>= 0.12.3',  platforms: :ruby
 gem 'libv8', '>= 3.16.14.19' # Min version for Mac OS 10.11, XCode 9.0, Ruby 2.4
@@ -30,18 +30,16 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use Unicorn as the app server
 # gem 'unicorn'
 
-# Hydra stack
 gem 'nokogiri', '~> 1.8.1'
-gem 'blacklight', '~> 5.19'
-gem 'hydra-head', '~>7'
 
 # Columbia Hydra models
-gem 'cul_hydra', '~> 1.7.5'
+gem 'cul_hydra', '~> 1.11.0'
 #gem 'cul_hydra', :path => '../cul_hydra'
 gem 'active_fedora_relsint', :git => 'https://github.com/cul/active_fedora_relsint.git', :branch => 'master'
 
 # Use imogen for generating images
 gem 'imogen', '0.2.1'
+gem 'ruby-vips', '~> 2.0.16'
 #gem 'imogen', :path => '../imogen'
 
 # Use best type for mime/dc lookups
@@ -86,8 +84,8 @@ group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 
-  gem 'rspec-rails', '~> 3.5'
-  gem 'jettywrapper', '>= 1.5.1'
+  gem 'rspec-rails', '~> 5.0.2'
+  gem 'jettywrapper', '>=2.0.5', git: 'https://github.com/samvera-deprecated/jettywrapper.git', branch: 'master'
 end
 
 group :development do

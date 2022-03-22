@@ -3,7 +3,7 @@ module Derivativo::Iiif::DbCache
   
   def db_cache_record
     @db_cache_recod ||= begin
-      DbCacheRecord.find_by(pid: @id) || DbCacheRecord.create(pid: @id, data: {})
+      DbCacheRecord.find_by(pid: @id) || DbCacheRecord.create(pid: @id, data: {}.with_indifferent_access)
     end
   end
   

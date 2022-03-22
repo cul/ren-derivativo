@@ -16,7 +16,7 @@ describe ResourcesController, :type => :controller do
 
   describe '#update' do
     subject do
-      put :update, params
+      put :update, params: params
       response.status
     end
     context 'no api_key' do
@@ -67,7 +67,7 @@ describe ResourcesController, :type => :controller do
     subject do
       # Mock implementation of DerivativoResource#clear_cache so we don't try to make a call to Fedora for this test
       allow_any_instance_of(DerivativoResource).to receive(:clear_cache).and_return(nil)
-      delete :destroy, params
+      delete :destroy, params: params
       response.status
     end
     context 'no api_key' do
@@ -99,7 +99,7 @@ describe ResourcesController, :type => :controller do
 
   describe '#destroy_cachable_properties' do
     subject do
-      delete :destroy_cachable_properties, params
+      delete :destroy_cachable_properties, params: params
       response.status
     end
     context 'no api_key' do

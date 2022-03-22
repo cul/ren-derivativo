@@ -1,0 +1,7 @@
+local: &local
+  url: localhost:6379
+  namespace: derivativo
+  workers: 1
+
+development: *local
+test: *local

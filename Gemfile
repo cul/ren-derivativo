@@ -34,7 +34,8 @@ gem 'nokogiri', '~> 1.8.1'
 gem 'cul_hydra', :git => 'https://github.com/cul/cul_hydra.git', :branch => 'master'
 #gem 'cul_hydra', :path => '../cul_hydra'
 gem 'active_fedora_relsint', :git => 'https://github.com/cul/active_fedora_relsint.git', :branch => 'master'
-
+gem 'blacklight', '~> 7.22'
+gem 'view_component', '~> 2.51.0'
 # Use imogen for generating images
 gem 'imogen', '0.2.1'
 gem 'ruby-vips', '~> 2.0.16'

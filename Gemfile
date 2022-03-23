@@ -1,7 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'bootsnap'
-gem 'listen'
+gem 'bootsnap', require: false
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 6.0.4'
 
@@ -102,4 +101,5 @@ group :development do
   # The `deploy:restart` hook for passenger applications is now in a separate gem
   # Just add it to your Gemfile and require it in your Capfile.
   gem 'capistrano-passenger', '~> 0.1', require: false
+  gem 'listen'
 end

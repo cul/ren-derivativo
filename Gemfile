@@ -3,10 +3,9 @@ source 'https://rubygems.org'
 gem 'bootsnap'
 gem 'listen'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 5.2.6'
+gem 'rails', '~> 6.0.4'
 
 # Use sqlite3 or mysql2 as the databases for Active Record
-gem 'sqlite3'
 gem 'mysql2', '~> 0.5'
 
 # Use SCSS for stylesheets
@@ -33,7 +32,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'nokogiri', '~> 1.8.1'
 
 # Columbia Hydra models
-gem 'cul_hydra', '~> 1.11.0'
+gem 'cul_hydra', :git => 'https://github.com/cul/cul_hydra.git', :branch => 'master'
 #gem 'cul_hydra', :path => '../cul_hydra'
 gem 'active_fedora_relsint', :git => 'https://github.com/cul/active_fedora_relsint.git', :branch => 'master'
 
@@ -81,6 +80,7 @@ gem 'rack-protection', '>= 1.5.5'
 gem 'loofah', '>= 2.3.1'
 
 group :development, :test do
+  gem 'sqlite3'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
 

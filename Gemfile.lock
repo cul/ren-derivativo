@@ -65,9 +65,6 @@ GEM
     best_type (0.0.10)
       mime-types (~> 3.0)
     bindex (0.8.1)
-    bixby (2.0.0)
-      rubocop (= 0.63.1)
-      rubocop-rspec (= 1.31.0)
     bootsnap (1.7.4)
       msgpack (~> 1.0)
     builder (3.2.4)
@@ -154,7 +151,6 @@ GEM
       concurrent-ruby (~> 1.0)
     imogen (0.2.1)
       ruby-vips
-    jaro_winkler (1.5.4)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
     json_spec (1.1.5)
@@ -190,10 +186,9 @@ GEM
     nio4r (2.5.7)
     nokogiri (1.10.10)
       mini_portile2 (~> 2.4.0)
-    parallel (1.20.1)
-    parser (3.0.1.0)
+    parallel (1.22.1)
+    parser (3.1.1.0)
       ast (~> 2.4.1)
-    powerpack (0.1.3)
     public_suffix (4.0.6)
     puma (5.2.2)
       nio4r (~> 2.0)
@@ -238,6 +233,7 @@ GEM
     redis (4.2.5)
     redis-namespace (1.8.1)
       redis (>= 3.0.4)
+    regexp_parser (2.2.1)
     resque (2.0.0)
       mono_logger (~> 1.0)
       multi_json (~> 1.0)
@@ -266,18 +262,35 @@ GEM
       rspec-mocks (~> 3.9.0)
       rspec-support (~> 3.9.0)
     rspec-support (3.9.4)
-    rubocop (0.63.1)
-      jaro_winkler (~> 1.5.1)
+    rubocop (1.25.1)
       parallel (~> 1.10)
-      parser (>= 2.5, != 2.5.1.1)
-      powerpack (~> 0.1)
+      parser (>= 3.1.0.0)
       rainbow (>= 2.2.2, < 4.0)
+      regexp_parser (>= 1.8, < 3.0)
+      rexml
+      rubocop-ast (>= 1.15.1, < 2.0)
       ruby-progressbar (~> 1.7)
-      unicode-display_width (~> 1.4.0)
-    rubocop-rspec (1.31.0)
-      rubocop (>= 0.60.0)
-    rubocul (2.0.0)
-      bixby (= 2.0.0)
+      unicode-display_width (>= 1.4.0, < 3.0)
+    rubocop-ast (1.16.0)
+      parser (>= 3.1.1.0)
+    rubocop-graphql (0.14.2)
+      rubocop (>= 0.87, < 2)
+    rubocop-performance (1.13.3)
+      rubocop (>= 1.7.0, < 2.0)
+      rubocop-ast (>= 0.4.0)
+    rubocop-rails (2.14.2)
+      activesupport (>= 4.2.0)
+      rack (>= 1.1)
+      rubocop (>= 1.7.0, < 2.0)
+    rubocop-rspec (2.9.0)
+      rubocop (~> 1.19)
+    rubocul (4.0.0)
+      rubocop (~> 1.25.1)
+      rubocop-ast
+      rubocop-graphql
+      rubocop-performance
+      rubocop-rails
+      rubocop-rspec
     ruby-progressbar (1.11.0)
     ruby-vips (2.1.0)
       ffi (~> 1.12)
@@ -327,7 +340,7 @@ GEM
     tilt (2.0.10)
     tzinfo (1.2.9)
       thread_safe (~> 0.1)
-    unicode-display_width (1.4.1)
+    unicode-display_width (2.1.0)
     vegas (0.1.11)
       rack (>= 1.0.0)
     web-console (4.1.0)
@@ -373,7 +386,7 @@ DEPENDENCIES
   rainbow (~> 3.0)
   resque (~> 2.0)
   rspec-rails (~> 3.8)
-  rubocul (= 2.0.0)
+  rubocul (= 4.0.0)
   sass-rails (~> 5)
   simplecov
   spring
@@ -385,8 +398,5 @@ DEPENDENCIES
   webmock
   webpacker (~> 4.0)
 
-RUBY VERSION
-   ruby 2.6.4p104
-
 BUNDLED WITH
-   2.2.25
+   2.3.8

@@ -28,6 +28,7 @@ describe Derivativo::Conversion::FfmpegHelpers do
   describe '.ffmppeg_input_args_string_as_hash' do
     let(:ffmpeg_input_args) { '-threads 1 -something1 value1 -something2 value2 -otherthing -something3 value3 -yetanotherthing' }
     let(:expected_hash_args) { { 'threads' => '1', 'something1' => 'value1', 'something2' => 'value2', 'otherthing' => nil, 'something3' => 'value3', 'yetanotherthing' => nil } }
+
     it 'works as expected' do
       expect(described_class.ffmppeg_input_args_string_as_hash(ffmpeg_input_args)).to eq(expected_hash_args)
     end

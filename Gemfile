@@ -20,7 +20,7 @@ gem 'nokogiri', '~> 1.10.10'
 # Use Puma as the app server
 gem 'puma', '~> 5.2'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '~> 6.0.3'
+gem 'rails', '~> 6.1.0'
 # Resque for queued jobs
 gem 'resque', '~> 2.0'
 # Rainbow for text coloring
@@ -46,11 +46,11 @@ gem 'bootsnap', '>= 1.4.2', require: false
 
 group :development, :test do
   # rubocop + CUL presets
-  gem 'rubocul', '4.0.0'
+  gem 'rubocul', '~> 4.0.3'
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # rspec for testing
-  gem 'rspec-rails', '~> 3.8'
+  gem 'rspec-rails', '~> 5.0'
   # json_spec for easier json comparison in tests
   gem 'json_spec'
   # simplecov for test coverage reports

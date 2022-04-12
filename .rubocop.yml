@@ -5,7 +5,7 @@ inherit_from: .rubocop_todo.yml
 
 AllCops:
   TargetRubyVersion: 2.7.5
-  TargetRailsVersion: 6.1
+  TargetRailsVersion: 7.0
   Exclude:
     - 'app/javascript/**/*'
     - 'bin/**/*'

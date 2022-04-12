@@ -8,10 +8,9 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
-module Derivativo
-  class Application < Rails::Application
-    # Initialize configuration defaults for originally generated Rails version.
-    config.load_defaults 6.1
+module Hysync
+  class Derivativo < Rails::Application
+    config.load_defaults 7.0
 
     # Rails will use the Eastern time zone
     config.time_zone = 'Eastern Time (US & Canada)'

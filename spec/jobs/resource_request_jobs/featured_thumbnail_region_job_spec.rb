@@ -29,7 +29,7 @@ RSpec.describe ResourceRequestJobs::FeaturedThumbnailRegionJob do
       expect(Hyacinth::Client.instance).to receive(:resource_request_success!).with(resource_request_id)
     end
     it 'works as expected when valid arguments are given' do
-      expect(instance.perform(perform_args))
+      expect(instance.perform(**perform_args))
     end
   end
 end

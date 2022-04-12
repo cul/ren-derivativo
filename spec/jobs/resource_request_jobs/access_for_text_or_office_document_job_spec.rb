@@ -33,7 +33,7 @@ RSpec.describe ResourceRequestJobs::AccessForTextOrOfficeDocumentJob do
       let(:src_file_location) { "file://#{file_fixture('text.txt').realpath}" }
 
       it 'works as expected when valid arguments are given' do
-        expect(instance.perform(perform_args))
+        expect(instance.perform(**perform_args))
       end
     end
 
@@ -41,7 +41,7 @@ RSpec.describe ResourceRequestJobs::AccessForTextOrOfficeDocumentJob do
       let(:src_file_location) { "file://#{file_fixture('office-doc.doc').realpath}" }
 
       it 'works as expected when valid arguments are given' do
-        expect(instance.perform(perform_args))
+        expect(instance.perform(**perform_args))
       end
     end
   end

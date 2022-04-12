@@ -5,7 +5,7 @@ module Hyacinth
     ACTIVE_STORAGE_UPLOAD_SUCCESS_STATUS = 204
 
     def self.instance
-      @instance ||= self.new(HYACINTH)
+      @instance ||= self.new(**HYACINTH)
     end
 
     def initialize(url:, email:, password:, request_timeout: 120)

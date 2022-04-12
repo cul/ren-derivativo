@@ -11,7 +11,7 @@ RSpec.describe Hyacinth::Client do
       request_timeout: 123
     }
   end
-  let(:instance) { described_class.new(valid_client_args) }
+  let(:instance) { described_class.new(**valid_client_args) }
   let(:internal_conn) { instance.instance_variable_get('@conn') }
   let(:expected_auth_header_value) { 'Basic ZGVyaXZhdGl2b0BsaWJyYXJ5LmNvbHVtYmlhLmVkdTp0ZXN0' }
 

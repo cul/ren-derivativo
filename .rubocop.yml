@@ -4,7 +4,7 @@ inherit_gem:
 inherit_from: .rubocop_todo.yml
 
 AllCops:
-  TargetRubyVersion: 2.7.5
+  TargetRubyVersion: 3.0.3
   TargetRailsVersion: 7.0
   Exclude:
     - 'app/javascript/**/*'

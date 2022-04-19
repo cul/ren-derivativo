@@ -43,7 +43,7 @@ Make sure not to set the above overrides if you want to use the binary on your p
 Note that the Tika jar location always needs to be specified in `config/derivativo.yml` because it's not a standalone executable like other binaries and needs to be run with the `java -jar` command:
 
 ```
-tika_jar_path: '/Applications/tika/tika-app-1.25.jar'
+tika_jar_path: '/Applications/tika/tika-app-1.28.1.jar'
 ```
 
 And depending on how you install LibreOffice, the internal office binary may not be on your path and you may need to specify the location in `config/derivativo.yml`.  On a standalone Mac installation of LibreOffice, you'd need to set the soffice_binary_path like this:

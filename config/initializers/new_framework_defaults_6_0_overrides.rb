@@ -1,0 +1,7 @@
+# In this file, we'll add any overrides for the new Rails 6 defaults.
+
+# Because of a dependency on an old version of the cul_hydra gem, we can't use the newer
+# zeitwerk autoloader -- otherwise we'll get an "uninitialized constant RDF::CUL" error.
+# For now, we'll stick with the classic autoloader.
+# This won't be a problem in the next version of Derivativo, which doesn't use the cul_hydra gem.
+Rails.application.config.autoloader = :classic

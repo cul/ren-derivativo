@@ -5,7 +5,7 @@ describe Derivativo::RequestTokenAuthentication do
   controller(ApplicationController) {
     include Derivativo::RequestTokenAuthentication
     def authenticated_action
-      render nothing: true, status: authenticate_request_token
+      render json: '', status: authenticate_request_token
     end
   }
   

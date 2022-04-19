@@ -13,14 +13,13 @@ RSpec.describe V0::ThumbnailsController, type: :controller do
       it do
         src = File.join(Rails.root,'app/assets/images/placeholders/dark/file.png')
         req_hdrs = {
-          'RAW_POST_DATA' => File.open(src, 'rb').read,
           'Content-Type' => "image/png",
           'Content-Disposition' => "attachment; filename=\"queued.png\"",
           'Authorization' => "Token token=#{bad_token}",
           "Accept" => 'image/jpeg'
         }
         request.headers.merge!(req_hdrs)
-        response = post :create
+        post :create, body: File.open(src, 'rb').read
         expect(response.status).to eql 403
       end
     end
@@ -32,7 +31,6 @@ RSpec.describe V0::ThumbnailsController, type: :controller do
       it do
         src = File.join(Rails.root,'app/assets/images/placeholders/dark/file.png')
         req_hdrs = {
-          'RAW_POST_DATA' => File.open(src, 'rb').read,
           'Content-Type' => "image/png",
           'Content-Disposition' => "attachment; filename=\"queued.png\"",
           'Authorization' => "Token token=#{good_token}",
@@ -40,7 +38,7 @@ RSpec.describe V0::ThumbnailsController, type: :controller do
           'Scale' => "100"
         }
         request.headers.merge!(req_hdrs)
-        response = post :create
+        post :create, body: File.open(src, 'rb').read
         #puts response.headers.inspect
         cd = response.headers['Content-Disposition']
         fn = cd.split("filename=")[1]

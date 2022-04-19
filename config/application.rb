@@ -8,13 +8,11 @@ Bundler.require(*Rails.groups)
 
 module Derivativo
   class Application < Rails::Application
+    # Initialize configuration defaults for originally generated Rails version.
+    config.load_defaults 6.0
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
-    
-    # Custom directories with classes and modules you want to be autoloadable.
-    # See: http://stackoverflow.com/questions/4928664/trying-to-implement-a-module-using-namespaces
-    config.autoload_paths += %W(#{config.root}/lib)
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.
     # Run "rake -D time" for a list of tasks for finding time zone names. Default is UTC.
@@ -24,9 +22,9 @@ module Derivativo
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
 
-    # Do not swallow errors in after_commit/after_rollback callbacks.
-    config.active_record.raise_in_transactional_callbacks = true
-    
+    # Custom directories with classes and modules you want to be eager loaded.
+    config.eager_load_paths += %W[#{config.root}/lib]
+
     config.after_initialize do
       # Ensure that cache path exists
       raise 'Please specifiy a cache_base_directory in derivativo.yml' if DERIVATIVO[:cache_base_directory].blank?

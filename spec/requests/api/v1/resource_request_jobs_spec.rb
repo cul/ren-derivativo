@@ -53,7 +53,7 @@ RSpec.describe 'ResourceRequestJob Requests', type: :request do
 
         it 'enqueues a the expected job type with the expected job params' do
           expect(ResourceRequestJobs::AccessForImageJob).to receive(:perform_later).with(
-            expected_job_params
+            **expected_job_params
           )
           post_with_auth '/api/v1/resource_request_jobs', params: create_params
         end

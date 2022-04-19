@@ -17,7 +17,7 @@ module Api
         resource_request_job_params = params_validation_result.to_h[:resource_request_job]
 
         job_class = job_type_to_class(resource_request_job_params.delete(:job_type))
-        job_class.perform_later(resource_request_job_params)
+        job_class.perform_later(**resource_request_job_params)
         render json: { result: true }
       rescue Derivativo::Exceptions::InvalidJobType => e
         render json: error_response([e.message]), status: :bad_request

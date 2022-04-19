@@ -1,4 +1,4 @@
-class CreateDbCacheRecords < ActiveRecord::Migration
+class CreateDbCacheRecords < ActiveRecord::Migration[4.2]
   def change
     create_table :db_cache_records do |t|
       t.string :pid
@@ -7,7 +7,7 @@ class CreateDbCacheRecords < ActiveRecord::Migration
 
       t.timestamps null: false
     end
-    
+
     add_index :db_cache_records, :pid, :unique => true
   end
 end

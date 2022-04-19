@@ -4,7 +4,7 @@ Derivativo is derivative generation app that converts images, audio, video, offi
 
 ## Requirements
 
-- Ruby 2.6
+- Ruby 3.0
 - Redis 3
 - ffmpeg (tested with version 4)
 - libvips (tested with version 8.8)

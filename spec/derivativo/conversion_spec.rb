@@ -26,7 +26,7 @@ describe Derivativo::Conversion do
 
     it 'works as expected' do
       expect(Derivativo::Conversion::FfmpegHelpers).to receive(:ffmpeg_convert).with(args)
-      described_class.video_to_video(args)
+      described_class.video_to_video(**args)
     end
   end
 
@@ -40,7 +40,7 @@ describe Derivativo::Conversion do
 
     it 'works as expected' do
       expect(Derivativo::Conversion::FfmpegHelpers).to receive(:ffmpeg_video_screenshot).with(args)
-      described_class.video_to_image(args)
+      described_class.video_to_image(**args)
     end
   end
 
@@ -56,7 +56,7 @@ describe Derivativo::Conversion do
 
     it 'works as expected' do
       expect(Derivativo::Conversion::FfmpegHelpers).to receive(:ffmpeg_convert).with(args)
-      described_class.audio_to_audio(args)
+      described_class.audio_to_audio(**args)
     end
   end
 
@@ -70,7 +70,7 @@ describe Derivativo::Conversion do
 
     it 'works as expected' do
       expect(Derivativo::Conversion::GhostscriptHelpers).to receive(:ghostscript_convert_pdf_to_pdf).with(args)
-      described_class.pdf_to_pdf(args)
+      described_class.pdf_to_pdf(**args)
     end
   end
 
@@ -84,7 +84,7 @@ describe Derivativo::Conversion do
 
     it 'works as expected' do
       expect(Derivativo::Conversion::GhostscriptHelpers).to receive(:ghostscript_pdf_to_image).with(args)
-      described_class.pdf_to_image(args)
+      described_class.pdf_to_image(**args)
     end
   end
 
@@ -98,7 +98,7 @@ describe Derivativo::Conversion do
 
     it 'works as expected' do
       expect(Derivativo::Conversion::OfficeHelpers).to receive(:office_convert_to_pdf).with(args)
-      described_class.text_or_office_document_to_pdf(args)
+      described_class.text_or_office_document_to_pdf(**args)
     end
   end
 

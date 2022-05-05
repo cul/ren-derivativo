@@ -4,7 +4,7 @@ require 'rails_helper'
 
 RSpec.describe 'ResourceRequestJob Requests', type: :request do
   describe 'POST /api/v1/resource_request_jobs' do
-    context 'unauthenticated request' do
+    context 'when unauthenticated request' do
       it 'returns a 401 (unauthorized) status when no auth token is provided' do
         post '/api/v1/resource_request_jobs'
         expect(response.status).to eq(401)
@@ -16,7 +16,7 @@ RSpec.describe 'ResourceRequestJob Requests', type: :request do
       end
     end
 
-    context 'authenticated request' do
+    context 'when authenticated request' do
       let(:job_type) { 'access_for_image' }
       let(:resource_request_id) { '1' }
       let(:digital_object_uid) { '1234-5678' }
@@ -53,7 +53,7 @@ RSpec.describe 'ResourceRequestJob Requests', type: :request do
 
         it 'enqueues a the expected job type with the expected job params' do
           expect(ResourceRequestJobs::AccessForImageJob).to receive(:perform_later).with(
-            expected_job_params
+            **expected_job_params
           )
           post_with_auth '/api/v1/resource_request_jobs', params: create_params
         end

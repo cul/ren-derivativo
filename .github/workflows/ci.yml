@@ -1,0 +1,64 @@
+name: CI
+
+on:
+  push:
+    branches: [ '*' ]
+
+jobs:
+  ci-rails-app:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby-version: ['3.0.3']
+        node: ['10', '12']
+    env:
+      RAILS_ENV: test
+      NOKOGIRI_USE_SYSTEM_LIBRARIES: true
+      TIKA_VERSION: 2.3.0
+      TIKA_DOWNLOAD_DIR: /tmp/downloads/tika
+      TIKA_JAR_PATH: /tmp/downloads/tika/tika-app.jar
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache Tika Download
+        id: cache-tika-download
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.TIKA_DOWNLOAD_DIR }}
+          key: ${{ runner.os }}-tika-download
+      - run: sudo apt-get update
+      - name: Install libxslt for nokogiri gem (required for version < 1.11)
+        run: sudo apt-get install -y libxml2-dev libxslt-dev
+      - name: Install other apt dependencies
+        run: sudo apt-get install -y libvips42 ffmpeg ghostscript libreoffice
+      - name: Download Tika
+        run: |
+          # Early exit from this run script if TIKA_DOWNLOAD_DIR already exists
+          if [ -d "$TIKA_DOWNLOAD_DIR" ]; then echo 'Found cached Tika download' && exit; fi
+          echo "Downloading Tika because no cached directory was found at: $TIKA_DOWNLOAD_DIR"
+          mkdir -p $TIKA_DOWNLOAD_DIR
+          cd $TIKA_DOWNLOAD_DIR
+          wget "https://archive.apache.org/dist/tika/tika-app-${TIKA_VERSION}.jar"
+          mv tika-app-${TIKA_VERSION}.jar tika-app.jar
+      - name: Add --no-document option to .gemrc file to speed up bundle install
+        run: "echo 'gem: --no-document' > ~/.gemrc"
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby-version }}
+          bundler-cache: true # runs 'bundle install' and caches installed gems automatically
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt-hotspot'
+          java-version: '11'
+      - name: Set up Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node }}
+      - run: npm install -g yarn
+      - run: yarn install --frozen-lockfile
+      - name: Set up config files (with custom TIKA_JAR_PATH)
+        run: bundle exec rake derivativo:setup:config_files TIKA_JAR_PATH=${{ env.TIKA_JAR_PATH }}
+      - name: Run CI task
+        run: bundle exec rake derivativo:ci

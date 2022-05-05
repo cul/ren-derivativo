@@ -4,8 +4,8 @@ inherit_gem:
 inherit_from: .rubocop_todo.yml
 
 AllCops:
-  TargetRubyVersion: 2.6.4
-  TargetRailsVersion: 6.0.3
+  TargetRubyVersion: 3.0.3
+  TargetRailsVersion: 7.0
   Exclude:
     - 'app/javascript/**/*'
     - 'bin/**/*'
@@ -26,6 +26,16 @@ RSpec/ExampleLength:
     - 'spec/derivativo/conversion/office_helpers_spec.rb'
     - 'spec/derivativo/file_helper_spec.rb'
 
+RSpec/NestedGroups:
+  Max: 4
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: false
+
 Metrics/MethodLength:
+  Max: 15
   Exclude:
     - 'lib/hyacinth/client.rb'
+
+Style/Documentation:
+  Enabled: false

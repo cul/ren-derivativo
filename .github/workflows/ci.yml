@@ -14,7 +14,7 @@ jobs:
     env:
       RAILS_ENV: test
       NOKOGIRI_USE_SYSTEM_LIBRARIES: true
-      TIKA_VERSION: 2.3.0
+      TIKA_VERSION: 2.4.0
       TIKA_DOWNLOAD_DIR: /tmp/downloads/tika
       TIKA_JAR_PATH: /tmp/downloads/tika/tika-app.jar
 
@@ -38,7 +38,7 @@ jobs:
           echo "Downloading Tika because no cached directory was found at: $TIKA_DOWNLOAD_DIR"
           mkdir -p $TIKA_DOWNLOAD_DIR
           cd $TIKA_DOWNLOAD_DIR
-          wget "https://archive.apache.org/dist/tika/tika-app-${TIKA_VERSION}.jar"
+          wget "https://downloads.apache.org/tika/${TIKA_VERSION}/tika-app-${TIKA_VERSION}.jar"
           mv tika-app-${TIKA_VERSION}.jar tika-app.jar
       - name: Add --no-document option to .gemrc file to speed up bundle install
         run: "echo 'gem: --no-document' > ~/.gemrc"

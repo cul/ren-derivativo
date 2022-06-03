@@ -124,6 +124,34 @@ namespace :derivativo do
       puts "Done.  Took: #{(Time.now-start_time).to_s} seconds."
     end
 
+    desc "Delete old audio/video access copies and regenerate new ones"
+    task :regenerate_av_access_copies => :environment do
+      start_time = Time.now
+
+      if ENV['pids'].blank? && ENV['pidlist'].blank?
+        puts 'Please specify one or more pids (e.g. pids=cul:123,cul:456 or pidlist=/path/to/list/file)'
+        next
+      end
+
+      Derivativo::Pids.each(ENV['pids'], ENV['pidlist']) do |pid, counter, total|
+        res = DerivativoResource.new(pid)
+        fedora_obj = res.fedora_object
+
+        if !Derivativo::FedoraObjectTypeCheck.is_generic_resource_audio_or_video?(fedora_obj)
+          puts "Skipping #{pid} because it is not an audio or video file."
+          next
+        end
+
+        access_ds_path = fedora_obj.datastreams['access']&.dsLocation&.gsub(/^file:/, '')
+        File.delete(access_ds_path) if File.exist?(access_ds_path)
+        res.generate_cache(true)
+
+        puts "Queued #{counter} of #{total}: #{pid}"
+      end
+
+      puts "Done.  Took: #{(Time.now-start_time).to_s} seconds."
+    end
+
   end
 
   namespace :clear do

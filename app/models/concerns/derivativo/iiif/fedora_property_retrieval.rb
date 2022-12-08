@@ -40,16 +40,26 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
     original_image_width = rels_int.relationships(content_ds, :image_width).first.object.value.to_i if rels_int.relationships(content_ds, :image_width).present?
     original_image_height = rels_int.relationships(content_ds, :image_length).first.object.value.to_i if rels_int.relationships(content_ds, :image_length).present?
     if original_image_width.blank? || original_image_height.blank?
-      representative_generic_resource.with_ds_resource('content', (! DERIVATIVO['no_mount']) ) do |image_path|
-        Imogen.with_image(image_path) do |img|
-          original_image_width = img.width
-          original_image_height = img.height
-          rels_int.clear_relationship(content_ds, :image_width)
-          rels_int.clear_relationship(content_ds, :image_length)
-          rels_int.add_relationship(content_ds, :image_width, original_image_width.to_s, true)
-          rels_int.add_relationship(content_ds, :image_length, original_image_height.to_s, true)
+      begin
+        representative_generic_resource.with_ds_resource('content', (! DERIVATIVO['no_mount']) ) do |image_path|
+          Imogen.with_image(image_path) do |img|
+            original_image_width = img.width
+            original_image_height = img.height
+          end
+        end
+      rescue Vips::Error
+        # If Vips fails to read the file because it's not a readable format, we'll try reading the access copy instead
+        representative_generic_resource.with_ds_resource('access', (! DERIVATIVO['no_mount']) ) do |image_path|
+          Imogen.with_image(image_path) do |img|
+            original_image_width = img.width
+            original_image_height = img.height
+          end
         end
       end
+      rels_int.clear_relationship(content_ds, :image_width)
+      rels_int.clear_relationship(content_ds, :image_length)
+      rels_int.add_relationship(content_ds, :image_width, original_image_width.to_s, true)
+      rels_int.add_relationship(content_ds, :image_length, original_image_height.to_s, true)
       Retriable.retriable on: [RestClient::RequestTimeout], tries: 3, base_interval: 5 do
         rels_int.content = rels_int.to_rels_int # We're doing this because there's some weird bug in the rels_int gem (ds doesn't know it was updated)
         rels_int.save if rels_int.changed?

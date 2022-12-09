@@ -12,7 +12,7 @@ gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
-gem 'libv8', '>= 3.16.14.19' # Min version for Mac OS 10.11, XCode 9.0, Ruby 2.4
+#gem 'libv8', '>= 3.16.14.19' # Min version for Mac OS 10.11, XCode 9.0, Ruby 2.4
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -27,7 +27,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 # Use Unicorn as the app server
 # gem 'unicorn'
 
-gem 'nokogiri', '~> 1.8.1'
+gem 'nokogiri', '~> 1.10.10' # can't update to 1.11 because our server version of GLIBC is too old
 
 # Columbia Hydra models
 gem 'cul_hydra', :git => 'https://github.com/cul/cul_hydra.git', :branch => 'master'
@@ -36,7 +36,7 @@ gem 'active_fedora_relsint', :git => 'https://github.com/cul/active_fedora_relsi
 gem 'blacklight', '~> 7.22'
 gem 'view_component', '~> 2.51.0'
 # Use imogen for generating images
-gem 'imogen', '0.2.1'
+gem 'imogen', '0.3.0'
 gem 'ruby-vips', '~> 2.0.16'
 #gem 'imogen', :path => '../imogen'
 
@@ -89,7 +89,7 @@ end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
-  gem 'web-console', '~> 2.0'
+  gem 'web-console', '~> 3.5'
 
   # Use Capistrano for deployment
   gem 'capistrano', '~> 3.5.0', require: false

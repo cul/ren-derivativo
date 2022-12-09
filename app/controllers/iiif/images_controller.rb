@@ -110,7 +110,7 @@ class Iiif::ImagesController < ApplicationController
         raster_file_exists = true
       else
         # If base derivative generation is incomplete, we'll redirect to the 'placeholder:file' image.
-        redirect_to ({}.merge(params).merge(id: 'placeholder:file')), status: 302
+        redirect_to ({}.merge(params.to_unsafe_h).merge(id: 'placeholder:file')), status: 302
         return
       end
     end

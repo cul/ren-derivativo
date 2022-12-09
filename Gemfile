@@ -36,7 +36,7 @@ gem 'active_fedora_relsint', :git => 'https://github.com/cul/active_fedora_relsi
 gem 'blacklight', '~> 7.22'
 gem 'view_component', '~> 2.51.0'
 # Use imogen for generating images
-gem 'imogen', '0.2.1'
+gem 'imogen', '0.3.0'
 gem 'ruby-vips', '~> 2.0.16'
 #gem 'imogen', :path => '../imogen'
 

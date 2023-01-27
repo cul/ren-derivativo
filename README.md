@@ -1,24 +1,13 @@
-# README
+# Derivativo 1.5 (a transitional version between 1.0 and 2.0)
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Setup instructions
 
-Things you may want to cover:
+TODO
 
-* Ruby version
+## To run tests
 
-* System dependencies
+With rubocop:
+`bundle exec rake derivativo:ci`
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+Without rubocop:
+`bundle exec rake derivativo:ci_nocop`

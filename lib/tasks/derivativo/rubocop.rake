@@ -6,14 +6,24 @@ namespace :derivativo do
   namespace :rubocop do
     desc 'Automatically fix safe errors (quotes and frozen string literal comments)'
     rules = [
-      'Style/StringLiterals',
-      'Style/FrozenStringLiteralComment',
-      'Layout/EmptyLineAfterMagicComment',
       'Layout/EmptyLineAfterGuardClause',
-      'Style/TrailingCommaInArrayLiteral',
-      'Layout/SpaceInsidePercentLiteralDelimiters',
+      'Layout/EmptyLineAfterMagicComment',
+      'Layout/EmptyLines',
+      'Layout/EmptyLinesAroundClassBody',
+      'Layout/SpaceAroundOperators',
+      'Layout/SpaceBeforeBlockBraces',
       'Layout/SpaceInsideArrayLiteralBrackets',
-      'Style/GlobalStdStream'
+      'Layout/SpaceInsideBlockBraces',
+      'Layout/SpaceInsideHashLiteralBraces',
+      'Layout/SpaceInsidePercentLiteralDelimiters',
+      'RSpec/EmptyLineAfterExampleGroup',
+      'RSpec/EmptyLineAfterFinalLet',
+      'RSpec/EmptyLineAfterSubject',
+      'Style/EmptyMethod',
+      'Style/FrozenStringLiteralComment',
+      'Style/GlobalStdStream',
+      'Style/StringLiterals',
+      'Style/TrailingCommaInArrayLiteral'
     ]
     RuboCop::RakeTask.new(:auto_fix_safe_errors) do |t|
       t.options = [

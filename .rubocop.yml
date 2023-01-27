@@ -13,3 +13,21 @@ CUL/CapybaraScreenshots:
   VersionAdded: '3.2.2'
   Include:
     - 'spec/**/*'
+
+RSpec/NestedGroups:
+  Max: 5
+
+RSpec/ContextWording:
+  Enabled: false
+
+Style/RegexpLiteral:
+  Enabled: false
+
+Style/OptionalBooleanParameter:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Layout/ClosingParenthesisIndentation:
+  Enabled: false

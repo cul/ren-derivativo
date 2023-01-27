@@ -3,10 +3,10 @@
 # Utility class for enabling coercion of requested IIIF canvas size to reduced,
 # allowable dimensions if a limit is in place.
 class Derivativo::Iiif::IiifImageSizeRestriction
-  ABSOLUTE_SIZE = /^(!)?([1-9][\d]*)?,([1-9][\d]*)?$/
+  ABSOLUTE_SIZE = /^(!)?([1-9]\d*)?,([1-9]\d*)?$/
 
-  FULL_REGIONS = %w(full pct:0,0,100,100).freeze
-  FULL_SIZES = %w(full max).freeze
+  FULL_REGIONS = %w[full pct:0,0,100,100].freeze
+  FULL_SIZES = %w[full max].freeze
 
   # a rectangle
   class Area
@@ -44,8 +44,9 @@ class Derivativo::Iiif::IiifImageSizeRestriction
     # if the float is zero or 100 return a FixNum for cleaner math
     def self.to_percent(f)
       f = f.to_f
-      return 0 if f == 0.0
-      return 1 if f == 100.0
+
+      return 0 if f.zero? # NOTE: (0.0).zero? evaluates to true
+      return 1 if f == 100 # NOTE: (100.0 == 100) evaluates to true
 
       f / 100
     end
@@ -119,7 +120,7 @@ class Derivativo::Iiif::IiifImageSizeRestriction
         size = absolute_size(param, region)
       elsif param.start_with?('pct:')
         # e.g. 'pct:20' (20% of REGION size, not the original size)
-        percent = to_percent(param[4..-1])
+        percent = to_percent(param[4..])
         size = Size.new(region.w * percent, region.h * percent)
       end
       raise "Invalid IIIF size format: #{param}" unless size
@@ -166,6 +167,7 @@ class Derivativo::Iiif::IiifImageSizeRestriction
     attr_accessor :x, :y
 
     def initialize(*params)
+      super
       @x = params[0].to_i
       @y = params[1].to_i
       @w = params[2].to_i
@@ -232,7 +234,7 @@ class Derivativo::Iiif::IiifImageSizeRestriction
       if param.start_with?('pct:')
         # pct:x,y,w,h
         to_percent = method[:to_percent]
-        original.percentage_subregion(*param[4..-1].split(',').map(&to_percent))
+        original.percentage_subregion(*param[4..].split(',').map(&to_percent))
       else
         # x,y,w,h
         original.subregion(*param.split(',').map(&:to_i))
@@ -254,40 +256,35 @@ class Derivativo::Iiif::IiifImageSizeRestriction
   # Note: 'featured' region is not supported by this method, and will raise
   # a Derivativo::Exceptions::UnsupportedRegionError
   def self.restricted_use_iiif_size(size_param, region_param, original, max)
-    raise Derivativo::Exceptions::UnsupportedRegionError,
-      "Unsupported region: #{region_param}" if region_param == 'featured'
+    if region_param == 'featured'
+      raise Derivativo::Exceptions::UnsupportedRegionError,
+            "Unsupported region: #{region_param}"
+    end
 
     # If the original image is within the restricted use size range, return
     # the originally requested size
     return size_param if original.fits_in?(max)
 
     # TODO: Do we want to insist on max,max or scale to original ratio?
-    if FULL_REGIONS.include?(region_param) && FULL_SIZES.include?(size_param)
-      return max.to_param
-    end
+    return max.to_param if FULL_REGIONS.include?(region_param) && FULL_SIZES.include?(size_param)
 
     # Determine region width and height in pixels
     region = Region.from_iiif_param(region_param, original)
 
     size = Size.from_iiif_param(size_param, region)
 
-    unless size.fits_in?(region.maximum_scaled_size(original, max))
-      self.adjust_size!(original, region, size, max)
-    end
+    self.adjust_size!(original, region, size, max) unless size.fits_in?(region.maximum_scaled_size(original, max))
+
     size.to_param
   end
 
-  private
-
   def self.adjust_size!(original, region, size, max)
     max_scaled_for_region = region.maximum_scaled_size(original, max)
-    unless size.less_wide_than?(max_scaled_for_region)
-      size.rescale_to_width!(max_scaled_for_region.w, region)
-    end
 
-    unless size.less_high_than?(max_scaled_for_region)
-      size.rescale_to_height!(max_scaled_for_region.h, region)
-    end
+    size.rescale_to_width!(max_scaled_for_region.w, region) unless size.less_wide_than?(max_scaled_for_region)
+
+    size.rescale_to_height!(max_scaled_for_region.h, region) unless size.less_high_than?(max_scaled_for_region)
+
     Rails.logger.warn "adjusted size for policy: #{size.to_param}"
     size
   end

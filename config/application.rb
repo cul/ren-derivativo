@@ -13,12 +13,14 @@ module Derivativo
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
 
-    # Configuration for the application, engines, and railties goes here.
-    #
-    # These settings can be overridden in specific environments using the files
-    # in config/environments, which are processed later.
-    #
-    # config.time_zone = "Central Time (US & Canada)"
-    # config.eager_load_paths << Rails.root.join("extras")
+    # Rails app will use the Eastern time zone
+    config.time_zone = 'Eastern Time (US & Canada)'
+
+    # Database will store dates in UTC
+    # (This is the rails default behavior, but we're being explicit.)
+    config.active_record.default_timezone = :utc
+
+    # Auto-load lib files
+    config.eager_load_paths << Rails.root.join('lib')
   end
 end

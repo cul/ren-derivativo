@@ -10,11 +10,15 @@ namespace :derivativo do
       'Style/FrozenStringLiteralComment',
       'Layout/EmptyLineAfterMagicComment',
       'Layout/EmptyLineAfterGuardClause',
+      'Style/TrailingCommaInArrayLiteral',
+      'Layout/SpaceInsidePercentLiteralDelimiters',
+      'Layout/SpaceInsideArrayLiteralBrackets',
+      'Style/GlobalStdStream'
     ]
     RuboCop::RakeTask.new(:auto_fix_safe_errors) do |t|
       t.options = [
         '--autocorrect-all',
-        '--only', rules.join(','),
+        '--only', rules.join(',')
       ]
     end
   end

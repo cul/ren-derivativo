@@ -22,7 +22,7 @@ namespace :derivativo do
       # Optional params that are mostly just used by the CI environment
       if ENV['TIKA_JAR_PATH']
         derivativo_config_file_path = File.join(config_dir, 'derivativo.yml')
-        derivativo_config = YAML.load(File.read(derivativo_config_file_path))
+        derivativo_config = YAML.unsafe_load_file(derivativo_config_file_path)
         derivativo_config[Rails.env]['tika_jar_path'] = ENV['TIKA_JAR_PATH']
         File.write(derivativo_config_file_path, YAML.dump(derivativo_config))
       end

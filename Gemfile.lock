@@ -1,3 +1,18 @@
+GIT
+  remote: https://github.com/samvera/rubydora.git
+  revision: 1bac22d9cbc5f5eec2331acba78728f8a6a8f709
+  ref: 1bac22d9cbc5f5eec2331acba78728f8a6a8f709
+  specs:
+    rubydora (2.1.0)
+      activemodel (>= 4.2.10)
+      activesupport
+      deprecation
+      equivalent-xml
+      hooks (~> 0.3)
+      mime-types
+      nokogiri
+      rest-client
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -88,11 +103,22 @@ GEM
     debug (1.7.1)
       irb (>= 1.5.0)
       reline (>= 0.3.1)
+    deprecation (1.1.0)
+      activesupport
     diff-lcs (1.5.0)
+    domain_name (0.5.20190701)
+      unf (>= 0.0.5, < 1.0.0)
+    equivalent-xml (0.6.0)
+      nokogiri (>= 1.4.3)
     erubi (1.12.0)
     ffi (1.15.5)
     globalid (1.1.0)
       activesupport (>= 5.0)
+    hooks (0.4.1)
+      uber (~> 0.0.14)
+    http-accept (1.7.0)
+    http-cookie (1.0.5)
+      domain_name (~> 0.5)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     imogen (0.2.2)
@@ -118,6 +144,9 @@ GEM
     marcel (1.0.2)
     matrix (0.4.2)
     method_source (1.0.0)
+    mime-types (3.4.1)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2022.0105)
     mini_mime (1.1.2)
     minitest (5.17.0)
     msgpack (1.6.0)
@@ -130,6 +159,7 @@ GEM
       timeout
     net-smtp (0.3.3)
       net-protocol
+    netrc (0.11.0)
     nio4r (2.5.8)
     nokogiri (1.14.0-arm64-darwin)
       racc (~> 1.4)
@@ -177,6 +207,11 @@ GEM
     regexp_parser (2.6.2)
     reline (0.3.2)
       io-console (~> 0.5)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     rexml (3.2.5)
     rspec-core (3.12.0)
       rspec-support (~> 3.12.0)
@@ -255,6 +290,10 @@ GEM
       railties (>= 6.0.0)
     tzinfo (2.0.5)
       concurrent-ruby (~> 1.0)
+    uber (0.0.15)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.8.2)
     unicode-display_width (2.4.2)
     web-console (4.2.0)
       actionview (>= 6.0.0)
@@ -278,6 +317,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  addressable (~> 2.8.1)
   bootsnap
   capybara
   debug
@@ -290,6 +330,7 @@ DEPENDENCIES
   redis (~> 4.0)
   rspec-rails (~> 6.0.0)
   rubocul (~> 4.0.6)
+  rubydora!
   selenium-webdriver
   sprockets-rails
   sqlite3 (~> 1.4)

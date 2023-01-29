@@ -11,6 +11,11 @@ DERIVATIVO = ActiveSupport::HashWithIndifferentAccess.new(
   YAML.unsafe_load_file(Rails.root.join('config/derivativo.yml'))[Rails.env]
 )
 
+# Load the derivativo config
+FEDORA_CONFIG = ActiveSupport::HashWithIndifferentAccess.new(
+  YAML.unsafe_load_file(Rails.root.join('config/fedora.yml'))[Rails.env]
+)
+
 # Override default FFMPEG path from DERIVATIVO config if present
 # FFMPEG.ffmpeg_binary = DERIVATIVO['ffmpeg_binary_path'] if File.exist?(DERIVATIVO['ffmpeg_binary_path'].to_s)
 # FFMPEG.ffprobe_binary = DERIVATIVO['ffprobe_binary_path'] if File.exist?(DERIVATIVO['ffprobe_binary_path'].to_s)

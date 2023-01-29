@@ -11,3 +11,12 @@ With rubocop:
 
 Without rubocop:
 `bundle exec rake derivativo:ci_nocop`
+
+## Rubocop
+
+To run rubocop, just run: `rubocop`
+
+To regenerate the .rubocop_todo.yml file and automatically create TODO items for any unresolved rubocop errors, just run:
+```
+rubocop --auto-gen-config --auto-gen-only-exclude --exclude-limit 10000
+```

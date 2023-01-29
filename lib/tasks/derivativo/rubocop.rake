@@ -10,6 +10,8 @@ namespace :derivativo do
       'Layout/EmptyLineAfterMagicComment',
       'Layout/EmptyLines',
       'Layout/EmptyLinesAroundClassBody',
+      'Layout/EmptyLinesAroundMethodBody',
+      'Layout/SpaceAroundEqualsInParameterDefault',
       'Layout/SpaceAroundOperators',
       'Layout/SpaceBeforeBlockBraces',
       'Layout/SpaceInsideArrayLiteralBrackets',

@@ -50,8 +50,9 @@ gem 'bootsnap', require: false
 # Rainbow for text coloring
 gem 'rainbow', '~> 3.0'
 
-gem 'rubydora', git: 'https://github.com/samvera/rubydora.git', ref: '1bac22d9cbc5f5eec2331acba78728f8a6a8f709'
 gem 'addressable', '~> 2.8.1'
+
+gem 'rubydora', git: 'https://github.com/samvera/rubydora.git', ref: '1bac22d9cbc5f5eec2331acba78728f8a6a8f709'
 
 # Use Sass to process CSS
 # gem "sassc-rails"

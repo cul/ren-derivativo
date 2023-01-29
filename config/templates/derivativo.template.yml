@@ -1,0 +1,53 @@
+sizes: &SIZES
+  - 256
+  - 512
+  - 1024
+  - 1280
+
+allowed_formats: &ALLOWED_FORMATS
+  - png
+  - jpg
+
+base_config: &BASE_CONFIG
+  extractabletextresource_access_copy_settings:
+    filename: 'access.pdf'
+    mime_type: 'application/pdf'
+  audio_access_copy_settings:
+    filename: 'access.m4a'
+    mime_type: 'audio/mpeg'
+    ffmpeg_input_args: '-threads 2'
+    ffmpeg_output_args: '-threads 2 -vn -c:a aac -b:a 128k -ar 48000 -ac 2 -af aresample=async=1:min_hard_comp=0.100000:first_pts=0 -f mp4'
+  video_access_copy_settings:
+    filename: 'access.mp4'
+    mime_type: 'video/mp4'
+    ffmpeg_input_args: '-threads 2'
+    ffmpeg_output_args: '-threads 2 -pix_fmt yuv420p -c:v libx264 -r 29.97 -crf 23 -vf scale=trunc(iw/2)*2:trunc(ih/2)*2 -c:a aac -b:a 128k -ar 48000 -ac 2 -af aresample=async=1:min_hard_comp=0.100000:first_pts=0 -c:s mov_text -map 0:v:0 -map 0:a -f mp4'
+    video_quality_constant: 0.23
+  queue_long_jobs: true
+  no_mount: false
+  soffice_path: '/usr/bin/soffice'
+  tika_url: 'http://localhost:9999'
+  tika_max_file_size: 50000000
+  restricted_use_image_size: 800
+  thumbnail_size: 250
+  sizes: *SIZES
+  allowed_formats: *ALLOWED_FORMATS
+
+development:
+  <<: *BASE_CONFIG
+  remote_request_api_key: <%= SecureRandom.hex(64) %>
+  cache_base_directory: 'tmp/cache/base'
+  cache_iiif_directory: 'tmp/cache/iiif'
+  cache_path: 'tmp/derivativo'
+  ffmpeg_binary_path: /usr/local/bin/ffmpeg
+  ffprobe_binary_path: /usr/local/bin/ffprobe
+
+test:
+  <<: *BASE_CONFIG
+  queue_long_jobs: false
+  remote_request_api_key: <%= SecureRandom.hex(64) %>
+  cache_base_directory: 'tmp/cache/base'
+  cache_iiif_directory: 'tmp/cache/iiif'
+  cache_path: 'tmp/derivativo'
+  ffmpeg_binary_path: /opt/hostedtoolcache/ffmpeg/4.4.1/x64/ffmpeg
+  ffprobe_binary_path: /opt/hostedtoolcache/ffmpeg/4.4.1/x64/ffprobe

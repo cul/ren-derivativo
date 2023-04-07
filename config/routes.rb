@@ -14,12 +14,12 @@ Rails.application.routes.draw do
       manifest_registrant: /10\.[^\/]+/, manifest_doi: /[^\/]+/,
       defaults: { version: 2 } do
       defaults format: 'json' do
-        get '/presentation/:manifest_registrant/:manifest_doi', to: 'presentations#show', as: :presentation
-        delete '/presentation/:manifest_registrant/:manifest_doi', to: 'presentations#destroy'
-        get '/presentation/:manifest_registrant/:manifest_doi/manifest', to: 'presentations#manifest', as: :manifest
-        get '/presentation/:manifest_registrant/:manifest_doi/range/:id', to: 'presentations#range', as: :range
-        get '/presentation/:manifest_registrant/:manifest_doi/canvas/:registrant/:doi', to: 'presentations#canvas', as: :canvas
-        get '/presentation/:manifest_registrant/:manifest_doi/annotation/:registrant/:doi', to: 'presentations#annotation', as: :annotation
+        # get '/presentation/:manifest_registrant/:manifest_doi', to: 'presentations#show', as: :presentation
+        # delete '/presentation/:manifest_registrant/:manifest_doi', to: 'presentations#destroy'
+        # get '/presentation/:manifest_registrant/:manifest_doi/manifest', to: 'presentations#manifest', as: :manifest
+        # get '/presentation/:manifest_registrant/:manifest_doi/range/:id', to: 'presentations#range', as: :range
+        # get '/presentation/:manifest_registrant/:manifest_doi/canvas/:registrant/:doi', to: 'presentations#canvas', as: :canvas
+        # get '/presentation/:manifest_registrant/:manifest_doi/annotation/:registrant/:doi', to: 'presentations#annotation', as: :annotation
         get '/:id', to: 'images#iiif_id', as: 'id'
         get '/:id/info.:format', to: 'images#info', as: 'info'
       end

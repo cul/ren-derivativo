@@ -15,7 +15,12 @@ class IiifResource
   attr_reader :id, :version, :region, :size, :rotation, :quality, :format
   
   def initialize(opts)
-    @id = opts[:id]
+    if opts[:id].is_a?(ActiveFedora::Base)
+      @fedora_object = opts[:id]
+      @id = @fedora_object.pid
+    else
+      @id = opts[:id]
+    end
     @version = opts.fetch(:version, '2')
     @region = opts.fetch(:region, 'full')
     @size = opts.fetch(:size, 'full')

@@ -5,8 +5,8 @@ sizes: &SIZES
   - 1280
 
 allowed_formats: &ALLOWED_FORMATS
-  - png
-  - jpg
+  png: 'image/png'
+  jpg: 'image/jpeg'
 
 base_config: &BASE_CONFIG
   extractabletextresource_access_copy_settings:
@@ -35,19 +35,23 @@ base_config: &BASE_CONFIG
 
 development:
   <<: *BASE_CONFIG
+  run_background_jobs_inline: false
+  always_add_group_write_permission: true
   remote_request_api_key: <%= SecureRandom.hex(64) %>
   cache_base_directory: 'tmp/cache/base'
   cache_iiif_directory: 'tmp/cache/iiif'
-  cache_path: 'tmp/derivativo'
+  access_copy_output_dir: 'tmp/derivativo'
   ffmpeg_binary_path: /usr/local/bin/ffmpeg
   ffprobe_binary_path: /usr/local/bin/ffprobe
 
 test:
   <<: *BASE_CONFIG
+  run_background_jobs_inline: true
+  always_add_group_write_permission: true
   queue_long_jobs: false
   remote_request_api_key: <%= SecureRandom.hex(64) %>
   cache_base_directory: 'tmp/cache/base'
   cache_iiif_directory: 'tmp/cache/iiif'
-  cache_path: 'tmp/derivativo'
+  access_copy_output_dir: 'tmp/derivativo'
   ffmpeg_binary_path: /opt/hostedtoolcache/ffmpeg/4.4.1/x64/ffmpeg
   ffprobe_binary_path: /opt/hostedtoolcache/ffmpeg/4.4.1/x64/ffprobe

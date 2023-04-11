@@ -2,13 +2,13 @@
 
 require 'rails_helper'
 
-describe Derivativo::Iiif::IiifImageSizeRestriction do
+describe Derivativo::Iiif::ImageSizeRestriction do
   describe '.restricted_use_iiif_size' do
     # subject should always be of format /!?\d+,\d+/
     subject(:result) { described_class.restricted_use_iiif_size(size, region, original, max) }
 
-    let(:original) { Derivativo::Iiif::IiifImageSizeRestriction::Area.new(1200, 1000) }
-    let(:max) { Derivativo::Iiif::IiifImageSizeRestriction::Size.new(800, 800).best_fit!(true) }
+    let(:original) { Derivativo::Iiif::ImageSizeRestriction::Area.new(1200, 1000) }
+    let(:max) { Derivativo::Iiif::ImageSizeRestriction::Size.new(800, 800).best_fit!(true) }
 
     context "should throw an error when given a 'featured' region because 'featured' regions '\
       'are not resized based on restriction status" do
@@ -134,7 +134,7 @@ describe Derivativo::Iiif::IiifImageSizeRestriction do
     end
   end
 
-  describe Derivativo::Iiif::IiifImageSizeRestriction::Size do
+  describe Derivativo::Iiif::ImageSizeRestriction::Size do
     { '0' => 0, '100' => 1, '57' => (57 / 100.0), '57.4' => 574 / 1000.0 }.each_pair do |input, output|
       context "when input is: #{input}" do
         subject { described_class.send :to_percent, input }

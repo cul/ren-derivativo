@@ -33,7 +33,8 @@ gem 'jbuilder'
 gem 'redis', '~> 4.0'
 
 # Use imogen for generating images
-gem 'imogen', '~> 0.2.1'
+gem 'imogen', '~> 0.3.1'
+#gem 'imogen', path: '../imogen'
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
@@ -52,7 +53,14 @@ gem 'rainbow', '~> 3.0'
 
 gem 'addressable', '~> 2.8.1'
 
-gem 'rubydora', git: 'https://github.com/samvera/rubydora.git', ref: '1bac22d9cbc5f5eec2331acba78728f8a6a8f709'
+# Use best type for mime/dc lookups
+gem 'best_type', '0.0.10'
+
+#gem 'rubydora', git: 'https://github.com/samvera/rubydora.git', ref: '1bac22d9cbc5f5eec2331acba78728f8a6a8f709'
+gem 'rubydora', '~> 2.2.0'
+
+gem 'faraday', '~> 2.7' # core faraday library
+gem 'faraday-multipart', '~> 1.0' # for added file upload functionality
 
 # Use Sass to process CSS
 # gem "sassc-rails"
@@ -69,6 +77,13 @@ group :development, :test do
 end
 
 group :development do
+  # Capistrano gems for deployment
+  gem 'capistrano', '~> 3.17.0', require: false
+  gem 'capistrano-cul', require: false
+  gem 'capistrano-passenger', '~> 0.1', require: false
+  gem 'capistrano-rails', '~> 1.4', require: false
+  gem 'capistrano-rvm', '~> 0.1', require: false
+
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem 'web-console'
 

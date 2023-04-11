@@ -22,5 +22,12 @@ module Derivativo
 
     # Auto-load lib files
     config.eager_load_paths << Rails.root.join('lib')
+
+    # Active Job
+    config.active_job.queue_name_prefix = "#{Rails.application.class.module_parent_name}.#{Rails.env}"
+    config.active_job.queue_name_delimiter = '.'
+    config.after_initialize do
+      config.active_job.queue_adapter = DERIVATIVO[:run_background_jobs_inline] ? :inline : :resque
+    end
   end
 end

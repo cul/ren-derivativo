@@ -2,7 +2,7 @@
 
 # Utility class for enabling coercion of requested IIIF canvas size to reduced,
 # allowable dimensions if a limit is in place.
-class Derivativo::Iiif::IiifImageSizeRestriction
+class Derivativo::Iiif::ImageSizeRestriction
   ABSOLUTE_SIZE = /^(!)?([1-9]\d*)?,([1-9]\d*)?$/
 
   FULL_REGIONS = %w[full pct:0,0,100,100].freeze
@@ -255,31 +255,31 @@ class Derivativo::Iiif::IiifImageSizeRestriction
   # resolution of 1600x1600.
   # Note: 'featured' region is not supported by this method, and will raise
   # a Derivativo::Exceptions::UnsupportedRegionError
-  def self.restricted_use_iiif_size(size_param, region_param, original, max)
+  def self.restricted_use_iiif_size(size_param, region_param, original_area, max)
     if region_param == 'featured'
       raise Derivativo::Exceptions::UnsupportedRegionError,
             "Unsupported region: #{region_param}"
     end
 
-    # If the original image is within the restricted use size range, return
-    # the originally requested size
-    return size_param if original.fits_in?(max)
+    # Determine region width and height in pixels
+    region = Region.from_iiif_param(region_param, original_area)
+    size = Size.from_iiif_param(size_param, region)
+    requested_size = size.to_param
+
+    # If the original_area is within the restricted use size range, then the requested size
+    # and the allowed size are the same value.
+    return [requested_size, requested_size] if original_area.fits_in?(max)
 
     # TODO: Do we want to insist on max,max or scale to original ratio?
-    return max.to_param if FULL_REGIONS.include?(region_param) && FULL_SIZES.include?(size_param)
+    return [requested_size, max.to_param] if FULL_REGIONS.include?(region_param) && FULL_SIZES.include?(size_param)
 
-    # Determine region width and height in pixels
-    region = Region.from_iiif_param(region_param, original)
-
-    size = Size.from_iiif_param(size_param, region)
-
-    self.adjust_size!(original, region, size, max) unless size.fits_in?(region.maximum_scaled_size(original, max))
-
-    size.to_param
+    self.adjust_size!(original_area, region, size, max) unless size.fits_in?(region.maximum_scaled_size(original_area, max))
+    allowed_size = size.to_param
+    return [requested_size, allowed_size]
   end
 
-  def self.adjust_size!(original, region, size, max)
-    max_scaled_for_region = region.maximum_scaled_size(original, max)
+  def self.adjust_size!(original_area, region, size, max)
+    max_scaled_for_region = region.maximum_scaled_size(original_area, max)
 
     size.rescale_to_width!(max_scaled_for_region.w, region) unless size.less_wide_than?(max_scaled_for_region)
 

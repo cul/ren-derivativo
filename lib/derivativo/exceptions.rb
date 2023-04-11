@@ -1,10 +1,11 @@
 # frozen_string_literal: true
 
-module Derivativo
-  module Exceptions
-    class DerivativoError < StandardError; end
+module Derivativo::Exceptions
+  class DerivativoError < StandardError; end
 
-    class MultiplePidsFoundForIdentifier < DerivativoError; end
-    class UnsupportedRegionError < DerivativoError; end
-  end
+  class MultiplePidsFoundForIdentifier < DerivativoError; end
+  class BaseNotFoundError < DerivativoError; end
+  class PlaceholderBaseNotFoundError < DerivativoError; end
+  class AccessCopyNotFoundError < DerivativoError; end
+  class UnsupportedRegionError < DerivativoError; end
 end

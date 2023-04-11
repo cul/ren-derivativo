@@ -1,7 +1,19 @@
 # frozen_string_literal: true
 
 module Fedora
-  # TODO: Add tests for this class.
+  CONTENT_DATASTREAM_NAME = 'content'
+  SERVICE_DATASTREAM_NAME = 'service'
+  ACCESS_DATASTREAM_NAME = 'access'
+
+  EXIF_ORIENTATION_TO_DEGREES = {
+    'top-left' => 0,
+    'right-top' => 90,
+    'left-bottom' => 270,
+    'bottom-right' => 180
+  }
+
+  WIDTH_PREDICATE = 'http://www.w3.org/2003/12/exif/ns#imageWidth'
+  HEIGHT_PREDICATE = 'http://www.w3.org/2003/12/exif/ns#imageLength'
 
   def self.rubydora_connection
     @rubydora_connection ||= Rubydora.connect(FEDORA_CONFIG)
@@ -17,6 +29,46 @@ module Fedora
 
   def self.ds_location_to_filesystem_path(ds_location)
     Addressable::URI.unencode(ds_location).gsub(/^file:\/*/, '/')
+  end
+
+  def self.get_orientation_property_if_exist(fobj, fallback_value)
+    xml_doc = Nokogiri::XML(fobj.datastreams['RELS-EXT'].content.body)
+    xml_doc.remove_namespaces!
+    orientation_string = xml_doc.xpath('//orientation').first&.text || 'right-top'
+    return EXIF_ORIENTATION_TO_DEGREES.fetch(orientation_string, fallback_value)
+  end
+
+  def self.relationship_values_for_predicate(fobj, predicate)
+    sparql_query = <<-RELSEXT
+      SELECT ?pid FROM <#ri> WHERE {
+        <#{fobj.fqpid}> <#{predicate}> ?pid
+      }
+    RELSEXT
+    fobj.repository.sparql(sparql_query).map {|row| row[0]}
+  end
+
+  def self.clear_relationship(fobj, predicate)
+    relationship_values_for_predicate(fobj, predicate).each do |value|
+      fobj.repository.purge_relationship({pid: fobj.pid, predicate: predicate, object: value, isLiteral: true})
+    end
+  end
+
+  def self.set_width_and_height(fobj, width, height)
+    # Replace any existing width and height values with new values
+    clear_relationship(fobj, WIDTH_PREDICATE)
+    fobj.repository.add_relationship({pid: fobj.pid, predicate: WIDTH_PREDICATE, object: width, isLiteral: true})
+    clear_relationship(fobj, HEIGHT_PREDICATE)
+    fobj.repository.add_relationship({pid: fobj.pid, predicate: HEIGHT_PREDICATE, object: height, isLiteral: true})
+    [width, height]
+  end
+
+  # Returns the width and height properties for the object
+  # @return [Array] A two-element array of the format: [width, height]
+  def self.get_width_and_height(fobj)
+    [
+      relationship_values_for_predicate(fobj, WIDTH_PREDICATE).first&.to_i,
+      relationship_values_for_predicate(fobj, HEIGHT_PREDICATE).first&.to_i
+    ]
   end
 
   def self.with_ds_resource(fobj, ds_id, fedora_content_filesystem_mounted = false)

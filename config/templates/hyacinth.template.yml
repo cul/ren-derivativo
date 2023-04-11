@@ -1,0 +1,9 @@
+development:
+  url: 'http://localhost:3000'
+  username: derivativo@library.columbia.edu
+  password: iamderivativo
+
+test:
+  url: 'http://localhost:3001'
+  username: derivativo@library.columbia.edu
+  password: iamderivativo

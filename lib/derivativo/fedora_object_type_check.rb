@@ -40,6 +40,7 @@ module Derivativo::FedoraObjectTypeCheck
 
 		detected_dc_type = BestType.dc_type.for_mime_type(datastream_mime_type(fedora_obj, dsid))
 		return true if detected_dc_type == 'Sound'
+		return true if fedora_obj.datastreams['DC'].dc_type.include?('Sound')
 		return true if detected_dc_type == 'MovingImage' && is_media_file_with_audio_track_only?(fedora_obj)
 
 		false

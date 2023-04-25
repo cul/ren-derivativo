@@ -36,7 +36,23 @@ module Derivativo::FedoraObjectTypeCheck
 	end
 
 	def self.is_generic_resource_audio?(fedora_obj, dsid='content')
-		is_generic_resource?(fedora_obj) && BestType.dc_type.for_mime_type(datastream_mime_type(fedora_obj, dsid)) == 'Sound'
+		return false unless is_generic_resource?(fedora_obj)
+
+		detected_dc_type = BestType.dc_type.for_mime_type(datastream_mime_type(fedora_obj, dsid))
+		return true if detected_dc_type == 'Sound'
+		return true if detected_dc_type == 'MovingImage' && is_media_file_with_audio_track_only?(fedora_obj)
+
+		false
+	end
+
+	def self.is_media_file_with_audio_track_only?(fedora_obj)
+		# Some videos only contain audio tracks (like 3gp files), so this method checks for that.
+		ds_location = (fedora_obj.datastreams['service']&.dsLocation || fedora_obj.datastreams['content']&.dsLocation)
+		return false if ds_location.blank?
+    source_file_location = Addressable::URI.unencode(ds_location).gsub(/^file:/, '')
+    movie = FFMPEG::Movie.new(source_file_location)
+    return true if movie.audio_stream.present? && movie.video_stream.blank?
+		false
 	end
 
 	def self.is_generic_resource_video?(fedora_obj, dsid='content')

@@ -14,15 +14,15 @@ jobs:
     env:
       RAILS_ENV: test
       NOKOGIRI_USE_SYSTEM_LIBRARIES: true
-      TIKA_VERSION: 2.4.0
+      TIKA_VERSION: 2.6.0
       TIKA_DOWNLOAD_DIR: /tmp/downloads/tika
       TIKA_JAR_PATH: /tmp/downloads/tika/tika-app.jar
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Cache action for Apache Tika download
         id: cache-tika-download
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.TIKA_DOWNLOAD_DIR }}
           key: ${{ runner.os }}-tika-${{ env.TIKA_VERSION }}-download
@@ -37,7 +37,7 @@ jobs:
           echo "Downloading Tika because no cached directory was found at: $TIKA_DOWNLOAD_DIR"
           mkdir -p $TIKA_DOWNLOAD_DIR
           cd $TIKA_DOWNLOAD_DIR
-          wget "https://downloads.apache.org/tika/${TIKA_VERSION}/tika-app-${TIKA_VERSION}.jar"
+          wget "https://dlcdn.apache.org/tika/${TIKA_VERSION}/tika-app-${TIKA_VERSION}.jar"
           mv tika-app-${TIKA_VERSION}.jar tika-app.jar
       - name: Add --no-document option to .gemrc file to speed up bundle install
         run: "echo 'gem: --no-document' > ~/.gemrc"
@@ -52,7 +52,7 @@ jobs:
           distribution: 'adopt-hotspot'
           java-version: '11'
       - name: Set up Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
       - run: npm install -g yarn

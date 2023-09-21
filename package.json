@@ -1,0 +1,12 @@
+{
+  "name": "derivativo",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "start:dev": "./bin/vite dev"
+  },
+  "devDependencies": {
+    "vite": "^4.3.0",
+    "vite-plugin-ruby": "^3.2.0"
+  }
+}

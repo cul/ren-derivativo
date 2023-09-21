@@ -1,0 +1,100 @@
+inherit_gem:
+  rubocul: rubocul_default.yml
+
+require:
+  - rubocop-factory_bot
+
+inherit_from: .rubocop_todo.yml
+
+AllCops:
+  TargetRubyVersion: 3.1.3
+  TargetRailsVersion: 7.0.8
+  Exclude:
+    - 'app/javascript/**/*'
+    - 'bin/**/*'
+    - 'db/**/*'
+    # - 'lib/tasks/**/*'
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
+    - 'tmp/**/*'
+    - lib/hyacinth3/client.rb
+    - spec/hyacinth3/client_spec.rb
+    - lib/tasks/derivativo/resque.rake
+
+CUL/CapybaraScreenshots:
+  Description: 'Disallow calls to save_screenshot in feature specs.'
+  Enabled: true
+  VersionAdded: '3.2.2'
+  Include:
+    - 'spec/**/*'
+
+Layout/LineLength:
+  Max: 130
+
+Metrics/AbcSize:
+  Exclude:
+    - lib/derivativo/access_generator.rb
+    - app/jobs/derivative_request_jobs/derivative_request_job.rb
+    - lib/derivativo/conversion/ffmpeg_helpers.rb
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - lib/derivativo/access_generator.rb
+
+Metrics/MethodLength:
+  Max: 15
+  Exclude:
+    - lib/derivativo/access_generator.rb
+    - app/jobs/derivative_request_jobs/derivative_request_job.rb
+    - app/jobs/derivative_request_jobs/prepare_derivative_request_job.rb
+    - lib/derivativo/poster_generator.rb
+    - lib/derivativo/conversion/office_helpers.rb
+
+Metrics/ParameterLists:
+  Enabled: false
+
+Rails/RakeEnvironment:
+  Exclude:
+    - lib/tasks/derivativo/setup.rake
+
+RSpec/ContextWording:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Max: 3
+
+RSpec/NestedGroups:
+  Max: 5
+
+RSpec/StubbedMock:
+  Enabled: false
+
+Style/RegexpLiteral:
+  Enabled: false
+
+Style/ExplicitBlockArgument:
+  Exclude:
+    - lib/derivativo/conversion.rb
+
+Style/OptionalBooleanParameter:
+  Enabled: false
+
+Naming/MethodParameterName:
+  Enabled: false
+
+Layout/ClosingParenthesisIndentation:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Max: 10
+  Exclude:
+    - 'spec/derivativo/conversion/office_helpers_spec.rb'
+    - 'spec/derivativo/file_helper_spec.rb'
+
+RSpec/MessageSpies:
+  Enabled: false
+
+Style/AccessModifierDeclarations:
+  Exclude:
+    - lib/derivativo/derivative_package.rb
+    - lib/derivativo/delivery_adapter/hyacinth2.rb

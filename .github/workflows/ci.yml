@@ -37,7 +37,7 @@ jobs:
           echo "Downloading Tika because no cached directory was found at: $TIKA_DOWNLOAD_DIR"
           mkdir -p $TIKA_DOWNLOAD_DIR
           cd $TIKA_DOWNLOAD_DIR
-          wget "https://dlcdn.apache.org/tika/${TIKA_VERSION}/tika-app-${TIKA_VERSION}.jar"
+          wget "https://archive.apache.org/dist/tika/${TIKA_VERSION}/tika-app-${TIKA_VERSION}.jar"
           mv tika-app-${TIKA_VERSION}.jar tika-app.jar
       - name: Add --no-document option to .gemrc file to speed up bundle install
         run: "echo 'gem: --no-document' > ~/.gemrc"

@@ -10,7 +10,19 @@ PIDFILE_PATH = 'tmp/pids/resque.pid'
 
 namespace :resque do
   task test: :environment do
-    puts 'This is just a test task'
+    Rake::Task['resque:test1'].invoke
+    Rake::Task['resque:test2'].invoke
+    Rake::Task['resque:test3'].invoke
+  end
+
+  task test1: :environment do
+    puts 'Test 1'
+  end
+  task test2: :environment do
+    puts 'Test 1'
+  end
+  task test3: :environment do
+    puts 'Test 3'
   end
 
   desc 'Stop current workers and start new workers'
@@ -27,6 +39,7 @@ namespace :resque do
   desc 'Start workers'
   task start_workers: :environment do
     start_workers(Rails.application.config_for(:resque))
+    puts 'done with start_workers task'
   end
 
   def store_pids(pids, mode)
@@ -87,6 +100,12 @@ namespace :resque do
     polling_interval = resque_config[:polling_interval]
     worker_config = resque_config.fetch(:workers, {})
 
+    # ENV['PIDFILE']='./resque.pid'
+    # ENV['BACKGROUND']='yes'
+    # ENV['QUEUE']='*'
+    # Rake::Task['resque:work'].invoke
+    # PIDFILE=./resque.pid BACKGROUND=yes QUEUE=file_serve rake resque:work
+
     total_workers = 0
     worker_info_string = worker_config.map do |queues, count|
       total_workers += count
@@ -119,9 +138,14 @@ namespace :resque do
         pid = spawn(env_vars, 'rake resque:work', ops)
         Process.detach(pid)
         pids << pid
+        puts '--> done spawning worker'
       end
+      puts "DONE starting worker for '#{queues}' with count: #{count}"
     end
 
+    puts 'Storing pids...'
+
     store_pids(pids, :append)
+    puts 'Done storing pids.'
   end
 end

@@ -1,9 +1,3 @@
-PATH
-  remote: ../imogen
-  specs:
-    imogen (0.3.1)
-      ruby-vips
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -170,6 +164,8 @@ GEM
     hashdiff (1.0.1)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
+    imogen (0.3.2)
+      ruby-vips
     io-wait (0.2.0)
     jbuilder (2.11.2)
       activesupport (>= 5.0.0)
@@ -422,7 +418,7 @@ DEPENDENCIES
   factory_bot_rails (~> 6.2)
   faraday (~> 2.7)
   faraday-multipart (~> 1.0)
-  imogen!
+  imogen (~> 0.3.2)
   io-wait (= 0.2.0)
   jbuilder (~> 2.7)
   json_spec

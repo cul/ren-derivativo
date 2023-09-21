@@ -26,9 +26,8 @@ jobs:
         with:
           path: ${{ env.TIKA_DOWNLOAD_DIR }}
           key: ${{ runner.os }}-tika-${{ env.TIKA_VERSION }}-download
-      - run: sudo apt-get update
-      - name: Install libxslt for nokogiri gem (required for version < 1.11)
-        run: sudo apt-get install -y libxml2-dev libxslt-dev
+      - name: Update apt package index
+        run: sudo apt-get update
       - name: Install other apt dependencies
         run: sudo apt-get install -y libvips42 ffmpeg ghostscript libreoffice
       - name: Download Tika

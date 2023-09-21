@@ -39,7 +39,6 @@ set :deploy_to,   "/opt/passenger/#{fetch(:deploy_group)}/#{fetch(:deploy_name)}
 append  :linked_files,
         'config/database.yml',
         'config/derivativo.yml',
-        'config/hyacinth.yml',
         'config/redis.yml',
         'config/resque.yml',
         'config/master.key'

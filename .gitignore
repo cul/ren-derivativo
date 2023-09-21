@@ -43,7 +43,6 @@ yarn-debug.log*
 database.yml
 redis.yml
 resque.yml
-hyacinth.yml
 derivativo.yml
 
 # macOS Files

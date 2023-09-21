@@ -88,21 +88,25 @@ namespace :resque do
     worker_config = resque_config.fetch(:workers, {})
 
     total_workers = 0
-    worker_info_string = worker_config.map { |queues, count|
+    worker_info_string = worker_config.map do |queues, count|
       total_workers += count
       "  [ #{queues} ] => #{count} #{count == 1 ? 'worker' : 'workers'}"
-    }.join("\n")
+    end.join("\n")
     puts "Starting #{total_workers} #{total_workers == 1 ? 'worker' : 'workers'} "\
-      "with a polling interval of #{polling_interval} seconds:\n" + worker_info_string
+      "with a polling interval of #{polling_interval} seconds"
 
+    puts 'got heeeeeeere 0'
     ops = {
       pgroup: true,
       err: [Rails.root.join('log/resque_stderr').to_s, 'a'],
       out: [Rails.root.join('log/resque_stdout').to_s, 'a']
     }
+    puts 'got heeeeeeere 1'
 
     pids = []
+    puts 'got heeeeeeere 2'
     worker_config.each do |queues, count|
+      puts "starting worker for '#{queues}' with count: #{count}"
       env_vars = {
         'QUEUES' => queues.to_s,
         'RAILS_ENV' => Rails.env.to_s,

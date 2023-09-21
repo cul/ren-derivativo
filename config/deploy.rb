@@ -70,8 +70,7 @@ namespace :derivativo do
         with rails_env: fetch(:rails_env) do
           execute :echo, '"Got here 1"'
           execute :rake, 'resque:test'
-          execute :rake, 'resque:stop_workers'
-          execute :rake, 'resque:start_workers'
+          execute :rake, 'resque:restart_workers'
           execute :echo, '"Got here 2"'
         end
       end

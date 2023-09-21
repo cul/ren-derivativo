@@ -9,6 +9,10 @@ MAX_WAIT_TIME_TO_KILL_WORKERS = 120
 PIDFILE_PATH = 'tmp/pids/resque.pid'
 
 namespace :resque do
+  task test: :environment do
+    puts 'This is just a test task'
+  end
+
   desc 'Stop current workers and start new workers'
   task restart_workers: :environment do
     Rake::Task['resque:stop_workers'].invoke

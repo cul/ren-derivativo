@@ -68,8 +68,9 @@ namespace :derivativo do
     on roles(:web) do
       within release_path do
         with rails_env: fetch(:rails_env) do
-          # execute :rake, 'resque:restart_workers'
-          execute :echo, '"This is where we would normally restart the resque workers"'
+          execute :echo, '"Got here 1"'
+          execute :rake, 'resque:test'
+          execute :echo, '"Got here 2"'
         end
       end
     end

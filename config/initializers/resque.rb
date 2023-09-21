@@ -13,4 +13,4 @@ Resque.redis = redis_config
 Resque.redis.namespace = "Resque:#{redis_config[:namespace]}"
 
 # Resque jobs should run inline in the test environment rather than being queued
-Resque.inline = resque_config[:inline]
+#Resque.inline = resque_config[:inline]

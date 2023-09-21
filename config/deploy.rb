@@ -23,7 +23,7 @@ set :remote_user, "#{fetch(:deploy_group)}serv"
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 
 # Default deploy_to directory is /var/www/my_app_name
-set :deploy_to,   "/opt/passenger/#{fetch(:deploy_group)}/#{fetch(:deploy_name)}"
+set :deploy_to,   "/opt/passenger/#{fetch(:deploy_name)}"
 
 # Default value for :format is :airbrussh.
 # set :format, :airbrussh

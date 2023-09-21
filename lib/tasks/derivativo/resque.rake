@@ -113,6 +113,7 @@ namespace :resque do
         'INTERVAL' => polling_interval.to_s # jobs tend to run for a while, so a 5-second checking interval is fine
       }
       count.times do
+        puts '--> spawn worker'
         # Using Kernel.spawn and Process.detach because regular system() call would
         # cause the processes to quit when capistrano finishes.
         pid = spawn(env_vars, 'rake resque:work', ops)

@@ -9,22 +9,6 @@ MAX_WAIT_TIME_TO_KILL_WORKERS = 120
 PIDFILE_PATH = 'tmp/pids/resque.pid'
 
 namespace :resque do
-  task test: :environment do
-    Rake::Task['resque:test1'].invoke
-    Rake::Task['resque:test2'].invoke
-    Rake::Task['resque:test3'].invoke
-  end
-
-  task test1: :environment do
-    puts 'Test 1'
-  end
-  task test2: :environment do
-    puts 'Test 1'
-  end
-  task test3: :environment do
-    puts 'Test 3'
-  end
-
   desc 'Stop current workers and start new workers'
   task restart_workers: :environment do
     Rake::Task['resque:stop_workers'].invoke
@@ -39,7 +23,6 @@ namespace :resque do
   desc 'Start workers'
   task start_workers: :environment do
     start_workers(Rails.application.config_for(:resque))
-    puts 'done with start_workers task'
   end
 
   def store_pids(pids, mode)
@@ -100,52 +83,36 @@ namespace :resque do
     polling_interval = resque_config[:polling_interval]
     worker_config = resque_config.fetch(:workers, {})
 
-    # ENV['PIDFILE']='./resque.pid'
-    # ENV['BACKGROUND']='yes'
-    # ENV['QUEUE']='*'
-    # Rake::Task['resque:work'].invoke
-    # PIDFILE=./resque.pid BACKGROUND=yes QUEUE=file_serve rake resque:work
-
     total_workers = 0
-    worker_info_string = worker_config.map do |queues, count|
+    worker_info_string = worker_config.map { |queues, count|
       total_workers += count
       "  [ #{queues} ] => #{count} #{count == 1 ? 'worker' : 'workers'}"
-    end.join("\n")
+    }.join("\n")
     puts "Starting #{total_workers} #{total_workers == 1 ? 'worker' : 'workers'} "\
-      "with a polling interval of #{polling_interval} seconds"
+      "with a polling interval of #{polling_interval} seconds:\n" + worker_info_string
 
-    puts 'got heeeeeeere 0'
     ops = {
       pgroup: true,
       err: [Rails.root.join('log/resque_stderr').to_s, 'a'],
       out: [Rails.root.join('log/resque_stdout').to_s, 'a']
     }
-    puts 'got heeeeeeere 1'
 
     pids = []
-    puts 'got heeeeeeere 2'
     worker_config.each do |queues, count|
-      puts "starting worker for '#{queues}' with count: #{count}"
       env_vars = {
         'QUEUES' => queues.to_s,
         'RAILS_ENV' => Rails.env.to_s,
         'INTERVAL' => polling_interval.to_s # jobs tend to run for a while, so a 5-second checking interval is fine
       }
       count.times do
-        puts '--> spawn worker'
         # Using Kernel.spawn and Process.detach because regular system() call would
         # cause the processes to quit when capistrano finishes.
         # pid = spawn(env_vars, 'rake resque:work', ops)
         # Process.detach(pid)
         # pids << pid
-        puts '--> done spawning worker'
       end
-      puts "DONE starting worker for '#{queues}' with count: #{count}"
     end
 
-    puts 'Storing pids...'
-
     store_pids(pids, :append)
-    puts 'Done storing pids.'
   end
 end

@@ -38,6 +38,29 @@ namespace :resque do
   #   })
   # end
 
+  desc 'NEW - Stop running workers'
+  task new_restart_workers: :environment do
+    Rake::Task['resque:new_stop_workers'].invoke
+    Rake::Task['resque:new_start_workers'].invoke
+  end
+
+  desc 'NEW - Stop running workers'
+  task new_stop_workers: :environment do
+    puts 'stopping workers'
+    puts 'done stopping workers'
+  end
+
+  desc 'NEW - Start workers'
+  task new_start_workers: :environment do
+    puts 'starting workers'
+    # system("(BACKGROUND=yes QUEUE=* rake resque:work &)")
+    `(BACKGROUND=yes QUEUE=* nohup bundle exec rake resque:work &)`
+    #pid = $?.pid
+    #Process.detach(pid)
+    #puts "Started process with pid #{pid}"
+    puts 'done starting workers'
+  end
+
   desc 'Stop running workers'
   task stop_workers: :environment do
     stop_workers

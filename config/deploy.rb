@@ -62,17 +62,20 @@ set :keep_releases, 3
 
 after 'deploy:finished', 'derivativo:restart_resque_workers'
 
-# Temporarily skip asset precompilation (for faster deployment testing that does not depend
-# on precompiled assets).
+# Temporarily skip some deployment steps (for faster deployment testing while troubleshooting
+# resque stuff).
 Rake::Task["deploy:assets:precompile"].clear_actions
+Rake::Task["deploy:migrating"].clear_actions
 namespace :deploy do
   namespace :assets do
     task :precompile do
       puts 'Temporarily skipping deploy:assets:precompile task.'
     end
   end
+  task :migrate do
+    puts 'Temporarily skipping deploy:migrate task.'
+  end
 end
-
 
 namespace :derivativo do
   desc 'Restart the resque workers'
@@ -80,8 +83,13 @@ namespace :derivativo do
     on roles(:web) do
       within release_path do
         with rails_env: fetch(:rails_env) do
-          execute :rake, 'resque:restart_workers'
+          # execute :rake, 'resque:new_restart_workers'
+          execute :bash, 'bin/resque-restart.sh'
         end
+        # with({rails_env: fetch(:rails_env), BACKGROUND: 'yes', QUEUE: '*'}) do
+        #   execute '(nohup bundle exec rake resque:work &)'
+        # end
+        #execute 'PIDFILE=./resque.pid BACKGROUND=yes QUEUE=file_serve rake resque:work'
       end
     end
   end

@@ -27,7 +27,7 @@ namespace :resque do
       'QUEUES' => queues.to_s,
       'RAILS_ENV' => Rails.env.to_s,
       'INTERVAL' => polling_interval.to_s, # jobs tend to run for a while, so a 5-second checking interval is fine
-      'BACKGROUND' => 'yes'
+      'TERM' => 'xterm'
     }
     Process.detach(fork {
       pid = Process.spawn(env_vars, 'rake resque:work', ops)

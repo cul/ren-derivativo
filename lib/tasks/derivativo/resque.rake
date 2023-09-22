@@ -29,12 +29,14 @@ namespace :resque do
       'INTERVAL' => polling_interval.to_s, # jobs tend to run for a while, so a 5-second checking interval is fine
       'BACKGROUND' => 'yes'
     }
-    pid = Process.spawn(env_vars, 'rake resque:work', ops)
-    puts "env: #{env_vars}"
-    puts "ops #{ops}"
-    puts "pid is: #{pid}"
-    puts 'skipping detach this time'
-    Process.detach(pid)
+    Process.detach(fork {
+      pid = Process.spawn(env_vars, 'rake resque:work', ops)
+      puts "env: #{env_vars}"
+      puts "ops #{ops}"
+      puts "pid is: #{pid}"
+      puts 'skipping detach this time'
+      Process.detach(pid)
+    })
   end
 
   desc 'Stop running workers'

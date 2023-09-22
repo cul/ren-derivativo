@@ -135,9 +135,9 @@ namespace :resque do
         puts '--> spawn worker'
         # Using Kernel.spawn and Process.detach because regular system() call would
         # cause the processes to quit when capistrano finishes.
-        pid = spawn(env_vars, 'rake resque:work', ops)
-        Process.detach(pid)
-        pids << pid
+        # pid = spawn(env_vars, 'rake resque:work', ops)
+        # Process.detach(pid)
+        # pids << pid
         puts '--> done spawning worker'
       end
       puts "DONE starting worker for '#{queues}' with count: #{count}"

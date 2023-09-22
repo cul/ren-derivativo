@@ -33,7 +33,7 @@ namespace :resque do
     puts "ops #{ops}"
     puts "pid is: #{pid}"
     puts 'skipping detach this time'
-    # Process.detach(pid)
+    Process.detach(pid)
   end
 
   desc 'Stop running workers'

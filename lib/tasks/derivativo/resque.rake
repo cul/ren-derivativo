@@ -15,29 +15,28 @@ namespace :resque do
     Rake::Task['resque:start_workers'].invoke
   end
 
-  desc 'Test spawn and detach task'
-  task spawn_and_detach_test: :environment do
-    ops = {
-      err: [Rails.root.join('log/spawn_and_detach_test_stderr').to_s, 'a'],
-      out: [Rails.root.join('log/spawn_and_detach_test_stdout').to_s, 'a']
-    }
-    queues = '*'
-    polling_interval = 3
-    env_vars = {
-      'QUEUES' => queues.to_s,
-      'RAILS_ENV' => Rails.env.to_s,
-      'INTERVAL' => polling_interval.to_s, # jobs tend to run for a while, so a 5-second checking interval is fine
-      'TERM' => 'xterm'
-    }
-    Process.detach(fork {
-      pid = Process.spawn(env_vars, 'rake resque:work', ops)
-      puts "env: #{env_vars}"
-      puts "ops #{ops}"
-      puts "pid is: #{pid}"
-      puts 'skipping detach this time'
-      Process.detach(pid)
-    })
-  end
+  # desc 'Test spawn and detach task'
+  # task spawn_and_detach_test: :environment do
+  #   ops = {
+  #     err: [Rails.root.join('log/spawn_and_detach_test_stderr').to_s, 'a'],
+  #     out: [Rails.root.join('log/spawn_and_detach_test_stdout').to_s, 'a']
+  #   }
+  #   queues = '*'
+  #   polling_interval = 3
+  #   env_vars = {
+  #     'QUEUES' => queues.to_s,
+  #     'RAILS_ENV' => Rails.env.to_s,
+  #     'INTERVAL' => polling_interval.to_s, # jobs tend to run for a while, so a 5-second checking interval is fine
+  #     'TERM' => 'xterm'
+  #   }
+  #   Process.detach(fork {
+  #     pid = Process.spawn(env_vars, 'rake resque:work', ops)
+  #     puts "env: #{env_vars}"
+  #     puts "ops #{ops}"
+  #     puts "pid is: #{pid}"
+  #     Process.detach(pid)
+  #   })
+  # end
 
   desc 'Stop running workers'
   task stop_workers: :environment do
@@ -126,14 +125,15 @@ namespace :resque do
       env_vars = {
         'QUEUES' => queues.to_s,
         'RAILS_ENV' => Rails.env.to_s,
-        'INTERVAL' => polling_interval.to_s # jobs tend to run for a while, so a 5-second checking interval is fine
+        'INTERVAL' => polling_interval.to_s, # jobs tend to run for a while, so a 5-second checking interval is fine
+        'TERM' => 'xterm'
       }
       count.times do
         # Using Kernel.spawn and Process.detach because regular system() call would
         # cause the processes to quit when capistrano finishes.
-        # pid = spawn(env_vars, 'rake resque:work', ops)
-        # Process.detach(pid)
-        # pids << pid
+        pid = spawn(env_vars, 'rake resque:work', ops)
+        Process.detach(pid)
+        pids << pid
       end
     end
 

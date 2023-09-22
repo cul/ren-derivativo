@@ -18,7 +18,6 @@ namespace :resque do
   desc 'Test spawn and detach task'
   task spawn_and_detach_test: :environment do
     ops = {
-      pgroup: true,
       err: [Rails.root.join('log/spawn_and_detach_test_stderr').to_s, 'a'],
       out: [Rails.root.join('log/spawn_and_detach_test_stdout').to_s, 'a']
     }
@@ -29,7 +28,7 @@ namespace :resque do
       'RAILS_ENV' => Rails.env.to_s,
       'INTERVAL' => polling_interval.to_s # jobs tend to run for a while, so a 5-second checking interval is fine
     }
-    pid = spawn(env_vars, 'rake resque:work', ops)
+    pid = Process.spawn(env_vars, 'rake resque:work', ops)
     puts "env: #{env_vars}"
     puts "ops #{ops}"
     puts "pid is: #{pid}"

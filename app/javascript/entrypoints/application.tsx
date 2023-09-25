@@ -16,9 +16,6 @@ import App from '../components/App';
 // Example: Import a stylesheet in app/frontend/index.css
 // import '~/index.css'
 
-console.log('Vite ⚡️ Rails is ready to go.')
-console.log('Derivativo version: ' + document.body.getAttribute('data-app-version'));
-
 ReactDOM.render(
   <React.StrictMode>
     <App />

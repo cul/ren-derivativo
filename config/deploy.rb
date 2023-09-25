@@ -62,21 +62,6 @@ set :keep_releases, 3
 
 after 'deploy:finished', 'derivativo:restart_resque_workers'
 
-# Temporarily skip some deployment steps (for faster deployment testing while troubleshooting
-# resque stuff).
-Rake::Task["deploy:assets:precompile"].clear_actions
-Rake::Task["deploy:migrating"].clear_actions
-namespace :deploy do
-  namespace :assets do
-    task :precompile do
-      puts 'Temporarily skipping deploy:assets:precompile task.'
-    end
-  end
-  task :migrate do
-    puts 'Temporarily skipping deploy:migrate task.'
-  end
-end
-
 namespace :derivativo do
   desc 'Restart the resque workers'
   task :restart_resque_workers do

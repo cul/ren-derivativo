@@ -68,13 +68,12 @@ namespace :derivativo do
     on roles(:web) do
       within release_path do
         with rails_env: fetch(:rails_env) do
-          resque_restart_out_log = './log/resque_restart.out'
-          resque_restart_err_log = './log/resque_restart.err'
+          resque_restart_err_and_out_log = './log/resque_restart_err_and_out.log'
           # With Ruby > 3.0, we need to redirect stdout and stderr to a file, otherwise
           # capistrano hangs on this task (waiting for more output).
-          execute :rake, 'resque:restart_workers', '>', resque_restart_out_log, '2>', resque_restart_out_log
-          execute :cat, resque_restart_err_log # We want to inform the user if there are any errors
-          execute :cat, resque_restart_out_log # We want to show the user the output of the restart task
+          execute :rake, 'resque:restart_workers', '>', resque_restart_err_and_out_log, '2>&1'
+          # Show the restart log output
+          execute :cat, resque_restart_err_and_out_log
         end
       end
     end

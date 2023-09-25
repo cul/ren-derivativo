@@ -83,13 +83,14 @@ namespace :derivativo do
     on roles(:web) do
       within release_path do
         with rails_env: fetch(:rails_env) do
-          # execute :rake, 'resque:new_restart_workers'
-          execute :bash, 'bin/resque-restart.sh'
+          resque_restart_out_log = './log/resque_restart.out'
+          resque_restart_err_log = './log/resque_restart.err'
+          # With Ruby > 3.0, we need to redirect stdout and stderr to a file, otherwise
+          # capistrano hangs on this task (waiting for more output).
+          execute :rake, 'resque:restart_workers', '>', resque_restart_out_log, '2>', resque_restart_out_log
+          execute :cat, resque_restart_err_log # We want to inform the user if there are any errors
+          execute :cat, resque_restart_out_log # We want to show the user the output of the restart task
         end
-        # with({rails_env: fetch(:rails_env), BACKGROUND: 'yes', QUEUE: '*'}) do
-        #   execute '(nohup bundle exec rake resque:work &)'
-        # end
-        #execute 'PIDFILE=./resque.pid BACKGROUND=yes QUEUE=file_serve rake resque:work'
       end
     end
   end

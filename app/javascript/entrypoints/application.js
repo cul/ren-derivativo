@@ -4,6 +4,7 @@
 //    <%= vite_client_tag %>
 //    <%= vite_javascript_tag 'application' %>
 console.log('Vite ⚡️ Rails is ready to go.')
+console.log('Derivativo version: ' + document.body.getAttribute('data-app-version'));
 
 // If using a TypeScript entrypoint file:
 //     <%= vite_typescript_tag 'application' %>

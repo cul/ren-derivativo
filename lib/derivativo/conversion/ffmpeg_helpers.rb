@@ -21,7 +21,7 @@ module Derivativo
           quality: 4,
           seek_time: halfway_point
         }
-        screenshot_args['resolution'] = scaled_resolution_for_movie(size).join('x') if size.present?
+        screenshot_args['resolution'] = scaled_resolution_for_movie(movie, size).join('x') if size.present?
         movie.screenshot(dst_file_path, screenshot_args)
       end
 
@@ -34,10 +34,10 @@ module Derivativo
         width, height = nil
         if movie.width >= movie.height
           width = size
-          height = movie.height * (size / movie.width)
+          height = (movie.height * (size.to_f / movie.width)).round
         else
           height = size
-          width = movie.width * (size / movie.height)
+          width = (movie.width * (size.to_f / movie.height)).round
         end
         [width, height]
       end

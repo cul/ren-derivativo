@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# Store version in a constant so that we can refer to it from anywhere without having to
+# read the VERSION file in real time.
+APP_VERSION = File.read(Rails.root.join('VERSION'))
+
 DERIVATIVO = Rails.application.config_for(:derivativo).deep_symbolize_keys
 
 FFMPEG.ffmpeg_binary = DERIVATIVO['ffmpeg_binary_path'] if DERIVATIVO['ffmpeg_binary_path'].present?

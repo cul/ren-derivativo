@@ -62,25 +62,18 @@ set :keep_releases, 3
 
 after 'deploy:finished', 'derivativo:restart_resque_workers'
 
-# Temporarily skip asset precompilation (for faster deployment testing that does not depend
-# on precompiled assets).
-Rake::Task["deploy:assets:precompile"].clear_actions
-namespace :deploy do
-  namespace :assets do
-    task :precompile do
-      puts 'Temporarily skipping deploy:assets:precompile task.'
-    end
-  end
-end
-
-
 namespace :derivativo do
   desc 'Restart the resque workers'
   task :restart_resque_workers do
     on roles(:web) do
       within release_path do
         with rails_env: fetch(:rails_env) do
-          execute :rake, 'resque:restart_workers'
+          resque_restart_err_and_out_log = './log/resque_restart_err_and_out.log'
+          # With Ruby > 3.0, we need to redirect stdout and stderr to a file, otherwise
+          # capistrano hangs on this task (waiting for more output).
+          execute :rake, 'resque:restart_workers', '>', resque_restart_err_and_out_log, '2>&1'
+          # Show the restart log output
+          execute :cat, resque_restart_err_and_out_log
         end
       end
     end

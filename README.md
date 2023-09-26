@@ -4,12 +4,12 @@ Derivativo is derivative generation app that converts images, audio, video, offi
 
 ## Requirements
 
-- Ruby 3.0
-- Redis 3
+- Ruby 3.2 (tested with Ruby 3.2.2)
+- Redis 7
 - ffmpeg (tested with version 4)
 - libvips (tested with version 8.8)
-- Apache Tika (tested with version 1.25)
-- LibreOffice, for the `soffice` binary (tested with version 6)
+- Apache Tika (tested with version 2.9)
+- LibreOffice, for the `soffice` binary (tested with LibreOffice 7.5)
 
 ## First-Time Setup (for developers)
 
@@ -77,6 +77,14 @@ To regenerate the .rubocop_todo.yml file and automatically create TODO items for
 ```
 rubocop --auto-gen-config --auto-gen-only-exclude --exclude-limit 10000
 ```
+
+# Troubleshooting notes
+
+When installing Ruby 3.2.2 on an M1 mac, you might need to install like this:
+
+`rvm install 3.2.2 --with-openssl-dir=$(brew --prefix openssl@3)`
+
+(For more details, see: https://github.com/rvm/rvm/issues/5365)
 
 ## Attribution
 

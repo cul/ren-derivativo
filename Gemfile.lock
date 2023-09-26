@@ -198,7 +198,7 @@ GEM
     multipart-post (2.3.0)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
-    mysql2 (0.5.3)
+    mysql2 (0.5.5)
     net-imap (0.3.7)
       date
       net-protocol
@@ -418,7 +418,7 @@ DEPENDENCIES
   jbuilder (~> 2.7)
   json_spec
   listen (~> 3.3)
-  mysql2 (~> 0.5)
+  mysql2 (~> 0.5.5)
   nokogiri (~> 1.15.4)
   puma (~> 5.2)
   rails (~> 7.0.8)
@@ -440,4 +440,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   2.3.13
+   2.4.19

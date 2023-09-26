@@ -1,18 +1,48 @@
 default: &default
-  run_queued_jobs_inline: false
-  remote_request_api_key: 'changethis'
-  #ffmpeg_binary_path: '/usr/local/bin/ffmpeg'
-  #ffprobe_binary_path: '/usr/local/bin/ffprobe'
-  #ghostscript_binary_path: 'gs'
-  ghostscript_binary_path: 'gs'
-  tika_jar_path: '/path/to/your/tika-app.jar'
+  image_access_copy_settings:
+    extension: 'png'
+  poster_settings:
+    extension: 'png'
+    size: 768
+  video_access_copy_settings:
+    extension: 'mp4'
+    ffmpeg_input_args: '-threads 2'
+    ffmpeg_output_args: '-threads 2 -pix_fmt yuv420p -c:v libx264 -r 29.97 -crf 23 -vf scale=trunc(iw/2)*2:trunc(ih/2)*2 -c:a aac -b:a 128k -ar 48000 -ac 2 -af aresample=async=1:min_hard_comp=0.100000:first_pts=0 -c:s mov_text -map 0:v:0 -map 0:a -f mp4'
+  audio_access_copy_settings:
+    extension: 'm4a'
+    ffmpeg_input_args: '-threads 2'
+    ffmpeg_output_args: '-threads 2 -vn -c:a aac -b:a 128k -ar 48000 -ac 2 -af aresample=async=1:min_hard_comp=0.100000:first_pts=0 -f mp4'
 
 development:
   <<: *default
   run_queued_jobs_inline: true
   working_directory: <%= Rails.root.join('tmp', 'development', 'working_directory') %>
+  remote_request_api_key: 'changethis'
+  tika_jar_path: '/path/to/tika-app.jar'
+  soffice_binary_path: '/path/to/soffice'
+  # ffmpeg_binary_path: '/usr/local/bin/ffmpeg'
+  # ffprobe_binary_path: '/usr/local/bin/ffprobe'
+  # ghostscript_binary_path: 'gs'
+  delivery_targets:
+    hyacinth2:
+      adapter: 'hyacinth2'
+      email: 'example@example.com'
+      password: 'changethis'
+      url: 'http://localhost:3000'
 
 test:
   <<: *default
   run_queued_jobs_inline: true
   working_directory: <%= Rails.root.join('tmp', 'test', 'working_directory') %>
+  remote_request_api_key: 'changethis'
+  tika_jar_path: '/path/to/tika-app.jar'
+  soffice_binary_path: '/path/to/soffice'
+  # ffmpeg_binary_path: '/usr/local/bin/ffmpeg'
+  # ffprobe_binary_path: '/usr/local/bin/ffprobe'
+  # ghostscript_binary_path: 'gs'
+  delivery_targets:
+    hyacinth2:
+      adapter: 'hyacinth2'
+      email: 'example@example.com'
+      password: 'changethis'
+      url: 'http://localhost:3001'

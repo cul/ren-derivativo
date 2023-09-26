@@ -44,7 +44,7 @@ append  :linked_files,
         'config/master.key'
 
 # Default value for linked_dirs is []
-append :linked_dirs, 'log', 'tmp/pids', 'node_modules', 'public/packs'
+append :linked_dirs, 'log', 'tmp/pids', 'node_modules'
 
 set :passenger_restart_with_touch, true
 

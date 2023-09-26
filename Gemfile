@@ -25,8 +25,11 @@ gem 'nokogiri', '~> 1.15.4'
 gem 'puma', '~> 5.2'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 7.0.8'
+# Use Redis adapter to run Action Cable in production
+gem 'redis', '~> 4.8'
+gem 'redis-namespace', '~> 1.11'
 # Resque for queued jobs
-gem 'resque', '~> 2.0'
+gem 'resque', '~> 2.6'
 # Rainbow for text coloring
 gem 'rainbow', '~> 3.0'
 # Use sqlite3 as a database option for Active Record
@@ -37,8 +40,6 @@ gem 'sass-rails', '~> 5'
 gem 'sprockets-rails'
 # For ffmpeg video conversion
 gem 'streamio-ffmpeg', '~> 3.0'
-# Use Redis adapter to run Action Cable in production
-# gem 'redis', '~> 4.0'
 # Use Active Model has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 

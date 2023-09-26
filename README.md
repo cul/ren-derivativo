@@ -27,7 +27,7 @@ rails s -p 3000 # Start the application using rails server
 And for faster React app recompiling during development, run this in a separate terminal window:
 
 ```
-./bin/webpack-dev-server
+npm run start:dev
 ```
 
 Note that some features (and the test suite) won't run properly if you don't have all of the dependent programs installed.  Take a look at the Requirements section near the top of this README for the full list.  In most cases it's easiest to install requirements using a package manager (Homebrew on a Mac, apt/yum on Linux, etc.) and they'll be placed on your path automatically.  If you install dependent programs in a way that doesn't put them on your path, you can specify the path in `config/derivativo.yml`:

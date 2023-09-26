@@ -19,8 +19,6 @@ gem 'imogen', '~> 0.3.2'
 gem 'jbuilder', '~> 2.7'
 # Use mysql as a database option for Active Record
 gem 'mysql2', '~> 0.5.5'
-# Nokogiri - Can't update to 1.11 or later because our server version of GLIBC is too old
-gem 'nokogiri', '~> 1.15.4'
 # Use Puma as the app server
 gem 'puma', '~> 5.2'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'

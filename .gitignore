@@ -37,3 +37,6 @@ reference-files/*
 *.komodoproject
 
 /jetty
+
+# Ignore local rake tasks
+/lib/tasks/local.rake

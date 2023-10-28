@@ -24,6 +24,7 @@ class MediaResource < CacheableResource
     derivative_directory = Derivativo::CachePathBuilder.media_path_for_id(id)
 
     FileUtils.mkdir_p derivative_directory
+    File.chmod(0775, derivative_directory) # set group write permission so Hyacinth can write a caption file to this directory
     access_copy_path = File.join(derivative_directory, access_copy_filename)
     access_copy_processing_file_path = File.join(derivative_directory, access_copy_filename + '.processing')
 

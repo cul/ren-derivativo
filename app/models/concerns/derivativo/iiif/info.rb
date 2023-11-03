@@ -1,13 +1,15 @@
 module Derivativo::Iiif::Info
   extend ActiveSupport::Concern
-  
+
   def info(id_url, version)
     raise 'Only IIIF version 2 is supported at the moment' unless version.to_s == '2'
-    
+
     original_width, original_height = get_cachable_property(Derivativo::Iiif::CacheKeys::ORIGINAL_IMAGE_DIMENSIONS_KEY)
-    scale_factors = get_cachable_property(Derivativo::Iiif::CacheKeys::SCALE_FACTORS_KEY)
+    largest_scale_factor = Imogen::Iiif::Tiles.scale_factor_for(original_width, original_height, IiifResource::TILE_SIZE)
+    scale_factors = (0..Math.log2(largest_scale_factor).to_i).map { |exp| 2.pow(exp) }
+
     is_restricted_size_image = get_cachable_property(Derivativo::Iiif::CacheKeys::IS_RESTRICTED_SIZE_IMAGE_KEY)
-    
+
     response = {
       "@context" => "http://iiif.io/api/image/2/context.json",
       "@id" => id_url,
@@ -18,7 +20,8 @@ module Derivativo::Iiif::Info
       "tiles" => [
         {
           "width" => IiifResource::TILE_SIZE,
-          "scaleFactors" => [scale_factors]
+          "height" => IiifResource::TILE_SIZE,
+          "scaleFactors" => scale_factors
         }
       ],
       "profile" => [
@@ -29,16 +32,16 @@ module Derivativo::Iiif::Info
         }
       ]
     }
-    
+
     # If this is a restricted size image, add maxWidth and maxHeight params
     if is_restricted_size_image
       response['maxWidth'] = DERIVATIVO[:restricted_use_image_size]
       response['maxHeight'] = DERIVATIVO[:restricted_use_image_size]
     end
-    
+
     response
   end
-  
+
   def iiif_allowed_sizes(original_width, original_height, is_restricted_size_image, restricted_use_image_size, app_allowed_sizes)
     app_allowed_sizes.sort.select{|s| !is_restricted_size_image || s < restricted_use_image_size }.map do |size|
       if original_width > original_height
@@ -54,5 +57,5 @@ module Derivativo::Iiif::Info
       end
     end
   end
-  
+
 end

@@ -5,8 +5,9 @@ module Derivativo::Iiif::Info
     raise 'Only IIIF version 2 is supported at the moment' unless version.to_s == '2'
 
     original_width, original_height = get_cachable_property(Derivativo::Iiif::CacheKeys::ORIGINAL_IMAGE_DIMENSIONS_KEY)
-    largest_scale_factor = Imogen::Iiif::Tiles.scale_factor_for(original_width, original_height, IiifResource::TILE_SIZE)
-    scale_factors = (0..Math.log2(largest_scale_factor).to_i).map { |exp| 2.pow(exp) }
+    largest_scale_factor = Imogen::Zoomable.max_levels_for(original_width, original_height, IiifResource::TILE_SIZE)
+    largest_scale_factor -= Math.log2(IiifResource::TILE_SIZE/2) # remove scales smaller than tile size
+    scale_factors = (0..((largest_scale_factor).to_i)).map { |exp| 2.pow(exp) }
 
     is_restricted_size_image = get_cachable_property(Derivativo::Iiif::CacheKeys::IS_RESTRICTED_SIZE_IMAGE_KEY)
 

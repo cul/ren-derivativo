@@ -12,7 +12,6 @@ install_plugin Capistrano::SCM::Git
 
 # additional modules
 require 'capistrano/rails'
-require 'capistrano/rvm'
 require 'capistrano/passenger'
 require 'capistrano/cul'
 

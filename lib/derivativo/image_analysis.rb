@@ -4,7 +4,7 @@ require 'benchmark'
 
 module Derivativo
   module ImageAnalysis
-    def self.featured_thumbnail_region(src_file_path:)
+    def self.auto_detect_featured_region(src_file_path:)
       Rails.logger.debug "Detecting featured thumbnail region for #{src_file_path} ..."
       x = y = width = height = nil
       time = Benchmark.measure do

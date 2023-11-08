@@ -6,7 +6,7 @@ class Derivativo::DerivativePackage
   # Generated values
   attr_reader :generated_access_tempfile, :generated_poster_tempfile, :generated_featured_region
 
-  private attr_writer :generated_access_tempfile, :generated_poster_tempfile
+  private attr_writer :generated_access_tempfile, :generated_poster_tempfile, :generated_featured_region
 
   def initialize(requested_derivatives:, main_uri:, access_uri: nil, poster_uri: nil)
     @requested_derivatives = requested_derivatives
@@ -57,7 +57,7 @@ class Derivativo::DerivativePackage
     source_uri ||= self.generated_access_tempfile ? file_path_as_uri(self.generated_access_tempfile.path) : self.access_uri
     source_uri ||= generate_access
     with_source_uri_as_file_path(source_uri) do |file_path|
-      self.generated_featured_region = generate_featured_region(file_path)
+      self.generated_featured_region = Derivativo::ImageAnalysis.auto_detect_featured_region(src_file_path: file_path)
     end
   end
 

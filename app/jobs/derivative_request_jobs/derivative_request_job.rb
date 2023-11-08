@@ -13,7 +13,7 @@ class DerivativeRequestJobs::DerivativeRequestJob < ApplicationJob
     derivative_request.with_lock do
       # This job should only run for pending DerivativeRequests. If this DerivativeRequest
       # is anything other than pending, then we will immediately return
-      return unless derivative_request.status == 'pending'
+      return unless derivative_request.pending?
 
       # Set status to processing
       derivative_request.update!(status: :processing)
@@ -50,7 +50,7 @@ class DerivativeRequestJobs::DerivativeRequestJob < ApplicationJob
       status: :failure,
       error_message: "#{e.message}\n#{e.backtrace.join("\n\t")}"
     )
-    # And re-raise it so that we don't hide it
+    # And re-raise the exception so that we don't hide it
     raise e
   end
 end

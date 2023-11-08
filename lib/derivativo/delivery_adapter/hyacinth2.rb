@@ -27,9 +27,14 @@ class Derivativo::DeliveryAdapter::Hyacinth2
   def payload_for_derivative_package(derivative_package)
     # As part of this payload delivery, tell Hyacinth not to perform future derivative
     # processing because this delivery is in response to a request forderivative processing.
-    payload = { digital_object_data_json: { perform_derivative_processing: false }.to_json }
+    payload = {}
+    digital_object_data = {'perform_derivative_processing' => false}
+
     handle_payload_access_copy(payload, derivative_package)
     handle_payload_poster(payload, derivative_package)
+    handle_payload_featured_region(digital_object_data, derivative_package)
+
+    payload['digital_object_data_json'] = digital_object_data.to_json
     payload
   end
 
@@ -51,5 +56,11 @@ class Derivativo::DeliveryAdapter::Hyacinth2
       BestType.mime_type.for_file_name(derivative_package.generated_poster_tempfile.path),
       File.basename(derivative_package.generated_poster_tempfile.path)
     )
+  end
+
+  def handle_payload_featured_region(digital_object_data, derivative_package)
+    return unless derivative_package.generated_featured_region
+
+    digital_object_data['featured_region'] = derivative_package.generated_featured_region
   end
 end

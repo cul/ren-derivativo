@@ -28,7 +28,7 @@ class Derivativo::DeliveryAdapter::Hyacinth2
     # As part of this payload delivery, tell Hyacinth not to perform future derivative
     # processing because this delivery is in response to a request forderivative processing.
     payload = {}
-    digital_object_data = {'perform_derivative_processing' => false}
+    digital_object_data = { 'perform_derivative_processing' => false }
 
     handle_payload_access_copy(payload, derivative_package)
     handle_payload_poster(payload, derivative_package)

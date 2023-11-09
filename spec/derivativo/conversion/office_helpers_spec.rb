@@ -41,13 +41,15 @@ describe Derivativo::Conversion::OfficeHelpers do
       it 'runs compression a total of two times and with a higher compression value the second time' do
         with_auto_deleting_tempfile('dst', '.pdf') do |dst_file|
           expect(described_class).to receive(:office_convert_to_pdf_impl).with(
-            src_file_path: src_file_path, dst_file_path: dst_file.path, soffice_binary_path: soffice_binary_path
+            src_file_path: src_file_path,
+            dst_file_path: dst_file.path,
+            soffice_binary_path: soffice_binary_path
           ).ordered.and_call_original
           expect(described_class).to receive(:office_convert_to_pdf_impl).with(
             src_file_path: src_file_path,
             dst_file_path: dst_file.path,
-            compression_integer: second_conversion_compression_integer,
-            soffice_binary_path: soffice_binary_path
+            soffice_binary_path: soffice_binary_path,
+            compression_integer: second_conversion_compression_integer
           ).ordered.and_call_original
           described_class.office_convert_to_pdf(src_file_path: src_file_path, dst_file_path: dst_file.path)
           expect(File.size(dst_file.path)).to be_positive

@@ -8,7 +8,8 @@ module Derivativo
       # Converts an input office output audiovisual file
       def self.office_convert_to_pdf(src_file_path:, dst_file_path:)
         office_convert_to_pdf_impl(
-          src_file_path: src_file_path, dst_file_path: dst_file_path,
+          src_file_path: src_file_path,
+          dst_file_path: dst_file_path,
           soffice_binary_path: soffice_binary_path_from_config_or_path
         )
 

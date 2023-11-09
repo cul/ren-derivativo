@@ -24,7 +24,7 @@ gem 'puma', '~> 5.2'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 7.0.8'
 # Use Redis adapter to run Action Cable in production
-gem 'redis', '~> 4.8' # Note: Updating the redis gem to v5 breaks the current redis namespace setup
+gem 'redis', '~> 4.8' # NOTE: Updating the redis gem to v5 breaks the current redis namespace setup
 gem 'redis-namespace', '~> 1.11'
 # Resque for queued jobs
 gem 'resque', '~> 2.6'
@@ -59,7 +59,7 @@ group :development, :test do
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
   # rspec for testing
   gem 'rspec', '>= 3.11'
-  gem 'rspec-rails', '~> 5.1'
+  gem 'rspec-rails', '~> 6.0'
   # json_spec for easier json comparison in tests
   gem 'json_spec'
   # simplecov for test coverage reports

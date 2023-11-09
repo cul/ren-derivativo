@@ -63,7 +63,7 @@ group :development, :test do
   # json_spec for easier json comparison in tests
   gem 'json_spec'
   # simplecov for test coverage reports
-  gem 'simplecov', require: false
+  gem 'simplecov', '~> 0.22', require: false
   # for mocking http requests in tests
   gem 'webmock'
 end

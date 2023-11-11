@@ -7,6 +7,7 @@ module Derivativo
         required(:identifier).value(:string)
         required(:delivery_target).value(:string)
         required(:main_uri).value(:string)
+        required(:adjust_orientation).value(:integer, included_in?: [0, 90, 270])
         required(:requested_derivatives).value(:array)
         optional(:access_uri).maybe(:string) # this means string or nil
         optional(:poster_uri).maybe(:string) # this means string or nil

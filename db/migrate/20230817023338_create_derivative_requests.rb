@@ -6,6 +6,7 @@ class CreateDerivativeRequests < ActiveRecord::Migration[7.0]
       t.integer :status, null: false, default: 0, index: true
       t.text  :error_message
       t.string :delivery_target, null: false
+      t.integer :adjust_orientation, null: false, default: 0
       t.text :main_uri, null: false
       t.text :access_uri
       t.text :poster_uri

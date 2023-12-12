@@ -91,7 +91,11 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
     return @representative_generic_resource if instance_variable_defined?(:@representative_generic_resource)
 
     @representative_generic_resource ||= begin
-      if fedora_object.nil?
+      # For certain very old Fedora objects with improper cmodel data, the Fedora class
+      # is ActiveFedora::Base instead of one of our custom classes (like GenericResource).
+      # ActiveFedora fails to properly cast those objects, so they don't have a
+      # get_representative_generic_resource that we can call.
+      if fedora_object.nil? || fedora_object.class == ActiveFedora::Base
         nil
       else
         fedora_object.get_representative_generic_resource

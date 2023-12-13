@@ -17,6 +17,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_17_023338) do
     t.integer "status", default: 0, null: false
     t.text "error_message"
     t.string "delivery_target", null: false
+    t.integer "adjust_orientation", default: 0, null: false
     t.text "main_uri", null: false
     t.text "access_uri"
     t.text "poster_uri"

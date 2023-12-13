@@ -6,7 +6,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 # Use best_type for media type detection
 gem 'best_type', '~> 0.0.10'
 # For schema validation
-gem 'dry-validation', '~> 1.6.0'
+gem 'dry-validation', '~> 1.9.0'
 # Factory bot for model fixtures
 gem 'factory_bot_rails', '~> 6.2'
 # Faraday for http requests

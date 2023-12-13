@@ -2,14 +2,15 @@
 
 class Derivativo::DerivativePackage
   # Input fields
-  attr_reader :requested_derivatives, :main_uri, :access_uri, :poster_uri
+  attr_reader :requested_derivatives, :adjust_orientation, :main_uri, :access_uri, :poster_uri
   # Generated values
   attr_reader :generated_access_tempfile, :generated_poster_tempfile, :generated_featured_region
 
   private attr_writer :generated_access_tempfile, :generated_poster_tempfile, :generated_featured_region
 
-  def initialize(requested_derivatives:, main_uri:, access_uri: nil, poster_uri: nil)
+  def initialize(requested_derivatives:, adjust_orientation:, main_uri:, access_uri: nil, poster_uri: nil)
     @requested_derivatives = requested_derivatives
+    @adjust_orientation = adjust_orientation
     @main_uri = main_uri
     @access_uri = access_uri
     @poster_uri = poster_uri
@@ -24,7 +25,7 @@ class Derivativo::DerivativePackage
   def generate_access
     with_source_uri_as_file_path(self.main_uri) do |file_path|
       self.generated_access_tempfile = Derivativo::AccessGenerator.generate_as_tempfile(
-        source_file_path: file_path, rotation: 0 # TODO: Handle non-0 rotations
+        source_file_path: file_path, rotation: self.adjust_orientation
       )
     end
     self.generated_access_tempfile

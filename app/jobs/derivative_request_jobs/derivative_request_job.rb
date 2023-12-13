@@ -21,6 +21,7 @@ class DerivativeRequestJobs::DerivativeRequestJob < ApplicationJob
 
     derivative_package = Derivativo::DerivativePackage.new(
       requested_derivatives: derivative_request.requested_derivatives,
+      adjust_orientation: derivative_request.adjust_orientation,
       main_uri: derivative_request.main_uri,
       access_uri: derivative_request.access_uri,
       poster_uri: derivative_request.poster_uri

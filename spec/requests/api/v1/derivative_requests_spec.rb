@@ -23,6 +23,7 @@ RSpec.describe '/api/v1/derivative_requests', type: :request do
       let(:requested_derivatives) { ['access'] }
       let(:access_uri) { 'file:///path/to/file.mp4' }
       let(:poster_uri) { 'file:///path/to/file.tiff' }
+      let(:adjust_orientation) { 0 }
 
       let(:options) { { 'option1' => 'cool', 'option2' => 'also cool' } }
 
@@ -35,7 +36,8 @@ RSpec.describe '/api/v1/derivative_requests', type: :request do
             requested_derivatives: requested_derivatives,
             access_uri: access_uri,
             poster_uri: poster_uri,
-            options: options
+            options: options,
+            adjust_orientation: adjust_orientation
           }
         }
       end

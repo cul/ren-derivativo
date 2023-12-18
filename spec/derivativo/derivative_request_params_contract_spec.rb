@@ -11,6 +11,7 @@ describe Derivativo::DerivativeRequestParamsContract do
   let(:requested_derivatives) { ['access'] }
   let(:access_uri) { 'file:///path/to/file.mp4' }
   let(:poster_uri) { 'file:///path/to/file.tiff' }
+  let(:adjust_orientation) { 0 }
 
   let(:options) { { 'option1' => 'cool', 'option2' => 'also cool' } }
 
@@ -19,7 +20,8 @@ describe Derivativo::DerivativeRequestParamsContract do
       identifier: identifier,
       delivery_target: delivery_target,
       main_uri: main_uri,
-      requested_derivatives: requested_derivatives
+      requested_derivatives: requested_derivatives,
+      adjust_orientation: adjust_orientation
     }
   end
   let(:required_and_optional_derivative_request_params_hash) do

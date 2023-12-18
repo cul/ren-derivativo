@@ -11,6 +11,7 @@ RSpec.describe DerivativeRequestJobs::PrepareDerivativeRequestJob do
   let(:requested_derivatives) { ['access'] }
   let(:access_uri) { 'file:///path/to/file.mp4' }
   let(:poster_uri) { 'file:///path/to/file.tiff' }
+  let(:adjust_orientation) { 0 }
 
   let(:perform_args) do
     {
@@ -19,7 +20,8 @@ RSpec.describe DerivativeRequestJobs::PrepareDerivativeRequestJob do
       main_uri: main_uri,
       requested_derivatives: requested_derivatives,
       access_uri: access_uri,
-      poster_uri: poster_uri
+      poster_uri: poster_uri,
+      adjust_orientation: adjust_orientation
     }
   end
 

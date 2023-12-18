@@ -17,6 +17,7 @@ jobs:
       TIKA_VERSION: 2.9.0
       TIKA_DOWNLOAD_DIR: /tmp/downloads/tika
       TIKA_JAR_PATH: /tmp/downloads/tika/tika-app.jar
+      SOFFICE_BINARY_PATH: /usr/bin/libreoffice
 
     steps:
       - uses: actions/checkout@v3
@@ -58,6 +59,6 @@ jobs:
       - run: npm install -g yarn
       - run: yarn install --frozen-lockfile
       - name: Set up config files (with custom TIKA_JAR_PATH)
-        run: bundle exec rake derivativo:setup:config_files TIKA_JAR_PATH=${{ env.TIKA_JAR_PATH }}
+        run: bundle exec rake derivativo:setup:config_files TIKA_JAR_PATH=${{ env.TIKA_JAR_PATH }} SOFFICE_BINARY_PATH=${{ env.SOFFICE_BINARY_PATH }}
       - name: Run CI task
         run: bundle exec rake derivativo:ci

@@ -26,6 +26,12 @@ namespace :derivativo do
         derivativo_config[Rails.env]['tika_jar_path'] = ENV['TIKA_JAR_PATH']
         File.write(derivativo_config_file_path, YAML.dump(derivativo_config))
       end
+      if ENV['SOFFICE_BINARY_PATH']
+        derivativo_config_file_path = File.join(config_dir, 'derivativo.yml')
+        derivativo_config = YAML.load(File.read(derivativo_config_file_path), aliases: true)
+        derivativo_config[Rails.env]['soffice_binary_path'] = ENV['SOFFICE_BINARY_PATH']
+        File.write(derivativo_config_file_path, YAML.dump(derivativo_config))
+      end
     end
   end
 end

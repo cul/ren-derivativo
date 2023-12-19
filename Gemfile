@@ -13,8 +13,9 @@ gem 'factory_bot_rails', '~> 6.2'
 gem 'faraday', '~> 2.7' # core faraday library
 gem 'faraday-multipart', '~> 1.0' # for added file upload functionality
 # Use imogen for generating images
-gem 'imogen', '~> 0.3.2'
+# gem 'imogen', '~> 0.4.0'
 # gem 'imogen', path: '../imogen'
+gem 'imogen', git: 'https://github.com/cul/imogen.git', branch: 'iiif_tile_generation_fixes'
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder', '~> 2.7'
 # Use mysql as a database option for Active Record

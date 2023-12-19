@@ -6,7 +6,7 @@ module Derivativo
   module Conversion
     def self.image_to_image(src_file_path:, dst_file_path:, rotation: 0, size: nil)
       with_logged_timing(__callee__, src_file_path, dst_file_path) do
-        Imogen.with_image(src_file_path) do |img|
+        Imogen.with_image(src_file_path, { revalidate: true }) do |img|
           Imogen::Iiif.convert(
             img,
             dst_file_path,

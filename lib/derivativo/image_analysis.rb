@@ -8,7 +8,7 @@ module Derivativo
       Rails.logger.debug "Detecting featured thumbnail region for #{src_file_path} ..."
       x = y = width = height = nil
       time = Benchmark.measure do
-        Imogen.with_image(src_file_path) do |img|
+        Imogen.with_image(src_file_path, { revalidate: true }) do |img|
           # We try to use at least 768 pixels from any image when generating a featured
           # area crop so that we don't unintentionally get a tiny 10px x 10px crop
           # that ends up getting scaled up for users and looks blocky/blurry.

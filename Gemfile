@@ -41,7 +41,8 @@ gem 'ruby-vips', '~> 2.0.16'
 #gem 'imogen', :path => '../imogen'
 
 # Use best type for mime/dc lookups
-gem 'best_type', '0.0.9'
+#gem 'best_type', '0.0.9'
+gem 'best_type', git: 'https://github.com/cul/best_type.git', branch: 'LDPD-415-case-sensitive-comparisons'
 
 # Use streamio-ffmpeg for audio/video
 # https://github.com/streamio/streamio-ffmpeg

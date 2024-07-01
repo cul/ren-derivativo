@@ -42,17 +42,29 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
     if original_image_width.blank? || original_image_height.blank?
       begin
         representative_generic_resource.with_ds_resource('content', (! DERIVATIVO['no_mount']) ) do |image_path|
-          Imogen.with_image(image_path) do |img|
-            original_image_width = img.width
-            original_image_height = img.height
+          if Derivativo::FedoraObjectTypeCheck.is_generic_resource_video?(representative_generic_resource)
+            movie = FFMPEG::Movie.new(image_path)
+            original_image_width = movie.width
+            original_image_height = movie.height
+          else
+            Imogen.with_image(image_path) do |img|
+              original_image_width = img.width
+              original_image_height = img.height
+            end
           end
         end
       rescue Vips::Error
-        # If Vips fails to read the file because it's not a readable format, we'll try reading the access copy instead
+        # If we fail to read the file because it's not a readable format, we'll try reading the access copy instead
         representative_generic_resource.with_ds_resource('access', (! DERIVATIVO['no_mount']) ) do |image_path|
-          Imogen.with_image(image_path) do |img|
-            original_image_width = img.width
-            original_image_height = img.height
+          if Derivativo::FedoraObjectTypeCheck.is_generic_resource_video?(representative_generic_resource)
+            movie = FFMPEG::Movie.new(image_path)
+            original_image_width = movie.width
+            original_image_height = movie.height
+          else
+            Imogen.with_image(image_path) do |img|
+              original_image_width = img.width
+              original_image_height = img.height
+            end
           end
         end
       end

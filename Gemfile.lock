@@ -8,14 +8,6 @@ GIT
       activesupport (>= 5.2)
 
 GIT
-  remote: https://github.com/cul/best_type.git
-  revision: 0e52939220a0e35b776f5a579be5d4b17f79cfb9
-  branch: LDPD-415-case-sensitive-comparisons
-  specs:
-    best_type (1.0.0)
-      mime-types (~> 3.4)
-
-GIT
   remote: https://github.com/cul/cul_hydra.git
   revision: 6ef8d8dd4888003376e6aef9a3febb60fd22f8d6
   branch: master
@@ -127,6 +119,8 @@ GEM
       public_suffix (>= 2.0.2, < 5.0)
     airbrussh (1.4.0)
       sshkit (>= 1.6.1, != 1.7.0)
+    best_type (1.0.1)
+      mime-types (~> 3.4)
     bindex (0.8.1)
     blacklight (7.24.0)
       deprecation
@@ -497,7 +491,7 @@ PLATFORMS
 DEPENDENCIES
   active_fedora_relsint!
   addressable (~> 2.5)
-  best_type!
+  best_type (~> 1.0.1)
   blacklight (~> 7.22)
   bootsnap
   byebug

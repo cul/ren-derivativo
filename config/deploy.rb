@@ -41,6 +41,7 @@ set :linked_files, fetch(:linked_files, []).push(
   "config/database.yml",
   "config/derivativo.yml",
   "config/fedora.yml",
+  "config/redis.yml",
   "config/resque.yml",
   "config/secrets.yml",
   "config/solr.yml"

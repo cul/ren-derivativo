@@ -28,6 +28,7 @@ solr.yml
 secrets.yml
 derivativo.yml
 resque.yml
+redis.yml
 
 # Ignore OS-specific
 .DS_Store

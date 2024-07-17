@@ -58,8 +58,9 @@ gem 'retriable', '~> 2.1'
 # We're pinning resque to 1.26.x because 1.27 does an eager load operation
 # that doesn't work properly with the Blacklight gem dependency and raises:
 # ActiveSupport::Concern::MultipleIncludedBlocks: Cannot define multiple 'included' blocks for a Concern
-gem 'resque', '~> 1.26.0'
-gem 'redis', '< 4' # Need to lock to earlier version of redis gem because resque is calling Redis.connect, and this method no longer exists in redis gem >= 4.0
+gem 'resque', '~> 2.6.0'
+gem 'redis', '~> 4.8' # NOTE: Updating the redis gem to v5 breaks the current redis namespace setup
+gem 'redis-namespace', '~> 1.11'
 
 # Use redis-rails for redis-backed rails cache
 gem 'redis-rails'

@@ -15,7 +15,7 @@ jobs:
       NOKOGIRI_USE_SYSTEM_LIBRARIES: true
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - uses: FedericoCarboni/setup-ffmpeg@v1
         id: setup-ffmpeg
       - uses: jmservera/libreoffice-action@v0.3.0-alpha

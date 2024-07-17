@@ -38,7 +38,9 @@ module Derivativo::Iiif::BaseCreation
 			# We only ever want to create base derivatives for rasterable GenericResources (like images or PDFs).
 			# Serving up of representative images is handled elsewhere, by the IiifController, so we'll reject
 			# anything here that isn't a rasterable GenericResource.
-			rasterable_dsid = ['service', 'content', 'access'].detect do |dsid|
+			# We prioritize the access copy as a derivative source because it's more likely to be convertible to an image,
+			# then fall back to service copy, and then fall back to the original resource.
+			rasterable_dsid = ['access', 'service', 'content'].detect do |dsid|
 				Derivativo::FedoraObjectTypeCheck.is_rasterable_generic_resource?(generic_resource, dsid)
 			end
 			unless rasterable_dsid

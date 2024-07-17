@@ -1,7 +1,23 @@
-local: &local
-  url: localhost:6379
-  namespace: derivativo
-  workers: 1
+default: &default
+  url: redis://localhost:6379
+  # namespace: set for each environment
+  workers:
+    '*' : 1
+  polling_interval: 5
 
-development: *local
-test: *local
+development:
+  <<: *default
+  namespace: derivativo_local_development
+  polling_interval: 3 # More frequent polling interval in development environment
+
+test:
+  <<: *default
+  namespace: derivativo_local_test
+
+production:
+  <<: *default
+  namespace: derivativo_local_production
+  workers:
+    '*' : 1
+    'high' : 3
+    'low,medium' : 1

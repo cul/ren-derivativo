@@ -28,6 +28,14 @@ GIT
       thread
 
 GIT
+  remote: https://github.com/cul/imogen.git
+  revision: 93fe37dcf7ff7f9f0b2d843bcc71f80a7b1b9d79
+  branch: iiif_tile_generation_fixes
+  specs:
+    imogen (0.4.0.pre.rc.1)
+      ruby-vips
+
+GIT
   remote: https://github.com/samvera-deprecated/jettywrapper.git
   revision: 6b03c21726a83dcecf09d9b20683bfcd63f106d1
   branch: master
@@ -208,8 +216,6 @@ GEM
     httpclient (2.8.3)
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
-    imogen (0.3.0)
-      ruby-vips
     iso-639 (0.3.5)
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
@@ -498,7 +504,7 @@ DEPENDENCIES
   capistrano-rails (~> 1.1)
   capistrano-rvm (~> 0.1)
   cul_hydra!
-  imogen (= 0.3.0)
+  imogen!
   jbuilder (~> 2.0)
   jettywrapper (>= 2.0.5)!
   jquery-rails

@@ -27,7 +27,7 @@ describe Derivativo::Iiif::Info do
         'width' => known_width,
         'height' => known_height,
         'sizes' => [{height: 256, width: 193}, {height: 512, width: 386}, {height: 1024, width: 772}, {height: 1280, width: 966}],
-        'tiles' => [{'scaleFactors' => [1, 2, 4, 8, 16, 32], 'width' => 512, 'height' => 512}],
+        'tiles' => [{'scaleFactors' => [1, 2, 4, 8, 16, 32], 'width' => 512}],
         'profile' => [
           'http://iiif.io/api/image/2/level2.json',
           {

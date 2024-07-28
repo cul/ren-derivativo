@@ -1,6 +1,12 @@
 module Derivativo::PdfDerivatives
 	extend ActiveSupport::Concern
 
+	# If an office conversion operation takes longer than this time, there may be something wrong.
+	# This timeout stops us from getting stuck on an bad office doc conversion that could run for hours.
+	SMALL_OFFICE_CONVERSION_DOC_TIMEOUT = 30.seconds
+	LARGE_OFFICE_CONVERSION_DOC_TIMEOUT = 120.seconds
+	LARGE_OFFICE_CONVERSION_DOC_THRESHOLD = 5.megabytes
+
 	def derivative_proc_for_output_path(out_path)
 		Proc.new do |in_path|
 			if in_path =~ /pdf$/i
@@ -87,7 +93,10 @@ module Derivativo::PdfDerivatives
 			Shellwords.escape(tmp_outdir),
 			Shellwords.escape(in_path)
 		].join(' ')
-		system(conversion_command)
+		Derivativo::ShellCommand.run_with_timeout(
+			conversion_command,
+			File.size(in_path) < LARGE_OFFICE_CONVERSION_DOC_THRESHOLD ? SMALL_OFFICE_CONVERSION_DOC_TIMEOUT : LARGE_OFFICE_CONVERSION_DOC_TIMEOUT
+		)
 
 		# The office conversion process always keeps the original name of the file and replaces
 		# the extension with 'pdf', so we'll need to predict the tmp outpath and move it after.
@@ -110,7 +119,7 @@ module Derivativo::PdfDerivatives
 
 				# Do the conversion, updating the in_path
 				in_path = recode_in_path
-				system(conversion_command)
+				Derivativo::ShellCommand.run_with_timeout(conversion_command, OFFICE_CONVERSION_TIMEOUT)
 				# After successful conversion, delete the recode_in_path file, since it was temporary
 				File.delete(recode_in_path)
 			end

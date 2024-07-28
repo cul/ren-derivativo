@@ -61,7 +61,7 @@ module Derivativo::FedoraObjectTypeCheck
 	end
 
 	def self.is_generic_resource_rasterable_video?(fedora_obj, dsid='content')
-		is_generic_resource_video?(fedora_obj) &&
+		is_generic_resource_video?(fedora_obj, dsid) &&
 			datastream_mimetype_matches?(fedora_obj, dsid, /^video\/mp4$/)
 	end
 

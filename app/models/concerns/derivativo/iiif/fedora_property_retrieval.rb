@@ -56,7 +56,7 @@ module Derivativo::Iiif::FedoraPropertyRetrieval
       rescue Vips::Error
         # If we fail to read the file because it's not a readable format, we'll try reading the access copy instead
         representative_generic_resource.with_ds_resource('access', (! DERIVATIVO['no_mount']) ) do |image_path|
-          if Derivativo::FedoraObjectTypeCheck.is_generic_resource_video?(representative_generic_resource)
+          if Derivativo::FedoraObjectTypeCheck.is_generic_resource_video?(representative_generic_resource, 'access')
             movie = FFMPEG::Movie.new(image_path)
             original_image_width = movie.width
             original_image_height = movie.height

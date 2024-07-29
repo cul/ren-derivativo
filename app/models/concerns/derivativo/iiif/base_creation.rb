@@ -109,15 +109,21 @@ module Derivativo::Iiif::BaseCreation
 		end
 
 		# Kick off create and store jobs, and pre-cache (or generate, for the first time) the featured region
-		if DERIVATIVO[:queue_long_jobs]
-			queue_create_and_store
-			Resque.enqueue_to(Derivativo::Queue::LOW, DetectAndStoreFeaturedRegionJob, self.id, Time.now.to_s)
-			#queue_iiif_slice_pre_cache # Not pre-caching IIIF slices due to disk space limitations
-		else
-			create_and_store
-			get_cachable_property(Derivativo::Iiif::CacheKeys::FEATURED_REGION_KEY)
-			#create_iiif_slice_pre_cache # Not pre-caching IIIF slices due to disk space limitations
-		end
+		# if DERIVATIVO[:queue_long_jobs]
+		# 	queue_create_and_store
+		# 	Resque.enqueue_to(Derivativo::Queue::LOW, DetectAndStoreFeaturedRegionJob, self.id, Time.now.to_s)
+		# 	queue_iiif_slice_pre_cache # Pre-cache IIIF slices
+		# else
+		# 	create_and_store
+		# 	get_cachable_property(Derivativo::Iiif::CacheKeys::FEATURED_REGION_KEY)
+		# 	create_iiif_slice_pre_cache # Pre-cache IIIF slices
+		# end
+
+		# Let's try running other jobs along with base creation, rather than queueing them separately.
+		create_and_store
+		get_cachable_property(Derivativo::Iiif::CacheKeys::FEATURED_REGION_KEY)
+		create_iiif_slice_pre_cache # Pre-cache IIIF slices
+
 	rescue ActiveFedora::ObjectNotFoundError
 		# Silently ignore attempts to create base derivatives for non-existent Fedora objects
 		# (to handle web requests for non-existent Fedora objects).  It would be slow to validate

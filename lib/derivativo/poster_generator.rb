@@ -17,7 +17,11 @@ module Derivativo::PosterGenerator
   def self.generate(source_file_path:, poster_size:, output_file_path:)
     # TODO: Handle additional source file types
     source_pdcm_type = BestType.pcdm_type.for_file_name(source_file_path)
-    if source_pdcm_type == BestType::PcdmTypeLookup::VIDEO
+    if source_pdcm_type == BestType::PcdmTypeLookup::IMAGE
+      Derivativo::Conversion.image_to_image(
+        src_file_path: source_file_path, dst_file_path: output_file_path, size: poster_size
+      )
+    elsif source_pdcm_type == BestType::PcdmTypeLookup::VIDEO
       Derivativo::Conversion.video_to_image(
         src_file_path: source_file_path, dst_file_path: output_file_path, size: poster_size
       )

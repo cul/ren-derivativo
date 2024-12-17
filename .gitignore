@@ -44,6 +44,7 @@ database.yml
 redis.yml
 resque.yml
 derivativo.yml
+aws.yml
 
 # macOS Files
 .DS_Store

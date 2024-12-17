@@ -36,6 +36,7 @@ class Derivativo::DerivativePackage
     # previously generated or supplied.
     source_uri = self.generated_access_tempfile ? file_path_as_uri(self.generated_access_tempfile.path) : self.access_uri
     source_uri ||= generate_access
+
     # It's possible that an access copy cannot be generated for this file, so we'll only try to
     # generate a poster if access copy generation was previously successful.
     return unless source_uri
@@ -57,6 +58,11 @@ class Derivativo::DerivativePackage
     source_uri = self.generated_poster_tempfile ? file_path_as_uri(self.generated_poster_tempfile.path) : self.poster_uri
     source_uri ||= self.generated_access_tempfile ? file_path_as_uri(self.generated_access_tempfile.path) : self.access_uri
     source_uri ||= generate_access
+
+    # It's possible that a featured region cannot be extracted for this file, so we'll only try to
+    # extract a featured region if the source_uri is present AND is an image resource.
+    return if source_uri.nil? || BestType.pcdm_type.for_file_name(source_uri) != BestType::PcdmTypeLookup::IMAGE
+
     with_source_uri_as_file_path(source_uri) do |file_path|
       self.generated_featured_region = Derivativo::ImageAnalysis.auto_detect_featured_region(src_file_path: file_path)
     end
@@ -83,12 +89,21 @@ class Derivativo::DerivativePackage
   end
 
   def with_source_uri_as_file_path(uri)
-    # Right now this method only handles 'file://' URIs, but one day we could potentially
-    # point to resources hosted in a remote location (like Amazon S3), temporarily download them,
-    # yield the temporary file path, and then delete the temporary file after.
-    raise "Unhandled uri: #{uri}" unless uri.start_with?('file://')
-
-    yield Addressable::URI.unencode(uri).gsub(/^file:\/\//, '')
+    if uri.start_with?('file:/')
+      yield Addressable::URI.unencode(Addressable::URI.parse(uri).path)
+    elsif uri.start_with?('s3://')
+      parsed_uri = Addressable::URI.parse(uri)
+      file_extension = File.extname(parsed_uri.path)
+      bucket_name = parsed_uri.host
+      bucket_key = parsed_uri.path[1..]
+      # Temporarily download the file from S3 and yield the path to the temporary download
+      Derivativo::FileHelper.working_directory_temp_file('s3-download', file_extension) do |tempfile|
+        S3_CLIENT.get_object({ bucket: bucket_name, key: bucket_key, response_target: tempfile.path })
+        yield tempfile.path
+      end
+    else
+      raise ArgumentError, "Unhandled uri: #{uri}"
+    end
   end
 
   def file_path_as_uri(file_path)

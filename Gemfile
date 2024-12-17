@@ -3,10 +3,14 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
+# Amazon S3 SDK
+gem 'aws-sdk-s3', '~> 1'
+# Additional gem enabling the AWS SDK to calculate CRC32C checksums
+gem 'aws-crt', '~> 0.2.0'
 # Use best_type for media type detection
 gem 'best_type', '~> 0.0.10'
 # For schema validation
-gem 'dry-validation', '~> 1.9.0'
+gem 'dry-validation', '~> 1.9'
 # Factory bot for model fixtures
 gem 'factory_bot_rails', '~> 6.2'
 # Faraday for http requests

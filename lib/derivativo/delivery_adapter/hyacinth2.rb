@@ -13,15 +13,20 @@ class Derivativo::DeliveryAdapter::Hyacinth2
     # Upload the tempfile to Hyacinth as an access copy
     conn = ::Faraday.new(url: self.url) do |f|
       f.response :json # decode response bodies as JSON
+      f.response :raise_error # raise errors in response to 4xx and 5xx status codes
       f.adapter :net_http # Use the Net::HTTP adapter
       f.request :authorization, :basic, self.email, self.password
       f.request :multipart
     end
     digital_object_update_path = "/digital_objects/#{identifier}.json"
+
     # TODO: Handle failure response and throw error that extends StandardError
-    conn.put(digital_object_update_path, payload_for_derivative_package(derivative_package)) do |request|
+    response = conn.put(digital_object_update_path, payload_for_derivative_package(derivative_package)) do |request|
       request.headers['Content-Type'] = 'multipart/form-data'
     end
+
+  #rescue Faraday::Error => e
+
   end
 
   def payload_for_derivative_package(derivative_package)

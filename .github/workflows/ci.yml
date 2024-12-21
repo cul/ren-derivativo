@@ -10,7 +10,7 @@ jobs:
     strategy:
       matrix:
         ruby-version: ['3.2.2']
-        node: ['16']
+        node: ['20']
         # Vips 8.14 does not support the revalidate feature, but 8.15 does
         vips-version: ['8.15.0']
     env:

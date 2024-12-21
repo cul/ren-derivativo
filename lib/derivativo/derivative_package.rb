@@ -28,14 +28,17 @@ class Derivativo::DerivativePackage
         source_file_path: file_path, rotation: self.adjust_orientation
       )
     end
-    self.generated_access_tempfile
+    @access_uri = Derivativo::Utils::UriUtils.file_path_to_location_uri(self.generated_access_tempfile.path)
   end
 
   def generate_poster
     # Poster is always generated from access copy, so we'll generate an access copy if it was not
     # previously generated or supplied.
-    source_uri = self.generated_access_tempfile ? file_path_as_uri(self.generated_access_tempfile.path) : self.access_uri
-    source_uri ||= generate_access
+    source_uri = self.access_uri
+    if source_uri.nil?
+      generate_access
+      source_uri = self.access_uri
+    end
 
     # It's possible that an access copy cannot be generated for this file, so we'll only try to
     # generate a poster if access copy generation was previously successful.
@@ -48,16 +51,19 @@ class Derivativo::DerivativePackage
         poster_extension: DERIVATIVO['poster_settings']['extension']
       )
     end
+    @poster_uri = Derivativo::Utils::UriUtils.file_path_to_location_uri(self.generated_poster_tempfile.path)
   end
 
   def generate_featured_region
     # Featured region is always generated from a poster if present, and access copy is used as a
     # fallback, so we'll check for a generated or supplied poster, and will fall back to access
     # copy generation if a poster is not available.
-
-    source_uri = self.generated_poster_tempfile ? file_path_as_uri(self.generated_poster_tempfile.path) : self.poster_uri
-    source_uri ||= self.generated_access_tempfile ? file_path_as_uri(self.generated_access_tempfile.path) : self.access_uri
-    source_uri ||= generate_access
+    source_uri = self.poster_uri
+    source_uri ||= self.access_uri
+    if source_uri.nil?
+      generate_access
+      source_uri = self.access_uri
+    end
 
     # It's possible that a featured region cannot be extracted for this file, so we'll only try to
     # extract a featured region if the source_uri is present AND is an image resource.
@@ -90,23 +96,17 @@ class Derivativo::DerivativePackage
 
   def with_source_uri_as_file_path(uri)
     if uri.start_with?('file:/')
-      yield Addressable::URI.unencode(Addressable::URI.parse(uri).path)
+      yield Derivativo::Utils::UriUtils.location_uri_to_file_path(uri)
     elsif uri.start_with?('s3://')
       parsed_uri = Addressable::URI.parse(uri)
       file_extension = File.extname(parsed_uri.path)
-      bucket_name = parsed_uri.host
-      bucket_key = parsed_uri.path[1..]
       # Temporarily download the file from S3 and yield the path to the temporary download
       Derivativo::FileHelper.working_directory_temp_file('s3-download', file_extension) do |tempfile|
-        S3_CLIENT.get_object({ bucket: bucket_name, key: bucket_key, response_target: tempfile.path })
+        S3_CLIENT.get_object({ bucket: parsed_uri.host, key: parsed_uri.path[1..], response_target: tempfile.path })
         yield tempfile.path
       end
     else
       raise ArgumentError, "Unhandled uri: #{uri}"
     end
-  end
-
-  def file_path_as_uri(file_path)
-    "file://#{Addressable::URI.encode(file_path)}"
   end
 end

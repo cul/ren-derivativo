@@ -20,13 +20,9 @@ class Derivativo::DeliveryAdapter::Hyacinth2
     end
     digital_object_update_path = "/digital_objects/#{identifier}.json"
 
-    # TODO: Handle failure response and throw error that extends StandardError
-    response = conn.put(digital_object_update_path, payload_for_derivative_package(derivative_package)) do |request|
+    conn.put(digital_object_update_path, payload_for_derivative_package(derivative_package)) do |request|
       request.headers['Content-Type'] = 'multipart/form-data'
     end
-
-  #rescue Faraday::Error => e
-
   end
 
   def payload_for_derivative_package(derivative_package)

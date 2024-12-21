@@ -28,7 +28,6 @@ class DerivativeRequestJobs::DerivativeRequestJob < ApplicationJob
     )
     derivative_package.generate
 
-    # TODO: Send completed derivative package content to Hyacinth
     Derivativo::DeliveryAdapter.for(derivative_request.delivery_target).send_derivative_package(
       derivative_package, derivative_request.identifier
     )

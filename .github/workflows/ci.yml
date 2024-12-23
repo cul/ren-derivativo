@@ -23,16 +23,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
+      - name: Update apt package index
+        run: sudo apt-get update
+      - name: Install other apt dependencies
+        run: sudo apt-get install -y ffmpeg ghostscript libreoffice
+      - name: Install vips
+        run: sudo apt install -y libvips-tools
+      - name: Check vips version
+        run: vips --version
       - name: Cache action for Apache Tika download
         id: cache-tika-download
         uses: actions/cache@v3
         with:
           path: ${{ env.TIKA_DOWNLOAD_DIR }}
           key: ${{ runner.os }}-tika-${{ env.TIKA_VERSION }}-download
-      - name: Update apt package index
-        run: sudo apt-get update
-      - name: Install other apt dependencies
-        run: sudo apt-get install -y ffmpeg ghostscript libreoffice
       - name: Download Tika
         run: |
           # Early exit from this run script if TIKA_DOWNLOAD_DIR already exists

@@ -17,4 +17,9 @@ else
   FileUtils.mkdir_p(DERIVATIVO['working_directory'])
 end
 
+# Set the TMPDIR ENV variable so that Vips (via Imogen) writes temp files here.
+# This defaults to the OS temp directory if not otherwise set, which can be a
+# problem if we're on a host that has limited local disk space.
+ENV['TMPDIR'] = DERIVATIVO['working_directory']
+
 Rails.application.config.active_job.queue_adapter = :inline if DERIVATIVO['run_queued_jobs_inline']

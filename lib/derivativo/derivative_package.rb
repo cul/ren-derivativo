@@ -28,17 +28,16 @@ class Derivativo::DerivativePackage
         source_file_path: file_path, rotation: self.adjust_orientation
       )
     end
+    return nil if self.generated_access_tempfile.nil?
+
     @access_uri = Derivativo::Utils::UriUtils.file_path_to_location_uri(self.generated_access_tempfile.path)
   end
 
   def generate_poster
     # Poster is always generated from access copy, so we'll generate an access copy if it was not
     # previously generated or supplied.
+    generate_access if self.access_uri.nil?
     source_uri = self.access_uri
-    if source_uri.nil?
-      generate_access
-      source_uri = self.access_uri
-    end
 
     # It's possible that an access copy cannot be generated for this file, so we'll only try to
     # generate a poster if access copy generation was previously successful.
@@ -51,6 +50,8 @@ class Derivativo::DerivativePackage
         poster_extension: DERIVATIVO['poster_settings']['extension']
       )
     end
+    return nil if self.generated_poster_tempfile.nil?
+
     @poster_uri = Derivativo::Utils::UriUtils.file_path_to_location_uri(self.generated_poster_tempfile.path)
   end
 

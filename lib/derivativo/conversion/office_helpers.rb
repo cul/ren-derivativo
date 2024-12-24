@@ -5,6 +5,10 @@ module Derivativo
     module OfficeHelpers
       PDF_HIGHER_COMPRESSION_CONVERSION_THRESHOLD = 30.megabytes
 
+      SIZE_THRESHOLD_FOR_LARGE_OFFICE_CONVERSION_DOC_TIMEOUT = 5.megabytes
+      SMALL_OFFICE_CONVERSION_DOC_TIMEOUT = 30.seconds
+	    LARGE_OFFICE_CONVERSION_DOC_TIMEOUT = 120.seconds
+
       # Converts an input office output audiovisual file
       def self.office_convert_to_pdf(src_file_path:, dst_file_path:)
         office_convert_to_pdf_impl(
@@ -60,9 +64,13 @@ module Derivativo
           # expected dst_file_path after we're done with the conversion.
           Derivativo::FileHelper.working_directory_temp_dir('office_temp_outdir') do |office_temp_outdir|
             # Run conversion
-            Open3.capture2(cmd_to_run = conversion_command(
+            cmd_to_run = conversion_command(
               soffice_binary_path, src_file_path, office_temp_homedir.path, office_temp_outdir.path
-            ))
+            )
+            Derivativo::Utils::ShellUtils.run_with_timeout(
+              cmd_to_run,
+              conversion_timeout_for_src_file(src_file_path)
+            )
 
             # The office conversion process always keeps the original name of the file and replaces
             # the extension with 'pdf', so we'll need to predict the tmp outpath and move it after.
@@ -78,6 +86,14 @@ module Derivativo
             FileUtils.mv(expected_conversion_outpath, dst_file_path)
             Derivativo::FileHelper.block_until_file_exists(dst_file_path)
           end
+        end
+      end
+
+      def self.conversion_timeout_for_src_file(src_file_path)
+        if File.size(src_file_path) < SIZE_THRESHOLD_FOR_LARGE_OFFICE_CONVERSION_DOC_TIMEOUT
+          SMALL_OFFICE_CONVERSION_DOC_TIMEOUT
+        else
+          LARGE_OFFICE_CONVERSION_DOC_TIMEOUT
         end
       end
 

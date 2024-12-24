@@ -74,4 +74,26 @@ describe Derivativo::Conversion::OfficeHelpers do
       end
     end
   end
+
+  describe '.conversion_timeout_for_src_file' do
+    let(:path_to_small_file) { '/path/to/small/file.png' }
+    let(:path_to_large_file) { '/path/to/LARGE/file.png' }
+
+    before do
+      allow(File).to receive(:size).with(path_to_small_file).and_return(1.megabyte)
+      allow(File).to receive(:size).with(path_to_large_file).and_return(1.gigabyte)
+    end
+
+    it 'uses a shorter timeout for a smaller file' do
+      expect(described_class.conversion_timeout_for_src_file(path_to_small_file)).to eq(
+        Derivativo::Conversion::OfficeHelpers::SMALL_OFFICE_CONVERSION_DOC_TIMEOUT
+      )
+    end
+
+    it 'uses a longer timeout for a larger file' do
+      expect(described_class.conversion_timeout_for_src_file(path_to_large_file)).to eq(
+        Derivativo::Conversion::OfficeHelpers::LARGE_OFFICE_CONVERSION_DOC_TIMEOUT
+      )
+    end
+  end
 end

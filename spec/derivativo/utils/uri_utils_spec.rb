@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rails_helper'
 
 RSpec.describe Derivativo::Utils::UriUtils do
@@ -13,7 +15,7 @@ RSpec.describe Derivativo::Utils::UriUtils do
 
   describe '.location_uri_to_file_path' do
     {
-      'file:///a/b/c.png' => '/a/b/c.png',
+      'file:///a/b/c.png' => '/a/b/c.png'
     }.each do |location_uri, expected_file_path|
       it 'converts as expected ' do
         expect(described_class.location_uri_to_file_path(location_uri)).to eq(expected_file_path)

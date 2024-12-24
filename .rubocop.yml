@@ -36,6 +36,8 @@ Metrics/AbcSize:
     - lib/derivativo/access_generator.rb
     - app/jobs/derivative_request_jobs/derivative_request_job.rb
     - lib/derivativo/conversion/ffmpeg_helpers.rb
+    - lib/derivativo/utils/shell_utils.rb
+    - lib/derivativo/conversion/office_helpers.rb
 
 Metrics/CyclomaticComplexity:
   Exclude:
@@ -49,6 +51,7 @@ Metrics/MethodLength:
     - app/jobs/derivative_request_jobs/prepare_derivative_request_job.rb
     - lib/derivativo/poster_generator.rb
     - lib/derivativo/conversion/office_helpers.rb
+    - lib/derivativo/utils/shell_utils.rb
 
 Metrics/ParameterLists:
   Enabled: false

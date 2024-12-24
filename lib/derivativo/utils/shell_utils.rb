@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Derivativo::Utils::ShellUtils
   def self.run_with_timeout(cmd, timeout_in_seconds)
     stdout_str = ''
@@ -5,7 +7,7 @@ module Derivativo::Utils::ShellUtils
     begin
       read_out, write_out = IO.pipe
       read_err, write_err = IO.pipe
-      pid = Process.spawn(cmd, pgroup: true, :out => write_out, :err => write_err)
+      pid = Process.spawn(cmd, pgroup: true, out: write_out, err: write_err)
       Timeout.timeout(timeout_in_seconds) do
         Process.waitpid(pid)
 

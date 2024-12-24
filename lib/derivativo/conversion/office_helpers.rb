@@ -7,7 +7,7 @@ module Derivativo
 
       SIZE_THRESHOLD_FOR_LARGE_OFFICE_CONVERSION_DOC_TIMEOUT = 5.megabytes
       SMALL_OFFICE_CONVERSION_DOC_TIMEOUT = 30.seconds
-	    LARGE_OFFICE_CONVERSION_DOC_TIMEOUT = 120.seconds
+      LARGE_OFFICE_CONVERSION_DOC_TIMEOUT = 120.seconds
 
       # Converts an input office output audiovisual file
       def self.office_convert_to_pdf(src_file_path:, dst_file_path:)

@@ -17,6 +17,7 @@ development:
   <<: *default
   run_queued_jobs_inline: true
   working_directory: <%= Rails.root.join('tmp', 'development', 'working_directory') %>
+  vips_tmp_directory: <%= Rails.root.join('tmp', 'development', 'working_directory') %>
   remote_request_api_key: 'changethis'
   tika_jar_path: '/path/to/tika-app.jar'
   soffice_binary_path: '/path/to/soffice'
@@ -34,6 +35,7 @@ test:
   <<: *default
   run_queued_jobs_inline: true
   working_directory: <%= Rails.root.join('tmp', 'test', 'working_directory') %>
+  vips_tmp_directory: <%= Rails.root.join('tmp', 'test', 'working_directory') %>
   remote_request_api_key: 'changethis'
   tika_jar_path: '/path/to/tika-app.jar'
   soffice_binary_path: '/path/to/soffice'

@@ -6,15 +6,16 @@ module Derivativo
       PDF_HIGHER_COMPRESSION_CONVERSION_THRESHOLD = 30.megabytes
 
       SIZE_THRESHOLD_FOR_LARGE_OFFICE_CONVERSION_DOC_TIMEOUT = 5.megabytes
-      SMALL_OFFICE_CONVERSION_DOC_TIMEOUT = 30.seconds
-      LARGE_OFFICE_CONVERSION_DOC_TIMEOUT = 120.seconds
+      SMALL_OFFICE_CONVERSION_DOC_TIMEOUT = 60.seconds
+      LARGE_OFFICE_CONVERSION_DOC_TIMEOUT = 600.seconds # We need a long timeout for larger docs (like big CSV files)
 
       # Converts an input office output audiovisual file
-      def self.office_convert_to_pdf(src_file_path:, dst_file_path:)
+      def self.office_convert_to_pdf(src_file_path:, dst_file_path:, first_page_only: false)
         office_convert_to_pdf_impl(
           src_file_path: src_file_path,
           dst_file_path: dst_file_path,
-          soffice_binary_path: soffice_binary_path_from_config_or_path
+          soffice_binary_path: soffice_binary_path_from_config_or_path,
+          first_page_only: first_page_only
         )
 
         # If the generated file size is less than or equal to our desired size, then we're done.
@@ -28,7 +29,8 @@ module Derivativo
           src_file_path: src_file_path,
           dst_file_path: dst_file_path,
           soffice_binary_path: soffice_binary_path_from_config_or_path,
-          compression_integer: compression_value_for_first_try_file_size(generated_file_size)
+          compression_integer: compression_value_for_first_try_file_size(generated_file_size),
+          first_page_only: first_page_only
         )
       end
 
@@ -50,7 +52,9 @@ module Derivativo
         ((1 / Math.log(size.to_f / 1.megabyte, 10))**2 * 100).to_i
       end
 
-      def self.office_convert_to_pdf_impl(src_file_path:, dst_file_path:, soffice_binary_path:, compression_integer: 80)
+      def self.office_convert_to_pdf_impl(
+        src_file_path:, dst_file_path:, soffice_binary_path:, compression_integer: 80, first_page_only: false
+      )
         # Create a unique, temporary home dir for this office conversion process so we can run
         # multiple conversion jobs independently. If two conversion processes use the same
         # home dir, the first process will block the second one.
@@ -65,7 +69,8 @@ module Derivativo
           Derivativo::FileHelper.working_directory_temp_dir('office_temp_outdir') do |office_temp_outdir|
             # Run conversion
             cmd_to_run = conversion_command(
-              soffice_binary_path, src_file_path, office_temp_homedir.path, office_temp_outdir.path
+              soffice_binary_path, src_file_path, office_temp_homedir.path,
+              office_temp_outdir.path, first_page_only: first_page_only
             )
             Derivativo::Utils::ShellUtils.run_with_timeout(
               cmd_to_run,
@@ -97,14 +102,20 @@ module Derivativo
         end
       end
 
-      def self.conversion_command(soffice_binary_path, src_file_path, office_temp_homedir_path, office_temp_outdir_path)
+      def self.conversion_command(
+        soffice_binary_path, src_file_path, office_temp_homedir_path, office_temp_outdir_path, first_page_only: false
+      )
         [
           soffice_binary_path,
           "-env:UserInstallation=file://#{office_temp_homedir_path}",
           '--invisible',
           '--headless',
           '--convert-to',
-          'pdf:writer_pdf_Export',
+          if first_page_only
+            'pdf:writer_pdf_Export:\{\"PageRange\":\{\"type\":\"string\",\"value\":\"1\"\}\}'
+          else
+            'pdf:writer_pdf_Export'
+          end,
           '--outdir',
           Shellwords.escape(office_temp_outdir_path),
           Shellwords.escape(src_file_path)

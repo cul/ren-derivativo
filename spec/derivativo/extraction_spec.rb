@@ -11,7 +11,7 @@ describe Derivativo::Extraction do
         with_auto_deleting_tempfile('dst', '.txt') do |dst_file|
           described_class.extract_fulltext(src_file_path: src_file_path, dst_file_path: dst_file.path)
           expect(File.size(dst_file.path)).to be_positive
-          expect(File.read(dst_file.path)).to eq("This is an office document!\n")
+          expect(File.read(dst_file.path)).to eq("Page 1!\n\n\nPage 2!\n\n")
         end
       end
     end

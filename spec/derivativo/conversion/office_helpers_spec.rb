@@ -11,6 +11,27 @@ describe Derivativo::Conversion::OfficeHelpers do
         with_auto_deleting_tempfile('dst', '.pdf') do |dst_file|
           described_class.office_convert_to_pdf(src_file_path: src_file_path, dst_file_path: dst_file.path)
           expect(File.size(dst_file.path)).to be_positive
+          with_auto_deleting_tempfile('tempfile', '.txt') do |text_temp_file|
+            Derivativo::Extraction.extract_fulltext(src_file_path: dst_file.path, dst_file_path: text_temp_file.path)
+            file_content = File.read(text_temp_file.path)
+            expect(file_content).to include('Page 1!')
+            expect(file_content).to include('Page 2!')
+          end
+        end
+      end
+
+      it 'only converts the first page when called with `first_page_only: true`' do
+        with_auto_deleting_tempfile('dst', '.pdf') do |dst_file|
+          described_class.office_convert_to_pdf(
+            src_file_path: src_file_path, dst_file_path: dst_file.path, first_page_only: true
+          )
+          expect(File.size(dst_file.path)).to be_positive
+          with_auto_deleting_tempfile('tempfile', '.txt') do |text_temp_file|
+            Derivativo::Extraction.extract_fulltext(src_file_path: dst_file.path, dst_file_path: text_temp_file.path)
+            file_content = File.read(text_temp_file.path)
+            expect(file_content).to include('Page 1!')
+            expect(file_content).not_to include('Page 2!')
+          end
         end
       end
     end
@@ -43,15 +64,19 @@ describe Derivativo::Conversion::OfficeHelpers do
           expect(described_class).to receive(:office_convert_to_pdf_impl).with(
             src_file_path: src_file_path,
             dst_file_path: dst_file.path,
-            soffice_binary_path: soffice_binary_path
+            soffice_binary_path: soffice_binary_path,
+            first_page_only: false
           ).ordered.and_call_original
           expect(described_class).to receive(:office_convert_to_pdf_impl).with(
             src_file_path: src_file_path,
             dst_file_path: dst_file.path,
             soffice_binary_path: soffice_binary_path,
-            compression_integer: second_conversion_compression_integer
+            compression_integer: second_conversion_compression_integer,
+            first_page_only: false
           ).ordered.and_call_original
-          described_class.office_convert_to_pdf(src_file_path: src_file_path, dst_file_path: dst_file.path)
+          described_class.office_convert_to_pdf(
+            src_file_path: src_file_path, dst_file_path: dst_file.path, first_page_only: false
+          )
           expect(File.size(dst_file.path)).to be_positive
         end
       end

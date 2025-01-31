@@ -52,7 +52,7 @@ module Derivativo::AccessGenerator
         ffmpeg_input_args: DERIVATIVO['audio_access_copy_settings']['ffmpeg_input_args'],
         ffmpeg_output_args: DERIVATIVO['audio_access_copy_settings']['ffmpeg_output_args']
       )
-    elsif source_file_path.ends_with?('.pdf')
+    elsif source_file_path.downcase.ends_with?('.pdf')
       Derivativo::Conversion.pdf_to_pdf(
         src_file_path: source_file_path, dst_file_path: output_file_path
       )

@@ -25,7 +25,7 @@ module Derivativo::PosterGenerator
       Derivativo::Conversion.video_to_image(
         src_file_path: source_file_path, dst_file_path: output_file_path, size: poster_size
       )
-    elsif source_file_path.ends_with?('.pdf')
+    elsif source_file_path.downcase.ends_with?('.pdf')
       Derivativo::Conversion.pdf_to_image(
         src_file_path: source_file_path, dst_file_path: output_file_path, size: poster_size
       )

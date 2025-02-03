@@ -7,7 +7,7 @@ default: &default
   video_access_copy_settings:
     extension: 'mp4'
     ffmpeg_input_args: '-threads 2'
-    ffmpeg_output_args: '-threads 2 -pix_fmt yuv420p -c:v libx264 -r 29.97 -crf 23 -vf scale=trunc(iw/2)*2:trunc(ih/2)*2 -c:a aac -b:a 128k -ar 48000 -ac 2 -af aresample=async=1:min_hard_comp=0.100000:first_pts=0 -c:s mov_text -map 0:v:0 -map 0:a -f mp4'
+    ffmpeg_output_args: '-threads 2 -pix_fmt yuv420p -c:v libx264 -r 29.97 -crf 23 -vf yadif,scale=trunc(iw/2)*2:trunc(ih/2)*2 -c:a aac -b:a 128k -ar 48000 -ac 2 -af aresample=async=1:min_hard_comp=0.100000:first_pts=0 -c:s mov_text -map 0:v:0 -map 0:a -f mp4'
   audio_access_copy_settings:
     extension: 'm4a'
     ffmpeg_input_args: '-threads 2'

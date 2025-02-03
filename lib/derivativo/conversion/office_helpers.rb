@@ -72,10 +72,15 @@ module Derivativo
               soffice_binary_path, src_file_path, office_temp_homedir.path,
               office_temp_outdir.path, first_page_only: first_page_only
             )
-            Derivativo::Utils::ShellUtils.run_with_timeout(
+            _stdout, stderr = Derivativo::Utils::ShellUtils.run_with_timeout(
               cmd_to_run,
               conversion_timeout_for_src_file(src_file_path)
             )
+
+            if stderr.present?
+              raise Derivativo::Exceptions::ConversionError,
+                    "Failed to convert document to PDF using command: #{cmd_to_run}\nError message: #{stderr}"
+            end
 
             # The office conversion process always keeps the original name of the file and replaces
             # the extension with 'pdf', so we'll need to predict the tmp outpath and move it after.

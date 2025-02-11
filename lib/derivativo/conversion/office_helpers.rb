@@ -119,7 +119,7 @@ module Derivativo
           if first_page_only
             'pdf:writer_pdf_Export:\{\"PageRange\":\{\"type\":\"string\",\"value\":\"1\"\}\}'
           else
-            'pdf:writer_pdf_Export'
+            'pdf'
           end,
           '--outdir',
           Shellwords.escape(office_temp_outdir_path),
